@@ -39,7 +39,7 @@
 *.psd
 *.fbx
 *.fbm
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+*.cso
+*.pdb
+*.idb
 *x64
