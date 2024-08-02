@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Engine.h"
 #include "SceneManager.h"
+#include "Input.h"
 
 void Game::Init(const WindowInfo& info)
 {
@@ -13,4 +14,8 @@ void Game::Init(const WindowInfo& info)
 void Game::Update()
 {
 	GEngine->Update();
+	if (INPUT->GetButtonDown(KEY_TYPE::F11))
+	{
+		GEngine->ToggleFullscreen();
+	}
 }

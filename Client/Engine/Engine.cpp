@@ -8,6 +8,8 @@
 #include "Light.h"
 #include "Resources.h"
 #include "InstancingManager.h"
+#include "Scene.h"
+#include "Camera.h"
 
 void Engine::Init(const WindowInfo& info)
 {
@@ -31,8 +33,6 @@ void Engine::Init(const WindowInfo& info)
 
 	CreateRenderTargetGroups();
 
-	ResizeWindow(info.width, info.height);
-
 	GET_SINGLE(Input)->Init(info.hwnd);
 	GET_SINGLE(Timer)->Init();
 	GET_SINGLE(Resources)->Init();
@@ -48,6 +48,55 @@ void Engine::Update()
 	Render();
 
 	ShowFps();
+}
+
+void Engine::ToggleFullscreen()
+{
+	_window.windowed = !_window.windowed;
+	bool fullscreen = !_window.windowed;
+
+	if (fullscreen)
+	{
+		_window.width = GetSystemMetrics(SM_CXSCREEN);
+		_window.height = GetSystemMetrics(SM_CYSCREEN);
+
+		// 윈도우를 전체 화면 모드로 전환
+		::SetWindowLongPtr(_window.hwnd, GWL_STYLE, WS_POPUP);
+		::SetWindowPos(_window.hwnd, HWND_TOP, 0, 0, _window.width, _window.height, SWP_FRAMECHANGED);
+		::ShowWindow(_window.hwnd, SW_MAXIMIZE);
+
+		// 전체 화면 모드로 전환
+		DXGI_MODE_DESC fullscreenMode = {};
+		fullscreenMode.Width = _window.width;
+		fullscreenMode.Height = _window.height;
+		fullscreenMode.RefreshRate = { 60, 1 };
+		fullscreenMode.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_swapChain->GetSwapChain()->ResizeTarget(&fullscreenMode);
+	}
+	else
+	{
+		_window.width = 1280;
+		_window.height = 720;
+
+		// 윈도우를 창 모드로 전환
+		::SetWindowLongPtr(_window.hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+		RECT rect = { 0, 0, _window.width, _window.height };
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+		::SetWindowPos(_window.hwnd, 0, 100, 100, rect.right - rect.left, rect.bottom - rect.top, 0);
+		::ShowWindow(_window.hwnd, SW_SHOWNORMAL);
+
+		// 창 모드로 전환
+		DXGI_MODE_DESC windowedMode = {};
+		windowedMode.Width = _window.width;
+		windowedMode.Height = _window.height;
+		windowedMode.RefreshRate = { 60, 1 };
+		windowedMode.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_swapChain->GetSwapChain()->ResizeTarget(&windowedMode);
+	}
+
+	// 그려질 화면 크기를 설정
+	_viewport = { 0, 0, static_cast<FLOAT>(_window.width), static_cast<FLOAT>(_window.height), 0.0f, 1.0f };
+	_scissorRect = CD3DX12_RECT(0, 0, _window.width, _window.height);
 }
 
 void Engine::Render()
@@ -165,7 +214,7 @@ void Engine::CreateRenderTargetGroups()
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)] = make_shared<RenderTargetGroup>();
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)]->Create(RENDER_TARGET_GROUP_TYPE::G_BUFFER, rtVec, dsTexture);
 	}
-
+	
 	// Lighting Group
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_LIGHTING_GROUP_MEMBER_COUNT);

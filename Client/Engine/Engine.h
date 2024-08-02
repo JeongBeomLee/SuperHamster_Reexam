@@ -16,6 +16,7 @@ class Engine
 public:
 	void Init(const WindowInfo& info);
 	void Update();
+	void ToggleFullscreen();
 
 public:
 	const WindowInfo& GetWindow() { return _window; }
