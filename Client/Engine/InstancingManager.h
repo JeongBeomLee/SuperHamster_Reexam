@@ -17,6 +17,6 @@ private:
 	void AddParam(uint64 instanceId, InstancingParams& data);
 
 private:
-	map<uint64/*instanceId*/, shared_ptr<InstancingBuffer>> _buffers;
+	unordered_map<uint64/*instanceId*/, shared_ptr<InstancingBuffer>> _buffers;
 };
 

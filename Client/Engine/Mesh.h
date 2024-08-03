@@ -56,14 +56,14 @@ private:
 	Matrix GetMatrix(FbxAMatrix& matrix);
 
 public:
-	uint32 GetSubsetCount() { return static_cast<uint32>(_vecIndexInfo.size()); }
-	const vector<BoneInfo>*		GetBones() { return &_bones; }
-	uint32						GetBoneCount() { return static_cast<uint32>(_bones.size()); }
-	const vector<AnimClipInfo>* GetAnimClip() { return &_animClips; }
-
-	bool							IsAnimMesh() { return !_animClips.empty(); }
+	uint32							GetSubsetCount() { return static_cast<uint32>(_vecIndexInfo.size()); }
+	const vector<BoneInfo>*			GetBones() { return &_bones; }
+	uint32							GetBoneCount() { return static_cast<uint32>(_bones.size()); }
+	const vector<AnimClipInfo>*		GetAnimClip() { return &_animClips; }
 	shared_ptr<StructuredBuffer>	GetBoneFrameDataBuffer(int32 index = 0) { return _frameBuffer[index]; } // 전체 본 프레임 정보
 	shared_ptr<StructuredBuffer>	GetBoneOffsetBuffer() { return  _offsetBuffer; }
+	FbxMeshInfo&					GetFbxMeshInfo() { return _fbxMeshInfo; }
+	bool							IsAnimMesh() { return !_animClips.empty(); }
 
 	void							SetFbxMeshInfo(FbxMeshInfo info) { _fbxMeshInfo = info; }
 

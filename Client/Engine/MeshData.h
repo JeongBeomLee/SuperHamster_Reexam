@@ -23,12 +23,14 @@ public:
 	virtual void Load(const wstring& path);
 	virtual void Save(const wstring& path);
 
+	void CountMeshMaterialPairs();
 	vector<shared_ptr<GameObject>> Instantiate();
-	vector<shared_ptr<GameObject>> Clone();
 
 private:
 	shared_ptr<Mesh>				_mesh;
-	vector<shared_ptr<Material>>	_materials;
 
+	vector<shared_ptr<Material>>	_materials;
 	vector<MeshRenderInfo> _meshRenders;
+
+	map<pair<uint64, uint64>, int> _meshMaterialCount;
 };

@@ -44,9 +44,11 @@ public:
 	void SetScale(float value) { _scale = value; }
 	void SetWidth(float value) { _width = value; }
 	void SetHeight(float value) { _height = value; }
+	void SetMainCamera(bool isMain) { _isMainCamera = isMain; }
 
 	Matrix& GetViewMatrix() { return _matView; }
 	Matrix& GetProjectionMatrix() { return _matProjection; }
+	bool IsMainCamera() const { return _isMainCamera; }
 
 private:
 	PROJECTION_TYPE _type = PROJECTION_TYPE::PERSPECTIVE;
@@ -63,6 +65,7 @@ private:
 
 	Frustum _frustum;
 	uint32 _cullingMask = 0;
+	bool _isMainCamera = false;
 
 private:
 	vector<shared_ptr<GameObject>>	_vecDeferred;
@@ -71,7 +74,6 @@ private:
 	vector<shared_ptr<GameObject>>	_vecShadow;
 
 public:
-	// TEMP
 	static Matrix S_MatView;
 	static Matrix S_MatProjection;
 };

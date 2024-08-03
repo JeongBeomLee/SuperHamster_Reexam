@@ -54,6 +54,18 @@ struct FbxMeshInfo
     // 트랜스폼 정보 추가
     Matrix transform;         // 로컬 변환 행렬
     Matrix globalTransform;   // 글로벌 변환 행렬
+    
+    Vec3 GetPosition() { return Vec3(transform._41, transform._42, transform._43); }
+    Vec3 GetScale() { return Vec3(transform._11, transform._22, transform._33); }
+    Vec3 GetRotation() { return Vec3(atan2f(transform._32, transform._33), 
+									 atan2f(-transform._31, sqrt(transform._32 * transform._32 + transform._33 * transform._33)), 
+									 atan2f(transform._21, transform._11)); }
+
+    Vec3 GetGlobalPosition() { return Vec3(globalTransform._41, globalTransform._42, globalTransform._43); }
+    Vec3 GetGlobalScale() { return Vec3(globalTransform._11, globalTransform._22, globalTransform._33); }   
+    Vec3 GetGlobalRotation() { return Vec3(atan2f(globalTransform._32, globalTransform._33), 
+                                           atan2f(-globalTransform._31, sqrt(globalTransform._32 * globalTransform._32 + globalTransform._33 * globalTransform._33)), 
+                                           atan2f(globalTransform._21, globalTransform._11)); }
 };
 
 struct FbxKeyFrameInfo

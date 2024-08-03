@@ -150,8 +150,10 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->AddComponent(make_shared<Transform>());
 		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45도
 		camera->AddComponent(make_shared<TestCameraScript>());
-		camera->GetCamera()->SetFar(10000.f);
-		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
+		camera->GetCamera()->SetFar(1000.f);
+		camera->GetCamera()->SetMainCamera(true);
+		//camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
+		camera->GetTransform()->SetLocalPosition(Vec3(-300.f, 0.f, 500.f));
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true); // UI는 안 찍음
 		scene->AddGameObject(camera);
@@ -219,10 +221,31 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		obj->AddComponent(meshRenderer);
 		scene->AddGameObject(obj);
 	}*/
+	//for (int32 i = 0; i < 50; i++)
+	//{
+	//	shared_ptr<GameObject> obj = make_shared<GameObject>();
+	//	obj->AddComponent(make_shared<Transform>());
+	//	obj->GetTransform()->SetLocalScale(Vec3(25.f, 25.f, 25.f));
+	//	obj->GetTransform()->SetLocalPosition(Vec3(-300.f + i * 10.f, 0.f, 500.f));
+	//	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	//	{
+	//		shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadSphereMesh();
+	//		meshRenderer->SetMesh(sphereMesh);
+	//	}
+	//	{
+	//		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"GameObject");
+	//		material->SetInt(0, 1);
+	//		meshRenderer->SetMaterial(material);
+	//		//material->SetInt(0, 0);
+	//		//meshRenderer->SetMaterial(material->Clone());
+	//	}
+	//	obj->AddComponent(meshRenderer);
+	//	scene->AddGameObject(obj);
+	//}
 #pragma endregion
 
 #pragma region Terrain
-	{
+	/*{
 		shared_ptr<GameObject> obj = make_shared<GameObject>();
 		obj->AddComponent(make_shared<Transform>());
 		obj->AddComponent(make_shared<Terrain>());
@@ -235,7 +258,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		obj->SetCheckFrustum(false);
 
 		scene->AddGameObject(obj);
-	}
+	}*/
 #pragma endregion
 
 #pragma region UI_Test
@@ -243,6 +266,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<GameObject> obj = make_shared<GameObject>();
 		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI")); // UI
+		obj->SetCheckFrustum(false);
 		obj->AddComponent(make_shared<Transform>());
 		obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 		obj->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 120), 250.f, 500.f));
@@ -291,7 +315,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	
 #pragma region FBX
 	{
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
+		/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
 
 		vector<shared_ptr<GameObject>> gameObjects = meshData->Clone();
 
@@ -305,23 +329,32 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			gameObject->GetTransform()->SetLocalScale(Vec3(500.f, 500.f, 500.f));
 			scene->AddGameObject(gameObject);
 			gameObject->AddComponent(make_shared<TestAnimation>());
-		}
+		}*/
 
-		/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Untitled.fbx");
 
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Clone();
+		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
 		for (auto& gameObject : gameObjects)
 		{
-			gameObject->SetName(L"untitled");
-			gameObject->SetCheckFrustum(false);
+			int id = 0;
+			gameObject->SetName(L"untitled" + to_wstring(id++));
+			gameObject->SetCheckFrustum(true);
 			gameObject->SetStatic(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
-			gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
-			gameObject->GetTransform()->SetLocalScale(Vec3(0.1f, 0.1f, 0.1f));
+
+			Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
+			Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
+			Vec3 Rotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetRotation();
+			Rotation.x -= XM_PIDIV2;
+
+			//gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
+			gameObject->GetTransform()->SetLocalPosition(Pos);
+			gameObject->GetTransform()->SetLocalScale(Scale);
+			gameObject->GetTransform()->SetLocalRotation(Rotation);
+
+
 			scene->AddGameObject(gameObject);
-			gameObject->AddComponent(make_shared<TestAnimation>());
-		}*/
+		}
 
 		// 100개 생성 (인스턴싱 사용, 1개는 안 그려짐)
 		//for (int i = 0; i < 100; ++i) {

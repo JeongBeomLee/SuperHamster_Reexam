@@ -16,6 +16,7 @@ struct VS_IN
     row_major matrix matWorld : W;
     row_major matrix matWV : WV;
     row_major matrix matWVP : WVP;
+    
     uint instanceID : SV_InstanceID;
 };
 

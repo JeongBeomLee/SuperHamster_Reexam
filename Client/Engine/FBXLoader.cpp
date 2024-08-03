@@ -147,6 +147,7 @@ FbxAMatrix FBXLoader::GetGlobalTransform(FbxNode* node)
 
 void FBXLoader::ParseNode(FbxNode* node)
 {
+	static uint32 meshID = 0;
 	FbxNodeAttribute* attribute = node->GetNodeAttribute();
 
 	/*if (attribute)
@@ -189,6 +190,8 @@ void FBXLoader::ParseNode(FbxNode* node)
 
 void FBXLoader::LoadMesh(FbxMesh* mesh, FbxMeshInfo* meshInfo)
 {
+	uniqueVerticesMap.clear();
+
 	// FBX 메시에서 정점, 노말, UV 정보등을 가져온다.
 	FbxVector4* controlPoints = mesh->GetControlPoints();
 	//int controlPointsCount = mesh->GetControlPointsCount();

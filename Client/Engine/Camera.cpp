@@ -33,6 +33,13 @@ void Camera::FinalUpdate()
 	else
 		_matProjection = ::XMMatrixOrthographicLH(_width * _scale, _height * _scale, _near, _far);
 
+	// 메인 카메라인 경우에만 정적 변수 업데이트
+	if (_isMainCamera)
+	{
+		S_MatView = _matView;
+		S_MatProjection = _matProjection;
+	}
+
 	_frustum.FinalUpdate();
 }
 
@@ -40,7 +47,7 @@ void Camera::SortGameObject()
 {
 	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
 	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
-
+	
 	_vecForward.clear();
 	_vecDeferred.clear();
 	_vecParticle.clear();
@@ -66,6 +73,7 @@ void Camera::SortGameObject()
 		if (gameObject->GetMeshRenderer())
 		{
 			SHADER_TYPE shaderType = gameObject->GetMeshRenderer()->GetMaterial()->GetShader()->GetShaderType();
+
 			switch (shaderType)
 			{
 			case SHADER_TYPE::DEFERRED:

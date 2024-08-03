@@ -5,6 +5,7 @@
 #include "InstancingBuffer.h"
 #include "FBXLoader.h"
 #include "StructuredBuffer.h"
+#include "Resources.h"
 
 Mesh::Mesh() : Object(OBJECT_TYPE::MESH)
 {
@@ -52,7 +53,6 @@ shared_ptr<Mesh> Mesh::CreateFromFBX(const FbxMeshInfo* meshInfo, FBXLoader& loa
 	{
 		if (buffer.empty())
 		{
-			// FBX 파일이 이상하다. IndexBuffer가 없으면 에러 나니까 임시 처리
 			vector<uint32> defaultBuffer{ 0 };
 			mesh->CreateIndexBuffer(defaultBuffer);
 		}
@@ -65,6 +65,10 @@ shared_ptr<Mesh> Mesh::CreateFromFBX(const FbxMeshInfo* meshInfo, FBXLoader& loa
 	if (meshInfo->hasAnimation)
 		mesh->CreateBonesAndAnimations(loader);
 	
+	uint32 vertexCount = static_cast<uint32>(meshInfo->vertices.size());
+	uint32 indexCount = meshInfo->indices[0].empty() ? 0 : static_cast<uint32>(meshInfo->indices[0].size());
+	mesh->SetName(meshInfo->name + L"_" + std::to_wstring(vertexCount) + L"_" + std::to_wstring(indexCount));
+
 	return mesh;
 }
 
