@@ -115,44 +115,39 @@ void FBXLoader::LoadAnimationInfo()
 void FBXLoader::LoadTransform(FbxNode* node, FbxMeshInfo* meshInfo)
 {
 	FbxVector4 translation = node->GetGeometricTranslation(FbxNode::eSourcePivot);
-	FbxVector4 rotation = node->GetGeometricRotation(FbxNode::eSourcePivot);
-	FbxVector4 scaling = node->GetGeometricScaling(FbxNode::eSourcePivot);
+    FbxVector4 rotation = node->GetGeometricRotation(FbxNode::eDestinationPivot);
+    FbxVector4 scaling = node->GetGeometricScaling(FbxNode::eSourcePivot);
 
-	FbxAMatrix transform(translation, rotation, scaling);
-	FbxAMatrix globalTransform = GetGlobalTransform(node);
+    FbxAMatrix transform(translation, rotation, scaling);
+    FbxAMatrix globalTransform = GetGlobalTransform(node);
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			meshInfo->transform.m[i][j] = static_cast<float>(transform.Get(i, j));
-			meshInfo->globalTransform.m[i][j] = static_cast<float>(globalTransform.Get(i, j));
-		}
-	}
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            meshInfo->transform.m[i][j] = static_cast<float>(transform.Get(i, j));
+            meshInfo->globalTransform.m[i][j] = static_cast<float>(globalTransform.Get(i, j));
+        }
+    }
 }
 
 FbxAMatrix FBXLoader::GetGlobalTransform(FbxNode* node)
 {
-	FbxAMatrix globalTransform;
-	FbxAMatrix localTransform = node->EvaluateLocalTransform();
+	FbxAMatrix globalTransform = node->EvaluateGlobalTransform();
 
-	if (node->GetParent()) {
-		globalTransform = GetGlobalTransform(node->GetParent());
-		globalTransform = globalTransform * localTransform;
-	}
-	else {
-		globalTransform = localTransform;
-	}
+	FbxVector4 geometricTranslation = node->GetGeometricTranslation(FbxNode::eSourcePivot);
+	FbxVector4 geometricRotation = node->GetGeometricRotation(FbxNode::eSourcePivot);
+	FbxVector4 geometricScaling = node->GetGeometricScaling(FbxNode::eSourcePivot);
 
-	return globalTransform;
+	FbxAMatrix geometricTransform;
+	geometricTransform.SetT(geometricTranslation);
+	geometricTransform.SetR(geometricRotation);
+	geometricTransform.SetS(geometricScaling);
+
+	return globalTransform * geometricTransform;
 }
 
 void FBXLoader::ParseNode(FbxNode* node)
 {
-	static uint32 meshID = 0;
 	FbxNodeAttribute* attribute = node->GetNodeAttribute();
-
-	/*if (attribute)
-		if (attribute->GetAttributeType() == FbxNodeAttribute::eMesh)
-			LoadMesh(node->GetMesh());*/
 
 	if (attribute) {
 		switch (attribute->GetAttributeType()) {

@@ -54,18 +54,57 @@ struct FbxMeshInfo
     // 트랜스폼 정보 추가
     Matrix transform;         // 로컬 변환 행렬
     Matrix globalTransform;   // 글로벌 변환 행렬
-    
-    Vec3 GetPosition() { return Vec3(transform._41, transform._42, transform._43); }
-    Vec3 GetScale() { return Vec3(transform._11, transform._22, transform._33); }
-    Vec3 GetRotation() { return Vec3(atan2f(transform._32, transform._33), 
-									 atan2f(-transform._31, sqrt(transform._32 * transform._32 + transform._33 * transform._33)), 
-									 atan2f(transform._21, transform._11)); }
 
-    Vec3 GetGlobalPosition() { return Vec3(globalTransform._41, globalTransform._42, globalTransform._43); }
-    Vec3 GetGlobalScale() { return Vec3(globalTransform._11, globalTransform._22, globalTransform._33); }   
-    Vec3 GetGlobalRotation() { return Vec3(atan2f(globalTransform._32, globalTransform._33), 
-                                           atan2f(-globalTransform._31, sqrt(globalTransform._32 * globalTransform._32 + globalTransform._33 * globalTransform._33)), 
-                                           atan2f(globalTransform._21, globalTransform._11)); }
+    Vec3 GetPosition() const
+	{
+		return { transform.m[3][0], transform.m[3][1], transform.m[3][2] };
+	}
+
+    Vec3 GetScale() const
+    {
+        float scaleX = sqrt(transform.m[0][0] * transform.m[0][0] + transform.m[0][1] * transform.m[0][1] + transform.m[0][2] * transform.m[0][2]);
+        float scaleY = sqrt(transform.m[1][0] * transform.m[1][0] + transform.m[1][1] * transform.m[1][1] + transform.m[1][2] * transform.m[1][2]);
+        float scaleZ = sqrt(transform.m[2][0] * transform.m[2][0] + transform.m[2][1] * transform.m[2][1] + transform.m[2][2] * transform.m[2][2]);
+        return { scaleX, scaleY, scaleZ };
+    }
+
+    Vec3 GetRotation() const
+	{
+		Matrix matRotation = transform;
+
+		// 회전 행렬을 사용하여 회전 각도 계산
+		float pitch = atan2(-matRotation.m[2][1], matRotation.m[2][2]);
+		float yaw = atan2(matRotation.m[2][0], sqrt(matRotation.m[2][1] * matRotation.m[2][1] + matRotation.m[2][2] * matRotation.m[2][2]));
+		float roll = atan2(-matRotation.m[1][0], matRotation.m[0][0]);
+
+		return { pitch, yaw, roll };
+	}
+
+    Vec3 GetGlobalPosition() const
+    {
+        return { globalTransform.m[3][0], globalTransform.m[3][1], globalTransform.m[3][2] };
+    }
+
+    Vec3 GetGlobalScale() const
+    {
+        float scaleX = sqrt(globalTransform.m[0][0] * globalTransform.m[0][0] + globalTransform.m[0][1] * globalTransform.m[0][1] + globalTransform.m[0][2] * globalTransform.m[0][2]);
+        float scaleY = sqrt(globalTransform.m[1][0] * globalTransform.m[1][0] + globalTransform.m[1][1] * globalTransform.m[1][1] + globalTransform.m[1][2] * globalTransform.m[1][2]);
+        float scaleZ = sqrt(globalTransform.m[2][0] * globalTransform.m[2][0] + globalTransform.m[2][1] * globalTransform.m[2][1] + globalTransform.m[2][2] * globalTransform.m[2][2]);
+
+        return { scaleX, scaleY, scaleZ };
+    }
+
+    Vec3 GetGlobalRotation() const
+    {
+        Matrix matRotation = globalTransform;
+
+        // 회전 행렬을 사용하여 회전 각도 계산
+        float pitch = atan2(-matRotation.m[2][1], matRotation.m[2][2]);
+        float yaw = atan2(matRotation.m[2][0], sqrt(matRotation.m[2][1] * matRotation.m[2][1] + matRotation.m[2][2] * matRotation.m[2][2]));
+        float roll = atan2(-matRotation.m[1][0], matRotation.m[0][0]);
+
+        return { pitch, yaw, roll };
+    }
 };
 
 struct FbxKeyFrameInfo
@@ -135,6 +174,7 @@ private:
     FbxAMatrix GetTransform(FbxNode* node);
 
     void FillBoneWeight(FbxMesh* mesh, FbxMeshInfo* meshInfo);
+    FbxAMatrix ConvertToDXMatrix(const FbxAMatrix& fbxMatrix);
 
 private:
     FbxManager* _manager = nullptr;
