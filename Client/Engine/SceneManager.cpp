@@ -331,7 +331,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			gameObject->AddComponent(make_shared<TestAnimation>());
 		}*/
 
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2.fbx");
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Untitled.fbx");
 
 		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 

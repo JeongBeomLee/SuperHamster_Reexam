@@ -66,7 +66,12 @@ void Camera::SortGameObject()
 				gameObject->GetTransform()->GetWorldPosition(),
 				gameObject->GetTransform()->GetBoundingSphereRadius()) == false)
 			{
+				gameObject->SetActive(false);
 				continue;
+			}
+			else
+			{
+				gameObject->SetActive(true);
 			}
 		}
 
