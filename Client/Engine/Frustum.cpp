@@ -30,13 +30,12 @@ void Frustum::FinalUpdate()
 
 bool Frustum::ContainsSphere(const Vec3& pos, float radius)
 {
+	const float cullingMargin = 500.f; // 조정 가능한 마진 값
+
 	for (const Vec4& plane : _planes)
 	{
-		// n = (a, b, c)
 		Vec3 normal = Vec3(plane.x, plane.y, plane.z);
-
-		// ax + by + cz + d > radius
-		if (normal.Dot(pos) + plane.w > radius)
+		if (normal.Dot(pos) + plane.w > (radius + cullingMargin))
 			return false;
 	}
 
