@@ -331,7 +331,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			gameObject->AddComponent(make_shared<TestAnimation>());
 		}*/
 
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Untitled.fbx");
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
 
 		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
@@ -344,18 +344,14 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 			Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
 			Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
-			Vec3 GlobalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
-			Vec3 LocalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetRotation();
-			Vec3 Rotation = GlobalRotation + LocalRotation;
+			Vec3 Rotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
 
 			Rotation.x -= XM_PIDIV2;
 			Rotation.y -= XM_PI;
 
-			//gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
 			gameObject->GetTransform()->SetLocalPosition(Pos);
 			gameObject->GetTransform()->SetLocalScale(Scale);
 			gameObject->GetTransform()->SetLocalRotation(Rotation);
-			//gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
 
 			scene->AddGameObject(gameObject);
 		}
