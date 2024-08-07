@@ -153,6 +153,7 @@
     <ClCompile Include="TestAnimation.cpp">
       <Filter>Object\Test</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -281,6 +282,7 @@
     <ClInclude Include="TestAnimation.h">
       <Filter>Object\Test</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

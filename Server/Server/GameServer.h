@@ -6,6 +6,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <map>
 #include "Protocol.h"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -34,7 +35,7 @@ private:
     void HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* packet);
 
     SOCKET _listenSocket;
-    std::vector<SOCKET> _clientSockets;
+    std::map<SOCKET, uint32_t> _clientSocketIdPairs;
     std::mutex _clientsMutex;
 
     std::atomic<bool> _running;
@@ -44,9 +45,12 @@ private:
     struct PlayerInfo
     {
         uint32_t playerId;
+        bool isReady;
         float posX, posY, posZ;
-        // 추가 플레이어 정보...
     };
-    std::vector<PlayerInfo> _players;
+    std::map<uint32_t, PlayerInfo> _players;
     std::mutex _playersMutex;
+
+    bool IsGameReady();
+    void BroadcastPacket(PacketHeader* packet);
 };

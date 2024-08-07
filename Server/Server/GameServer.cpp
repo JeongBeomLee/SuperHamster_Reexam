@@ -1,5 +1,6 @@
 #include "GameServer.h"
 #include <iostream>
+#include <string>
 
 GameServer::GameServer() : _listenSocket(INVALID_SOCKET), _running(false)
 {
@@ -51,14 +52,13 @@ void GameServer::Stop()
     if (_acceptThread.joinable())
         _acceptThread.join();
 
-    for (SOCKET clientSocket : _clientSockets)
-    {
-        closesocket(clientSocket);
+    std::lock_guard<std::mutex> lock(_clientsMutex);
+    for (const auto& pair : _clientSocketIdPairs) {
+        closesocket(pair.first);
     }
-    _clientSockets.clear();
+    _clientSocketIdPairs.clear();
 
-    if (_listenSocket != INVALID_SOCKET)
-    {
+    if (_listenSocket != INVALID_SOCKET) {
         closesocket(_listenSocket);
         _listenSocket = INVALID_SOCKET;
     }
@@ -66,11 +66,9 @@ void GameServer::Stop()
 
 void GameServer::AcceptLoop()
 {
-    while (_running)
-    {
+    while (_running) {
         SOCKET clientSocket = accept(_listenSocket, nullptr, nullptr);
-        if (clientSocket == INVALID_SOCKET)
-        {
+        if (clientSocket == INVALID_SOCKET) {
             if (_running)
                 std::cerr << "Accept failed" << std::endl;
             continue;
@@ -79,21 +77,27 @@ void GameServer::AcceptLoop()
         std::cout << "New client connected" << std::endl;
 
         std::lock_guard<std::mutex> lock(_clientsMutex);
-        _clientSockets.push_back(clientSocket);
+        if (_clientSocketIdPairs.size() < 2) {
+            uint32_t newId = _clientSocketIdPairs.size() + 1;
+            _clientSocketIdPairs[clientSocket] = newId;
+            std::cout << "Assigned client ID: " << newId << std::endl;
 
-        std::thread clientThread(&GameServer::ClientHandler, this, clientSocket);
-        clientThread.detach();  // 스레드 분리(독립 실행)
+            std::thread clientThread(&GameServer::ClientHandler, this, clientSocket);
+            clientThread.detach();
+        }
+        else {
+            std::cerr << "Max players reached. Rejecting connection." << std::endl;
+            closesocket(clientSocket);
+        }
     }
 }
 
 void GameServer::ClientHandler(SOCKET clientSocket)
 {
     char buffer[MAX_PACKET_SIZE];
-    while (_running)
-    {
+    while (_running) {
         int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
-        if (bytesReceived <= 0)
-        {
+        if (bytesReceived <= 0) {
             std::cout << "Client disconnected" << std::endl;
             break;
         }
@@ -102,14 +106,13 @@ void GameServer::ClientHandler(SOCKET clientSocket)
     }
 
     std::lock_guard<std::mutex> lock(_clientsMutex);
-    _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), clientSocket), _clientSockets.end());
+    _clientSocketIdPairs.erase(clientSocket);
     closesocket(clientSocket);
 }
 
 void GameServer::ProcessPacket(SOCKET clientSocket, PacketHeader* packet)
 {
-    switch (packet->type)
-    {
+    switch (packet->type) {
     case PacketType::C2S_LOGIN:
         HandleLogin(clientSocket, reinterpret_cast<C2S_LoginPacket*>(packet));
         break;
@@ -137,35 +140,73 @@ bool GameServer::SendPacket(SOCKET clientSocket, PacketHeader* packet)
     return bytesSent == packet->size;
 }
 
-// 게임 로직 관련 메서드 구현
 void GameServer::HandleLogin(SOCKET clientSocket, C2S_LoginPacket* packet)
 {
-    // 로그인 처리 로직
     S2C_LoginResultPacket response;
     response.type = PacketType::S2C_LOGIN_RESULT;
     response.size = sizeof(S2C_LoginResultPacket);
-    response.success = true;  // 실제로는 검증 로직이 필요
-    response.playerId = 1;    // 실제로는 유니크한 ID 할당 필요
+
+    std::lock_guard<std::mutex> lock(_playersMutex);
+    auto it = _clientSocketIdPairs.find(clientSocket);
+    if (it != _clientSocketIdPairs.end()) {
+        uint32_t playerId = it->second;
+        response.success = true;
+        response.playerId = playerId;
+
+        PlayerInfo& player = _players[playerId];
+        player.playerId = playerId;
+        player.isReady = false;
+
+        std::cout << "Player " << playerId << " logged in" << std::endl;
+    }
+    else {
+        response.success = false;
+        response.playerId = 0;
+        std::cerr << "Login failed: Unknown client" << std::endl;
+    }
 
     SendPacket(clientSocket, &response);
 }
 
 void GameServer::HandleGameStart(SOCKET clientSocket, C2S_GameStartPacket* packet)
 {
-    // 게임 시작 처리 로직
     S2C_GameStartResultPacket response;
     response.type = PacketType::S2C_GAME_START_RESULT;
     response.size = sizeof(S2C_GameStartResultPacket);
-    response.success = true;
-    response.gameId = 1;  // 실제로는 유니크한 게임 ID 할당 필요
-    response.playerNumber = 1;  // 첫 번째 플레이어 또는 두 번째 플레이어
 
-    SendPacket(clientSocket, &response);
+    std::lock_guard<std::mutex> lock(_playersMutex);
+    auto it = _clientSocketIdPairs.find(clientSocket);
+    if (it != _clientSocketIdPairs.end()) {
+        uint32_t playerId = it->second;
+        PlayerInfo& player = _players[playerId];
+        player.isReady = true;
+
+        if (IsGameReady()) {
+            response.success = true;
+            response.playerNumber = playerId;
+
+            std::cout << "Game started for players " << std::endl;
+
+            // 게임 시작 패킷을 양쪽 클라이언트에 모두 보냄
+            BroadcastPacket(&response);
+        }
+        else {
+            response.success = false;
+            response.playerNumber = playerId;
+            SendPacket(clientSocket, &response);
+            std::cout << "Player " << playerId << " is ready. Waiting for other player." << std::endl;
+        }
+    }
+    else {
+        response.success = false;
+        response.playerNumber = 0;
+        SendPacket(clientSocket, &response);
+        std::cerr << "Game start failed: Unknown client" << std::endl;
+    }
 }
 
 void GameServer::HandleMove(SOCKET clientSocket, C2S_MovePacket* packet)
 {
-    // 이동 처리 로직
     S2C_MoveResultPacket response;
     response.type = PacketType::S2C_MOVE_RESULT;
     response.size = sizeof(S2C_MoveResultPacket);
@@ -178,16 +219,11 @@ void GameServer::HandleMove(SOCKET clientSocket, C2S_MovePacket* packet)
     response.dirZ = packet->dirZ;
 
     // 모든 클라이언트에게 이동 결과 브로드캐스트
-    std::lock_guard<std::mutex> lock(_clientsMutex);
-    for (SOCKET socket : _clientSockets)
-    {
-        SendPacket(socket, &response);
-    }
+    BroadcastPacket(&response);
 }
 
 void GameServer::HandleAttack(SOCKET clientSocket, C2S_AttackPacket* packet)
 {
-    // 공격 처리 로직
     S2C_AttackResultPacket response;
     response.type = PacketType::S2C_ATTACK_RESULT;
     response.size = sizeof(S2C_AttackResultPacket);
@@ -198,16 +234,11 @@ void GameServer::HandleAttack(SOCKET clientSocket, C2S_AttackPacket* packet)
     response.damage = 10;  // 실제로는 데미지 계산 로직 필요
 
     // 모든 클라이언트에게 공격 결과 브로드캐스트
-    std::lock_guard<std::mutex> lock(_clientsMutex);
-    for (SOCKET socket : _clientSockets)
-    {
-        SendPacket(socket, &response);
-    }
+    BroadcastPacket(&response);
 }
 
 void GameServer::HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* packet)
 {
-    // 상호작용 처리 로직
     S2C_InteractionResultPacket response;
     response.type = PacketType::S2C_INTERACTION_RESULT;
     response.size = sizeof(S2C_InteractionResultPacket);
@@ -217,9 +248,18 @@ void GameServer::HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* p
     response.success = true;  // 실제로는 상호작용 가능 여부 확인 필요
 
     // 모든 클라이언트에게 상호작용 결과 브로드캐스트
+    BroadcastPacket(&response);
+}
+
+bool GameServer::IsGameReady()
+{
+    return _players.size() == 2 && _players[1].isReady && _players[2].isReady;
+}
+
+void GameServer::BroadcastPacket(PacketHeader* packet)
+{
     std::lock_guard<std::mutex> lock(_clientsMutex);
-    for (SOCKET socket : _clientSockets)
-    {
-        SendPacket(socket, &response);
+    for (const auto& pair : _clientSocketIdPairs) {
+        SendPacket(pair.first, packet);
     }
 }

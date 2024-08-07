@@ -3,6 +3,7 @@
 
 // 패킷 최대 크기
 constexpr int MAX_PACKET_SIZE = 1024;
+constexpr char SERVER_IP[] = "127.0.0.1";
 constexpr int PORT = 9000;
 
 // 패킷 타입 정의
@@ -36,8 +37,6 @@ struct PacketHeader
 // 로그인 요청 패킷
 struct C2S_LoginPacket : PacketHeader
 {
-    char playerId[32];
-    char playerPw[32];
 };
 
 // 로그인 응답 패킷
@@ -57,7 +56,6 @@ struct C2S_GameStartPacket : PacketHeader
 struct S2C_GameStartResultPacket : PacketHeader
 {
     bool success;
-    uint32_t gameId;
     uint32_t playerNumber; // 1 or 2
 };
 

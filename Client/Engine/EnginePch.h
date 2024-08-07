@@ -4,7 +4,11 @@
 #define _HAS_STD_BYTE 0
 
 // 각종 include
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <windows.h>
+#pragma comment(lib, "ws2_32.lib")
+
 #include <tchar.h>
 #include <memory>
 #include <string>
@@ -13,6 +17,10 @@
 #include <list>
 #include <map>
 #include <iostream>;
+#include <thread>
+#include <mutex>
+#include <queue>
+#include <functional>
 using namespace std;
 
 #include <filesystem>
@@ -35,6 +43,7 @@ using namespace Microsoft::WRL;
 #include <DirectXTex/DirectXTex.inl>
 
 #include "FBX/fbxsdk.h"
+#include "../../Server/Server/Protocol.h"
 
 // 각종 lib
 #pragma comment(lib, "d3d12")
