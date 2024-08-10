@@ -40,7 +40,9 @@ bool GameServer::Start(int port)
     }
 
     _running = true;
+    _physicsRunning = true;
     _acceptThread = std::thread(&GameServer::AcceptLoop, this);
+    _physicsThread = std::thread(&GameServer::PhysicsLoop, this);
 
     std::cout << "Server started on port " << port << std::endl;
     return true;
@@ -49,8 +51,11 @@ bool GameServer::Start(int port)
 void GameServer::Stop()
 {
     _running = false;
+    _physicsRunning = false;
     if (_acceptThread.joinable())
         _acceptThread.join();
+    if (_physicsThread.joinable())
+        _physicsThread.join();
 
     std::lock_guard<std::mutex> lock(_clientsMutex);
     for (const auto& pair : _clientSocketIdPairs) {
@@ -62,6 +67,8 @@ void GameServer::Stop()
         closesocket(_listenSocket);
         _listenSocket = INVALID_SOCKET;
     }
+
+    std::cout << "Server stopped" << std::endl;
 }
 
 void GameServer::AcceptLoop()
@@ -98,7 +105,7 @@ void GameServer::ClientHandler(SOCKET clientSocket)
     while (_running) {
         int bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
         if (bytesReceived <= 0) {
-            std::cout << "Client disconnected" << std::endl;
+			std::cout << "Client " << _clientSocketIdPairs[clientSocket] << " disconnected" << std::endl;
             break;
         }
 
@@ -146,16 +153,16 @@ void GameServer::HandleLogin(SOCKET clientSocket, C2S_LoginPacket* packet)
     response.type = PacketType::S2C_LOGIN_RESULT;
     response.size = sizeof(S2C_LoginResultPacket);
 
-    std::lock_guard<std::mutex> lock(_playersMutex);
+    std::lock_guard<std::mutex> lock(_clientsMutex);
     auto it = _clientSocketIdPairs.find(clientSocket);
     if (it != _clientSocketIdPairs.end()) {
         uint32_t playerId = it->second;
         response.success = true;
         response.playerId = playerId;
 
-        PlayerInfo& player = _players[playerId];
-        player.playerId = playerId;
-        player.isReady = false;
+        physx::PxExtendedVec3 position;
+        physx::PxVec3 direction;
+        _gameLogic.InitializePlayerPosition(playerId, position, direction); // 이거 하기 전에 먼저 맵 로드가 끝나있어야 하고, 맵을 배치해둬야함.
 
         std::cout << "Player " << playerId << " logged in" << std::endl;
     }
@@ -164,7 +171,7 @@ void GameServer::HandleLogin(SOCKET clientSocket, C2S_LoginPacket* packet)
         response.playerId = 0;
         std::cerr << "Login failed: Unknown client" << std::endl;
     }
-
+    
     SendPacket(clientSocket, &response);
 }
 
@@ -174,16 +181,14 @@ void GameServer::HandleGameStart(SOCKET clientSocket, C2S_GameStartPacket* packe
     response.type = PacketType::S2C_GAME_START_RESULT;
     response.size = sizeof(S2C_GameStartResultPacket);
 
-    std::lock_guard<std::mutex> lock(_playersMutex);
+    std::lock_guard<std::mutex> lock(_clientsMutex);
     auto it = _clientSocketIdPairs.find(clientSocket);
     if (it != _clientSocketIdPairs.end()) {
         uint32_t playerId = it->second;
-        PlayerInfo& player = _players[playerId];
-        player.isReady = true;
-
         if (IsGameReady()) {
             response.success = true;
             response.playerNumber = playerId;
+            _gameLogic.StartGame();
 
             std::cout << "Game started for players " << std::endl;
 
@@ -207,53 +212,63 @@ void GameServer::HandleGameStart(SOCKET clientSocket, C2S_GameStartPacket* packe
 
 void GameServer::HandleMove(SOCKET clientSocket, C2S_MovePacket* packet)
 {
-    S2C_MoveResultPacket response;
-    response.type = PacketType::S2C_MOVE_RESULT;
-    response.size = sizeof(S2C_MoveResultPacket);
-    response.playerId = packet->playerId;
-    response.posX = packet->posX;
-    response.posY = packet->posY;
-    response.posZ = packet->posZ;
-    response.dirX = packet->dirX;
-    response.dirY = packet->dirY;
-    response.dirZ = packet->dirZ;
+    uint32_t playerId = _clientSocketIdPairs[clientSocket];
+    physx::PxVec3 displacement(packet->dirX, packet->dirY, packet->dirZ);
 
-    // 모든 클라이언트에게 이동 결과 브로드캐스트
-    BroadcastPacket(&response);
+    if (_gameLogic.MovePlayer(playerId, displacement)) {
+        S2C_MoveResultPacket response;
+        response.type = PacketType::S2C_MOVE_RESULT;
+        response.size = sizeof(S2C_MoveResultPacket);
+        response.playerId = playerId;
+
+        physx::PxExtendedVec3 newPosition = _gameLogic._playerPhysics[playerId].controller->getPosition();
+        response.posX = newPosition.x;
+        response.posY = newPosition.y;
+        response.posZ = newPosition.z;
+        response.dirX = displacement.x;
+        response.dirY = displacement.y;
+        response.dirZ = displacement.z;
+
+        BroadcastPacket(&response);
+    }
 }
 
 void GameServer::HandleAttack(SOCKET clientSocket, C2S_AttackPacket* packet)
 {
+    uint32_t playerId = _clientSocketIdPairs[clientSocket];
+    auto result = _gameLogic.ProcessAttack(playerId, packet->attackType);
+
     S2C_AttackResultPacket response;
     response.type = PacketType::S2C_ATTACK_RESULT;
     response.size = sizeof(S2C_AttackResultPacket);
-    response.playerId = packet->playerId;
+    response.playerId = playerId;
     response.attackType = packet->attackType;
-    response.hit = true;  // 실제로는 충돌 검사 필요
-    response.targetId = 0;  // 실제로는 타겟 결정 로직 필요
-    response.damage = 10;  // 실제로는 데미지 계산 로직 필요
+    response.hit = result.hit;
+    response.targetId = result.targetId;
+    response.damage = result.damage;
 
-    // 모든 클라이언트에게 공격 결과 브로드캐스트
     BroadcastPacket(&response);
 }
 
 void GameServer::HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* packet)
 {
+    uint32_t playerId = _clientSocketIdPairs[clientSocket];
+    bool success = _gameLogic.ProcessInteraction(playerId, packet->targetId, packet->interactionType);
+
     S2C_InteractionResultPacket response;
     response.type = PacketType::S2C_INTERACTION_RESULT;
     response.size = sizeof(S2C_InteractionResultPacket);
-    response.playerId = packet->playerId;
+    response.playerId = playerId;
     response.targetId = packet->targetId;
     response.interactionType = packet->interactionType;
-    response.success = true;  // 실제로는 상호작용 가능 여부 확인 필요
+    response.success = success;
 
-    // 모든 클라이언트에게 상호작용 결과 브로드캐스트
     BroadcastPacket(&response);
 }
 
 bool GameServer::IsGameReady()
 {
-    return _players.size() == 2 && _players[1].isReady && _players[2].isReady;
+    return _clientSocketIdPairs.size() == 2;
 }
 
 void GameServer::BroadcastPacket(PacketHeader* packet)
@@ -261,5 +276,29 @@ void GameServer::BroadcastPacket(PacketHeader* packet)
     std::lock_guard<std::mutex> lock(_clientsMutex);
     for (const auto& pair : _clientSocketIdPairs) {
         SendPacket(pair.first, packet);
+    }
+}
+
+void GameServer::PhysicsLoop()
+{
+    const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
+    float accumulator = 0.0f;
+    auto lastTime = std::chrono::high_resolution_clock::now();
+
+    while (_physicsRunning)
+    {
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+        lastTime = currentTime;
+
+        accumulator += deltaTime;
+
+        while (accumulator >= fixedTimeStep)
+        {
+            _gameLogic.UpdatePhysics(fixedTimeStep);
+            accumulator -= fixedTimeStep;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

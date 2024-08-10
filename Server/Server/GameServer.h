@@ -8,6 +8,7 @@
 #include <atomic>
 #include <map>
 #include "Protocol.h"
+#include "GameLogic.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -24,7 +25,6 @@ private:
     void AcceptLoop();
     void ClientHandler(SOCKET clientSocket);
     void ProcessPacket(SOCKET clientSocket, PacketHeader* packet);
-
     bool SendPacket(SOCKET clientSocket, PacketHeader* packet);
 
     // 게임 로직 관련 메서드
@@ -40,17 +40,15 @@ private:
 
     std::atomic<bool> _running;
     std::thread _acceptThread;
-
-    // 게임 상태 관리
-    struct PlayerInfo
-    {
-        uint32_t playerId;
-        bool isReady;
-        float posX, posY, posZ;
-    };
-    std::map<uint32_t, PlayerInfo> _players;
-    std::mutex _playersMutex;
+    std::thread _physicsThread;
 
     bool IsGameReady();
     void BroadcastPacket(PacketHeader* packet);
+
+    // 게임 로직
+    GameLogic _gameLogic;
+
+    // 물리 시뮬레이션 업데이트
+    void PhysicsLoop();
+    std::atomic<bool> _physicsRunning;
 };

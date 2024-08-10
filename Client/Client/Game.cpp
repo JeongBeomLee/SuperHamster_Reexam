@@ -64,7 +64,7 @@ void Game::Handle_S2C_LOGIN_RESULT(PacketHeader* packet)
     if (loginResult->success)
     {
         std::cout << "Login successful. My Player ID: " << loginResult->playerId << std::endl;
-        // 게임 시작 요청 등의 추가 로직
+        // 게임 시작 요청 패킷 전송
     }
     else
     {

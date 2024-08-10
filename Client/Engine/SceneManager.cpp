@@ -150,7 +150,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->AddComponent(make_shared<Transform>());
 		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
 		camera->AddComponent(make_shared<TestCameraScript>());
-		camera->GetCamera()->SetFar(1000.f);
+		camera->GetCamera()->SetFar(2000.f);
 		camera->GetCamera()->SetMainCamera(true);
 		//camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
 		camera->GetTransform()->SetLocalPosition(Vec3(-300.f, 0.f, 500.f));
@@ -268,8 +268,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI")); // UI
 		obj->SetCheckFrustum(false);
 		obj->AddComponent(make_shared<Transform>());
-		obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		obj->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 120), 250.f, 500.f));
+		obj->GetTransform()->SetLocalScale(Vec3(150.f, 100.f, 100.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(-600.f + (i * 155), 310.f, 500.f));
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
 			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();

@@ -18,7 +18,6 @@ TestCameraScript::~TestCameraScript()
 
 void TestCameraScript::LateUpdate()
 {
-	static float f_far = 1000.f;
 	Vec3 pos = GetTransform()->GetLocalPosition();
 
 	if (INPUT->GetButton(KEY_TYPE::W))
@@ -63,17 +62,13 @@ void TestCameraScript::LateUpdate()
 
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
 	{
-		f_far += 500.f;
+		cout << "Camera Position : " << pos.x << ", " << pos.y << ", " << pos.z << endl;
+		cout << "Camera Rotation : " << XMConvertToDegrees(GetTransform()->GetLocalRotation().x) << ", " << XMConvertToDegrees(GetTransform()->GetLocalRotation().y) << ", " << XMConvertToDegrees(GetTransform()->GetLocalRotation().z) << endl;
 	}
 
-	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
+	/*if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
 	{
-		f_far -= 500.f;
-		if (f_far < 0.f)
-		{
-			f_far = 0.f;
-		}
-	}
-	GetGameObject()->GetCamera()->SetFar(f_far);
+
+	}*/
 	GetTransform()->SetLocalPosition(pos);
 }

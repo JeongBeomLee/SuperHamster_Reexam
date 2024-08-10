@@ -22,6 +22,7 @@ enum class KEY_TYPE
 	KEY_3 = '3',
 	KEY_4 = '4',
 
+	F1 = VK_F1,
 	F11 = VK_F11,
 
 	LBUTTON = VK_LBUTTON,
