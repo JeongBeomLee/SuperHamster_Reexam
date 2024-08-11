@@ -10,10 +10,15 @@
 #include "TableDescriptorHeap.h"
 #include "Texture.h"
 #include "RenderTargetGroup.h"
+#include "Timer.h"
+#include "NetworkManager.h"
 
 class Engine
 {
 public:
+	Engine();
+	~Engine();
+
 	void Init(const WindowInfo& info);
 	void Update();
 	void ToggleFullscreen();
@@ -31,6 +36,8 @@ public:
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
+	float GetDeltaTime() { return DELTA_TIME; }
+
 public:
 	void Render();
 	void RenderBegin();
@@ -42,6 +49,19 @@ private:
 	void ShowFps();
 	void CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 count);
 	void CreateRenderTargetGroups();
+
+	void NetworkUpdate();
+	void RegisterPacketHandlers();
+
+	// 패킷 핸들러 함수들
+	void Handle_S2C_LOGIN_RESULT(PacketHeader* packet);
+	void Handle_S2C_GAME_START_RESULT(PacketHeader* packet);
+	void Handle_S2C_MOVE_RESULT(PacketHeader* packet);
+	void Handle_S2C_ATTACK_RESULT(PacketHeader* packet);
+	void Handle_S2C_INTERACTION_RESULT(PacketHeader* packet);
+
+	void InitializePhysics();
+	void UpdatePhysics();
 
 private:
 	// 그려질 화면 크기 관련
@@ -59,5 +79,17 @@ private:
 
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
+
+	std::unique_ptr<NetworkManager> _networkManager;
+
+	physx::PxDefaultAllocator		_allocator;
+	physx::PxDefaultErrorCallback	_errorCallback;
+	physx::PxDefaultCpuDispatcher*	_cpuDispatcher		= nullptr;
+	physx::PxFoundation*			_foundation			= nullptr;
+	physx::PxPhysics*				_physics			= nullptr;
+	physx::PxScene*					_scene				= nullptr;
+	physx::PxControllerManager*		_controllerManager	= nullptr;
+	physx::PxTriangleMesh*			_mapMesh			= nullptr;
+	physx::PxController*			_playerController	= nullptr;
 };
 

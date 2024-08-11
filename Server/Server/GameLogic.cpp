@@ -17,11 +17,32 @@ GameLogic::~GameLogic()
 void GameLogic::InitializePhysics()
 {
     _foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
+    if (!_foundation) {
+        std::cerr << "PxCreateFoundation failed!" << std::endl;
+		return;
+    }
+    
     _physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale());
+    if (!_physics) {
+        std::cerr << "PxCreatePhysics failed!" << std::endl;
+        return;
+    }
+
+    _cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(MAX_NUM_PX_THREADS);
+    if (!_cpuDispatcher) {
+		std::cerr << "PxDefaultCpuDispatcherCreate failed!" << std::endl;
+		return;
+	}
 
     physx::PxSceneDesc sceneDesc(_physics->getTolerancesScale());
     sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
+    sceneDesc.cpuDispatcher = _cpuDispatcher;
+    sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
     _scene = _physics->createScene(sceneDesc);
+    if (!_scene) {
+		std::cerr << "createScene failed!" << std::endl;
+		return;
+	}
 
     _controllerManager = PxCreateControllerManager(*_scene);
 
@@ -41,6 +62,7 @@ void GameLogic::UpdatePhysics(float deltaTime)
 
     // 플레이어 위치 업데이트
     for (int i = 0; i < 2; ++i) {
+		if (_playerPhysics[i].controller == nullptr) continue;
         physx::PxExtendedVec3 position = _playerPhysics[i].controller->getPosition();
         _players[i].x = position.x;
         _players[i].y = position.y;

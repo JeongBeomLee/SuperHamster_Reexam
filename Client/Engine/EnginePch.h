@@ -44,6 +44,7 @@ using namespace Microsoft::WRL;
 
 #include "FBX/fbxsdk.h"
 #include "../../Server/Server/Protocol.h"
+#include "PxPhysicsAPI.h"
 
 // 각종 lib
 #pragma comment(lib, "d3d12")
@@ -65,6 +66,44 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
 #pragma comment(lib, "FBX\\release\\libxml2-md.lib")
 #pragma comment(lib, "FBX\\release\\zlib-md.lib")
+#endif
+
+#ifdef _DEBUG
+#pragma comment(lib, "PhysX_64.lib")
+#pragma comment(lib, "PhysXCommon_64.lib")
+#pragma comment(lib, "PhysXTask_static_64")
+#pragma comment(lib, "PhysXCooking_64.lib")
+#pragma comment(lib, "PhysXVehicle_static_64")
+#pragma comment(lib, "PhysXFoundation_64.lib")
+#pragma comment(lib, "PhysXVehicle2_static_64")
+#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
+#pragma comment(lib, "PhysXExtensions_static_64.lib")
+#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
+
+#pragma comment(lib, "PVDRuntime_64")
+#pragma comment(lib, "LowLevel_static_64")
+#pragma comment(lib, "SceneQuery_static_64")
+#pragma comment(lib, "LowLevelAABB_static_64")
+#pragma comment(lib, "LowLevelDynamics_static_64")
+#pragma comment(lib, "SimulationController_static_64")
+#else
+#pragma comment(lib, "PhysX_64.lib")
+#pragma comment(lib, "PhysXCommon_64.lib")
+#pragma comment(lib, "PhysXTask_static_64")
+#pragma comment(lib, "PhysXCooking_64.lib")
+#pragma comment(lib, "PhysXVehicle_static_64")
+#pragma comment(lib, "PhysXFoundation_64.lib")
+#pragma comment(lib, "PhysXVehicle2_static_64")
+#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
+#pragma comment(lib, "PhysXExtensions_static_64.lib")
+#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
+
+#pragma comment(lib, "PVDRuntime_64")
+#pragma comment(lib, "LowLevel_static_64")
+#pragma comment(lib, "SceneQuery_static_64")
+#pragma comment(lib, "LowLevelAABB_static_64")
+#pragma comment(lib, "LowLevelDynamics_static_64")
+#pragma comment(lib, "SimulationController_static_64")
 #endif
 
 // 각종 typedef
@@ -179,6 +218,8 @@ public:								\
 #define DELTA_TIME			GET_SINGLE(Timer)->GetDeltaTime()
 
 #define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
+
+constexpr uint32 MAX_NUM_PX_THREADS = 4;
 
 struct TransformParams
 {
