@@ -123,7 +123,7 @@ GameLogic::AttackResult GameLogic::ProcessAttack(uint32_t playerId, uint32_t att
     result.targetId = 0;
     result.damage = 0;
 
-    // 간단한 구현: 플레이어 0이 플레이어 1을 공격
+    // 예시: 플레이어 0이 플레이어 1을 공격
     if (playerId == 0 && CheckCollision(0, 1)) {
         result.hit = true;
         result.targetId = 1;

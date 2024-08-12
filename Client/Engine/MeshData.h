@@ -26,6 +26,8 @@ public:
 	void CountMeshMaterialPairs();
 	vector<shared_ptr<GameObject>> Instantiate();
 
+	vector<MeshRenderInfo>& GetMeshRenders() { return _meshRenders; }
+
 private:
 	shared_ptr<Mesh>				_mesh;
 

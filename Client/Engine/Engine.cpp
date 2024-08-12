@@ -20,8 +20,12 @@ Engine::~Engine()
 	_playerController->release();
 	_controllerManager->release();
 	_scene->release();
+	_cpuDispatcher->release();
 	_physics->release();
 	_foundation->release();
+
+	_pvd->release();
+	_pvdTransport->release();
 }
 
 void Engine::Init(const WindowInfo& info)
@@ -130,6 +134,85 @@ void Engine::ToggleFullscreen()
 	// 그려질 화면 크기를 설정
 	_viewport = { 0, 0, static_cast<FLOAT>(_window.width), static_cast<FLOAT>(_window.height), 0.0f, 1.0f };
 	_scissorRect = CD3DX12_RECT(0, 0, _window.width, _window.height);
+}
+
+void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
+{
+	vector<MeshRenderInfo> meshRenders = meshData->GetMeshRenders();
+	physx::PxCookingParams params(_physics->getTolerancesScale());
+	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
+	params.midphaseDesc = physx::PxMeshMidPhase::eBVH34;
+	params.convexMeshCookingType = physx::PxConvexMeshCookingType::eQUICKHULL;
+	params.buildGPUData = true;
+	params.meshWeldTolerance = 0.001f;
+	
+	for (MeshRenderInfo& info : meshRenders)
+	{
+		shared_ptr<Mesh> mesh = info.mesh;
+		FbxMeshInfo fbxMeshInfo = mesh->GetFbxMeshInfo();
+
+		std::vector<Vertex> vertices = fbxMeshInfo.vertices;
+		std::vector<physx::PxVec3> pxVertices;
+		for(const Vertex& vertex : vertices)
+		{
+			pxVertices.emplace_back(vertex.pos.x, vertex.pos.y, vertex.pos.z);
+		}
+
+		std::vector<std::vector<uint32>> indices = fbxMeshInfo.indices;
+		std::vector<physx::PxU32> pxIndices;
+		for (const std::vector<uint32>& index : indices)
+		{
+			for (uint32 i : index)
+			{
+				pxIndices.emplace_back(i);
+			}
+		}
+
+		physx::PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
+		meshDesc.points.stride = sizeof(physx::PxVec3);
+		meshDesc.points.data = pxVertices.data();
+		meshDesc.triangles.count = static_cast<physx::PxU32>(pxIndices.size() / 3);
+		meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
+		meshDesc.triangles.data = pxIndices.data();
+
+		// PxTriangleMeshDesc를 직렬화하기 위한 메모리 스트림 생성
+		physx::PxDefaultMemoryOutputStream writeBuffer;
+		physx::PxTriangleMeshCookingResult::Enum result;
+		bool status = PxCookTriangleMesh(params, meshDesc, writeBuffer, &result);
+		if (!status) {
+			std::cerr << "Failed to cook triangle mesh." << std::endl;
+		}
+
+		if (writeBuffer.getSize() == 0) {
+			std::cerr << "WriteBuffer is empty." << std::endl;
+		}
+
+		// 직렬화된 데이터를 PxInputStream으로 변환
+		physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+		physx::PxTriangleMesh* triangleMesh = _physics->createTriangleMesh(readBuffer);
+
+		physx::PxMeshScale meshScale(physx::PxVec3(1, 1, 1));
+		physx::PxTriangleMeshGeometry triangleMeshGeometry(triangleMesh, meshScale);
+		physx::PxRigidStatic* triangleMeshActor = _physics->createRigidStatic(physx::PxTransform(physx::PxVec3(0, 0, 0)));
+		physx::PxShape* triangleMeshShape = _physics->createShape(triangleMeshGeometry, *_physics->createMaterial(0.5f, 0.5f, 0.1f));
+
+		// x축 기준 -90도 회전
+		physx::PxQuat rotX = physx::PxQuat(-XM_PIDIV2, physx::PxVec3(1, 0, 0));
+		physx::PxTransform transform(physx::PxVec3(0, 0, 0), rotX);
+		if (!transform.isValid()) {
+			std::cerr << "Invalid PxTransform detected." << std::endl;
+			return;
+		}
+		triangleMeshActor->setGlobalPose(transform);
+
+		triangleMeshActor->attachShape(*triangleMeshShape);
+		_scene->addActor(*triangleMeshActor);
+
+		// 메모리 해제
+		triangleMeshShape->release();
+		triangleMesh->release();
+	}
 }
 
 void Engine::Render()
@@ -360,7 +443,13 @@ void Engine::InitializePhysics()
 		return;
 	}
 
-	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale());
+	// 디버깅
+	_pvd = PxCreatePvd(*_foundation);
+	_pvdTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
+	_pvd->connect(*_pvdTransport, physx::PxPvdInstrumentationFlag::eALL);
+	
+
+	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, _pvd);
 	if (!_physics) {
 		std::cerr << "PxCreatePhysics failed!" << std::endl;
 		return;
@@ -384,12 +473,19 @@ void Engine::InitializePhysics()
 		return;
 	}
 
+	// 디버깅
+	_pvdSceneClient = _scene->getScenePvdClient();
+	_pvdSceneClient->setScenePvdFlags(
+		physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | 
+		physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | 
+		physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+
 	_controllerManager = PxCreateControllerManager(*_scene);
 
-	// 플레이어 컨트롤러 생성
+	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
 	physx::PxCapsuleControllerDesc desc;
-	desc.height = 1.8f;
-	desc.radius = 0.5f;
+	desc.height = 50.f;
+	desc.radius = 25.f;
 	desc.material = _physics->createMaterial(0.5f, 0.5f, 0.1f);
 	_playerController = _controllerManager->createController(desc);
 

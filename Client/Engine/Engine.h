@@ -12,6 +12,7 @@
 #include "RenderTargetGroup.h"
 #include "Timer.h"
 #include "NetworkManager.h"
+#include "MeshData.h"
 
 class Engine
 {
@@ -36,7 +37,7 @@ public:
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
-	float GetDeltaTime() { return DELTA_TIME; }
+	void LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData);
 
 public:
 	void Render();
@@ -91,5 +92,9 @@ private:
 	physx::PxControllerManager*		_controllerManager	= nullptr;
 	physx::PxTriangleMesh*			_mapMesh			= nullptr;
 	physx::PxController*			_playerController	= nullptr;
+
+	physx::PxPvd*					_pvd = nullptr;
+	physx::PxPvdTransport*			_pvdTransport = nullptr;
+	physx::PxPvdSceneClient*		_pvdSceneClient = nullptr;
 };
 

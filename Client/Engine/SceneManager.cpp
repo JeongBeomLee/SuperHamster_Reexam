@@ -10,7 +10,7 @@
 #include "Camera.h"
 #include "Light.h"
 
-#include "TestCameraScript.h"
+#include "PlayerCameraScript.h"
 #include "Resources.h"
 #include "ParticleSystem.h"
 #include "Terrain.h"
@@ -149,11 +149,12 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->SetName(L"Main_Camera");
 		camera->AddComponent(make_shared<Transform>());
 		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45도
-		camera->AddComponent(make_shared<TestCameraScript>());
-		camera->GetCamera()->SetFar(2000.f);
+		camera->AddComponent(make_shared<PlayerCameraScript>());
+		camera->GetCamera()->SetFar(5000.f);
 		camera->GetCamera()->SetMainCamera(true);
 		//camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
-		camera->GetTransform()->SetLocalPosition(Vec3(-300.f, 0.f, 500.f));
+		camera->GetTransform()->SetLocalPosition(Vec3(-358.388, 633.076, 1065.6));
+		camera->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(20.f), XMConvertToRadians(-180.f), XMConvertToRadians(0.f)));
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true); // UI는 안 찍음
 		scene->AddGameObject(camera);
@@ -300,7 +301,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
-		light->GetTransform()->SetLocalPosition(Vec3(-500.f, 1000.f, -500.f));
+		light->GetTransform()->SetLocalPosition(Vec3(-5500.f, 5000.f, -3000.f));
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightDirection(Vec3(1, -1, 1));
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
@@ -315,65 +316,47 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	
 #pragma region FBX
 	{
-		/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
-
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Clone();
-
-		for (auto& gameObject : gameObjects)
 		{
-			gameObject->SetName(L"Hamster");
-			gameObject->SetCheckFrustum(false);
-			gameObject->SetStatic(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
-			gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
-			gameObject->GetTransform()->SetLocalScale(Vec3(500.f, 500.f, 500.f));
-			scene->AddGameObject(gameObject);
-			gameObject->AddComponent(make_shared<TestAnimation>());
-		}*/
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
 
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-
-		for (auto& gameObject : gameObjects)
-		{
-			static int id = 0;
-			gameObject->SetName(L"untitled" + to_wstring(id++));
-			gameObject->SetCheckFrustum(true);
-			gameObject->SetStatic(false);
-
-			Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
-			Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
-			Vec3 Rotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
-
-			Rotation.x -= XM_PIDIV2;
-			Rotation.y -= XM_PI;
-
-			gameObject->GetTransform()->SetLocalPosition(Pos);
-			gameObject->GetTransform()->SetLocalScale(Scale);
-			gameObject->GetTransform()->SetLocalRotation(Rotation);
-
-			scene->AddGameObject(gameObject);
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Hamster1");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-460.224, 0, 60.2587));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
+				scene->AddGameObject(gameObject);
+				gameObject->AddComponent(make_shared<TestAnimation>());
+			}
 		}
+		
+		{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
+			GEngine->LoadMapMeshForPhysics(meshData);
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
-		// 100개 생성 (인스턴싱 사용, 1개는 안 그려짐)
-		//for (int i = 0; i < 100; ++i) {
-		//	shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
+			for (auto& gameObject : gameObjects)
+			{
+				static int id = 0;
+				gameObject->SetName(L"Stage1_" + to_wstring(id++));
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
 
-		//	vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+				Vec3 Pos = Vec3(0.f, 0.f, 0.f);
+				Vec3 Scale = Vec3(1.f, 1.f, 1.f);
+				Vec3 Rotation = Vec3(-XM_PIDIV2, 0.f, 0.f);
 
-		//	for (auto& gameObject : gameObjects)
-		//	{
-		//		gameObject->SetName(L"Hamster");
-		//		gameObject->SetCheckFrustum(false);
-		//		gameObject->SetStatic(false);
-		//		gameObject->GetTransform()->SetLocalPosition(Vec3(0.f + i * 100, 100.f, 500.f));
-		//		gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
-		//		gameObject->GetTransform()->SetLocalScale(Vec3(500.f, 500.f, 500.f));
-		//		scene->AddGameObject(gameObject);
-		//		gameObject->AddComponent(make_shared<TestAnimation>());
-		//	}
-		//}
+				gameObject->GetTransform()->SetLocalPosition(Pos);
+				gameObject->GetTransform()->SetLocalScale(Scale);
+				gameObject->GetTransform()->SetLocalRotation(Rotation);
+
+				scene->AddGameObject(gameObject);
+			}
+		}
 
 		//{
 		//	shared_ptr<GameObject> debugObject = make_shared<GameObject>();

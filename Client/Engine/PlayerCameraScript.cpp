@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "TestCameraScript.h"
+#include "PlayerCameraScript.h"
 #include "Transform.h"
 #include "Camera.h"
 #include "GameObject.h"
@@ -7,16 +7,17 @@
 #include "Timer.h"
 #include "SceneManager.h"
 #include "Camera.h"
+#include "Scene.h"
 
-TestCameraScript::TestCameraScript()
+PlayerCameraScript::PlayerCameraScript()
 {
 }
 
-TestCameraScript::~TestCameraScript()
+PlayerCameraScript::~PlayerCameraScript()
 {
 }
 
-void TestCameraScript::LateUpdate()
+void PlayerCameraScript::LateUpdate()
 {
 	Vec3 pos = GetTransform()->GetLocalPosition();
 
@@ -66,9 +67,22 @@ void TestCameraScript::LateUpdate()
 		cout << "Camera Rotation : " << XMConvertToDegrees(GetTransform()->GetLocalRotation().x) << ", " << XMConvertToDegrees(GetTransform()->GetLocalRotation().y) << ", " << XMConvertToDegrees(GetTransform()->GetLocalRotation().z) << endl;
 	}
 
-	/*if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
-	{
+	int g_myid = 1;	// 변경 필요
+	shared_ptr<GameObject> playerObject = GET_SINGLE(SceneManager)->GetActiveScene()->GetGameObjectByName(L"Hamster" + to_wstring(g_myid));
 
-	}*/
-	GetTransform()->SetLocalPosition(pos);
+	// 플레이어의 위치를 가져온다.
+	Vec3 playerPos = playerObject->GetTransform()->GetLocalPosition();
+
+	// 카메라의 회전 설정
+	float rotationX = XMConvertToRadians(_RotationX);
+	float rotationY = XMConvertToRadians(_RotationY);
+	Vec3 cameraRotation(rotationX, rotationY, 0.0f);
+	GetTransform()->SetLocalRotation(cameraRotation);
+
+	// 카메라의 위치 설정
+	Vec3 cameraDirection = GetTransform()->GetLook();
+	Vec3 cameraPos = playerPos - cameraDirection * _Distance + Vec3(0.0f, _Height, 0.0f);
+	GetTransform()->SetLocalPosition(cameraPos);
+
+	//GetTransform()->SetLocalPosition(pos);
 }
