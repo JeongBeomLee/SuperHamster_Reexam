@@ -38,7 +38,7 @@ public:
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
 	void LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData);
-
+	void SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath);
 public:
 	void Render();
 	void RenderBegin();

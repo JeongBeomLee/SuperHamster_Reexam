@@ -40,6 +40,15 @@
     #pragma comment(lib, "SimulationController_static_64")
 #endif
 
+enum class PLAYER_GUN
+{
+    DEFAULT,
+    LASER,
+    MAGNETIC,
+
+    END
+};
+
 class GameLogic
 {
 public:
@@ -50,7 +59,7 @@ public:
     void LoadMap(const char* filename);
     void UpdatePhysics(float deltaTime);
 
-    void InitializePlayerPosition(uint32_t playerId, physx::PxExtendedVec3& position, physx::PxVec3& direction);
+    void InitPlayersForGameStart();
     bool MovePlayer(uint32_t playerId, const physx::PxVec3& displacement);
     bool CheckCollision(uint32_t playerId, uint32_t targetId);
 
@@ -72,11 +81,12 @@ private:
 
     const float PLAYER_ATTACK_RANGE = 50.0f;  // 플레이어 공격 범위
 
-    // 게임 상태 관리
+    // 플레이어 상태 관리
     struct PlayerState
     {
         float x, y, z;
         float health;
+        PLAYER_GUN gun;
     };
     PlayerState _players[2];
 
@@ -90,6 +100,10 @@ private:
     physx::PxScene*                 _scene              = nullptr;
     physx::PxControllerManager*     _controllerManager  = nullptr;
     physx::PxTriangleMesh*          _mapMesh            = nullptr;
+
+    physx::PxPvd* _pvd = nullptr;
+    physx::PxPvdTransport* _pvdTransport = nullptr;
+    physx::PxPvdSceneClient* _pvdSceneClient = nullptr;
 
     struct PlayerPhysicsState
     {

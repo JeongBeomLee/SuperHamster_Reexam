@@ -23,9 +23,6 @@ Engine::~Engine()
 	_cpuDispatcher->release();
 	_physics->release();
 	_foundation->release();
-
-	_pvd->release();
-	_pvdTransport->release();
 }
 
 void Engine::Init(const WindowInfo& info)
@@ -168,6 +165,8 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 			}
 		}
 
+		//SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
+
 		physx::PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
 		meshDesc.points.stride = sizeof(physx::PxVec3);
@@ -213,6 +212,37 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 		triangleMeshShape->release();
 		triangleMesh->release();
 	}
+
+	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
+	physx::PxCapsuleControllerDesc desc;
+	desc.height = 50.f;
+	desc.radius = 25.f;
+	desc.material = _physics->createMaterial(0.5f, 0.5f, 0.1f);
+	desc.position = physx::PxExtendedVec3(-460.224, 300, 60.2587);
+	_playerController = _controllerManager->createController(desc);
+
+	std::cout << "Physics initialized" << std::endl;
+}
+
+void Engine::SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath)
+{
+	std::ofstream outFile(filePath, std::ios::binary);
+	if (!outFile.is_open()) {
+		std::cerr << "Failed to open file for writing: " << filePath << std::endl;
+		return;
+	}
+
+	// Save vertex count and vertices
+	physx::PxU32 vertexCount = static_cast<physx::PxU32>(vertices.size());
+	outFile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(physx::PxU32));
+	outFile.write(reinterpret_cast<const char*>(vertices.data()), vertexCount * sizeof(physx::PxVec3));
+
+	// Save index count and indices
+	physx::PxU32 indexCount = static_cast<physx::PxU32>(indices.size());
+	outFile.write(reinterpret_cast<const char*>(&indexCount), sizeof(physx::PxU32));
+	outFile.write(reinterpret_cast<const char*>(indices.data()), indexCount * sizeof(physx::PxU32));
+
+	outFile.close();
 }
 
 void Engine::Render()
@@ -443,13 +473,7 @@ void Engine::InitializePhysics()
 		return;
 	}
 
-	// 디버깅
-	_pvd = PxCreatePvd(*_foundation);
-	_pvdTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
-	_pvd->connect(*_pvdTransport, physx::PxPvdInstrumentationFlag::eALL);
-	
-
-	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, _pvd);
+	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true);
 	if (!_physics) {
 		std::cerr << "PxCreatePhysics failed!" << std::endl;
 		return;
@@ -481,15 +505,6 @@ void Engine::InitializePhysics()
 		physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
 
 	_controllerManager = PxCreateControllerManager(*_scene);
-
-	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
-	physx::PxCapsuleControllerDesc desc;
-	desc.height = 50.f;
-	desc.radius = 25.f;
-	desc.material = _physics->createMaterial(0.5f, 0.5f, 0.1f);
-	_playerController = _controllerManager->createController(desc);
-
-	std::cout << "Physics initialized" << std::endl;
 }
 
 void Engine::UpdatePhysics()

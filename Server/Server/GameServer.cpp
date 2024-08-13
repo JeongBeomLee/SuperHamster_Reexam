@@ -85,7 +85,7 @@ void GameServer::AcceptLoop()
 
         std::lock_guard<std::mutex> lock(_clientsMutex);
         if (_clientSocketIdPairs.size() < 2) {
-            uint32_t newId = _clientSocketIdPairs.size() + 1;
+            uint32_t newId = _clientSocketIdPairs.size();
             _clientSocketIdPairs[clientSocket] = newId;
             std::cout << "Assigned client ID: " << newId << std::endl;
 
@@ -160,9 +160,7 @@ void GameServer::HandleLogin(SOCKET clientSocket, C2S_LoginPacket* packet)
         response.success = true;
         response.playerId = playerId;
 
-        physx::PxExtendedVec3 position;
-        physx::PxVec3 direction;
-        _gameLogic.InitializePlayerPosition(playerId, position, direction); // 이거 하기 전에 먼저 맵 로드가 끝나있어야 하고, 맵을 배치해둬야함.
+        _gameLogic.StartGame(); // 테스트용: 로그인 시 바로 게임 시작
 
         std::cout << "Player " << playerId << " logged in" << std::endl;
     }
