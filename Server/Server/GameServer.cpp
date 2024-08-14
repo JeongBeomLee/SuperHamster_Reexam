@@ -44,6 +44,8 @@ bool GameServer::Start(int port)
     _acceptThread = std::thread(&GameServer::AcceptLoop, this);
     _physicsThread = std::thread(&GameServer::PhysicsLoop, this);
 
+    _gameLogic.StartGame(); // 테스트: 바로 게임 시작
+
     std::cout << "Server started on port " << port << std::endl;
     return true;
 }
@@ -160,13 +162,11 @@ void GameServer::HandleLogin(SOCKET clientSocket, C2S_LoginPacket* packet)
         response.success = true;
         response.playerId = playerId;
 
-        _gameLogic.StartGame(); // 테스트용: 로그인 시 바로 게임 시작
-
         std::cout << "Player " << playerId << " logged in" << std::endl;
     }
     else {
         response.success = false;
-        response.playerId = 0;
+        response.playerId = -1;
         std::cerr << "Login failed: Unknown client" << std::endl;
     }
     
@@ -211,9 +211,10 @@ void GameServer::HandleGameStart(SOCKET clientSocket, C2S_GameStartPacket* packe
 void GameServer::HandleMove(SOCKET clientSocket, C2S_MovePacket* packet)
 {
     uint32_t playerId = _clientSocketIdPairs[clientSocket];
-    physx::PxVec3 displacement(packet->dirX, packet->dirY, packet->dirZ);
+    physx::PxVec3 moveDir(packet->dirX, 0, packet->dirZ);
+    moveDir.normalize();
 
-    if (_gameLogic.MovePlayer(playerId, displacement)) {
+    if (_gameLogic.MovePlayer(playerId, moveDir)) {
         S2C_MoveResultPacket response;
         response.type = PacketType::S2C_MOVE_RESULT;
         response.size = sizeof(S2C_MoveResultPacket);
@@ -223,9 +224,9 @@ void GameServer::HandleMove(SOCKET clientSocket, C2S_MovePacket* packet)
         response.posX = newPosition.x;
         response.posY = newPosition.y;
         response.posZ = newPosition.z;
-        response.dirX = displacement.x;
-        response.dirY = displacement.y;
-        response.dirZ = displacement.z;
+        response.dirX = moveDir.x;
+        response.dirY = moveDir.y;
+        response.dirZ = moveDir.z;
 
         BroadcastPacket(&response);
     }
@@ -279,7 +280,7 @@ void GameServer::BroadcastPacket(PacketHeader* packet)
 
 void GameServer::PhysicsLoop()
 {
-    const float fixedTimeStep = 1.0f / 60.0f; // 60 FPS
+    const float FIXED_TIME_STEP = 1.0f / 60.0f; // 60 FPS
     float accumulator = 0.0f;
     auto lastTime = std::chrono::high_resolution_clock::now();
 
@@ -291,10 +292,10 @@ void GameServer::PhysicsLoop()
 
         accumulator += deltaTime;
 
-        while (accumulator >= fixedTimeStep)
+        while (accumulator >= FIXED_TIME_STEP)
         {
-            _gameLogic.UpdatePhysics(fixedTimeStep);
-            accumulator -= fixedTimeStep;
+            _gameLogic.UpdatePhysics(FIXED_TIME_STEP);
+            accumulator -= FIXED_TIME_STEP;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));

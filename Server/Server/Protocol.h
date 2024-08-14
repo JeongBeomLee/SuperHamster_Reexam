@@ -64,11 +64,7 @@ struct S2C_GameStartResultPacket : PacketHeader
 struct C2S_MovePacket : PacketHeader
 {
     uint32_t playerId;
-    float posX;
-    float posY;
-    float posZ;
     float dirX;
-    float dirY;
     float dirZ;
 };
 

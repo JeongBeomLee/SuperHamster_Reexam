@@ -10,6 +10,7 @@
 #include "InstancingManager.h"
 #include "Scene.h"
 #include "Camera.h"
+#include "PlayerMove.h"
 
 Engine::Engine()
 {
@@ -17,7 +18,6 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-	_playerController->release();
 	_controllerManager->release();
 	_scene->release();
 	_cpuDispatcher->release();
@@ -81,7 +81,7 @@ void Engine::Update()
 	ShowFps();
 
 	NetworkUpdate();
-	UpdatePhysics();
+	//UpdatePhysics();
 }
 
 void Engine::ToggleFullscreen()
@@ -214,12 +214,12 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 	}
 
 	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
-	physx::PxCapsuleControllerDesc desc;
+	/*physx::PxCapsuleControllerDesc desc;
 	desc.height = 50.f;
 	desc.radius = 25.f;
 	desc.material = _physics->createMaterial(0.5f, 0.5f, 0.1f);
 	desc.position = physx::PxExtendedVec3(-460.224, 300, 60.2587);
-	_playerController = _controllerManager->createController(desc);
+	_playerController = _controllerManager->createController(desc);*/
 
 	std::cout << "Physics initialized" << std::endl;
 }
@@ -405,6 +405,7 @@ void Engine::Handle_S2C_LOGIN_RESULT(PacketHeader* packet)
 	if (loginResult->success)
 	{
 		std::cout << "Login successful. My Player ID: " << loginResult->playerId << std::endl;
+		_myPlayerId = loginResult->playerId;
 		// 게임 시작 요청 패킷 전송
 	}
 	else
@@ -430,9 +431,16 @@ void Engine::Handle_S2C_GAME_START_RESULT(PacketHeader* packet)
 void Engine::Handle_S2C_MOVE_RESULT(PacketHeader* packet)
 {
 	S2C_MoveResultPacket* moveResult = reinterpret_cast<S2C_MoveResultPacket*>(packet);
-	// 플레이어 또는 게임 오브젝트의 위치 업데이트
-	std::cout << "Player " << moveResult->playerId << " moved to ("
-		<< moveResult->posX << ", " << moveResult->posY << ", " << moveResult->posZ << ")" << std::endl;
+	auto scene = GET_SINGLE(SceneManager)->GetActiveScene();
+	auto player = scene->GetGameObjectByName(L"Player" + std::to_wstring(moveResult->playerId));
+	if (player)
+	{
+		auto playerMove = player->GetMonoBehaviour<PlayerMove>();
+		if (playerMove)
+		{
+			playerMove->HandleMoveResult(*moveResult);
+		}
+	}
 }
 
 void Engine::Handle_S2C_ATTACK_RESULT(PacketHeader* packet)
@@ -498,11 +506,11 @@ void Engine::InitializePhysics()
 	}
 
 	// 디버깅
-	_pvdSceneClient = _scene->getScenePvdClient();
-	_pvdSceneClient->setScenePvdFlags(
-		physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | 
-		physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | 
-		physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+	//_pvdSceneClient = _scene->getScenePvdClient();
+	//_pvdSceneClient->setScenePvdFlags(
+	//	physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | 
+	//	physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | 
+	//	physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
 
 	_controllerManager = PxCreateControllerManager(*_scene);
 }

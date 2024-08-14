@@ -1,6 +1,8 @@
 #pragma once
 #include "PxPhysicsAPI.h"
 #include <random>
+#include <mutex>
+#include <vector>
 
 #ifdef _DEBUG
     #pragma comment(lib, "PhysX_64.lib")
@@ -60,9 +62,11 @@ public:
     void UpdatePhysics(float deltaTime);
 
     void InitPlayersForGameStart();
-    bool MovePlayer(uint32_t playerId, const physx::PxVec3& displacement);
+    bool MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir);
     bool CheckCollision(uint32_t playerId, uint32_t targetId);
-
+    void ApplyGravity(float deltaTime);
+    void AddActor(physx::PxActor* actor);
+    
     void StartGame();
 
     struct AttackResult
@@ -76,8 +80,11 @@ public:
     bool ProcessInteraction(uint32_t playerId, uint32_t targetId, uint32_t interactionType);
 
 private:
-    const float fixedTimeStep = 1.0f / 60.0f;  // 물리 시뮬레이션 고정 시간 간격
     const int MAX_NUM_PX_THREADS = 4;  // 물리 시뮬레이션 스레드 개수
+    const float FIXED_TIME_STEP = 1.0f / 60.0f;  // 물리 시뮬레이션 고정 시간 간격
+
+    const float GRAVITY = -9.81f;
+    const float MOVE_SPEED = 10.0f;
 
     const float PLAYER_ATTACK_RANGE = 50.0f;  // 플레이어 공격 범위
 

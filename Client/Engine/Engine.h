@@ -37,8 +37,12 @@ public:
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
+    std::unique_ptr<NetworkManager>& GetNetworkManager() { return _networkManager; }
+	int GetMyPlayerId() const { return _myPlayerId; }
+
 	void LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData);
 	void SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath);
+
 public:
 	void Render();
 	void RenderBegin();
@@ -82,6 +86,8 @@ private:
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
 
 	std::unique_ptr<NetworkManager> _networkManager;
+	//int _myPlayerId = -1;
+	int _myPlayerId = 0;	// 메인 화면이 없어서 임시 방편으로 0으로 설정
 
 	physx::PxDefaultAllocator		_allocator;
 	physx::PxDefaultErrorCallback	_errorCallback;
@@ -90,8 +96,6 @@ private:
 	physx::PxPhysics*				_physics			= nullptr;
 	physx::PxScene*					_scene				= nullptr;
 	physx::PxControllerManager*		_controllerManager	= nullptr;
-	physx::PxTriangleMesh*			_mapMesh			= nullptr;
-	physx::PxController*			_playerController	= nullptr;
 
 	physx::PxPvd*					_pvd = nullptr;
 	physx::PxPvdTransport*			_pvdTransport = nullptr;

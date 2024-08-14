@@ -124,10 +124,10 @@ void GameLogic::LoadMap(const char* filename)
         std::cerr << "Invalid PxTransform detected." << std::endl;
         return;
     }
-    triangleMeshActor->setGlobalPose(transform);
 
+    triangleMeshActor->setGlobalPose(transform);
     triangleMeshActor->attachShape(*triangleMeshShape);
-    _scene->addActor(*triangleMeshActor);
+    AddActor(triangleMeshActor);
 
     // 메모리 해제
     triangleMeshShape->release();
@@ -139,23 +139,21 @@ void GameLogic::LoadMap(const char* filename)
 
 void GameLogic::UpdatePhysics(float deltaTime)
 {
+    _scene->lockWrite();
+
+    ApplyGravity(deltaTime);
     _scene->simulate(deltaTime);
     _scene->fetchResults(true);
 
-    // 플레이어 위치 업데이트
-    for (int i = 0; i < 2; ++i) {
-		if (_playerPhysics[i].controller == nullptr) continue;
-        physx::PxExtendedVec3 position = _playerPhysics[i].controller->getPosition();
-        _players[i].x = position.x;
-        _players[i].y = position.y;
-        _players[i].z = position.z;
-    }
+    _scene->unlockWrite();
 }
 
 void GameLogic::InitPlayersForGameStart()
 {
+    _scene->lockWrite();
+
     physx::PxCapsuleControllerDesc player1Desc;
-    player1Desc.position = physx::PxExtendedVec3(0, 0, 0); // Player1 초기 위치 입력
+    player1Desc.position = physx::PxExtendedVec3(-460.224, 500, 60.2587); // Player1 초기 위치 입력
     player1Desc.height = 50.0f; // 플레이어 높이
     player1Desc.radius = 25.0f; // 플레이어 반경
     player1Desc.clientID = 0;     // 클라이언트 ID 설정
@@ -177,7 +175,7 @@ void GameLogic::InitPlayersForGameStart()
     _playerPhysics[0].moveDirection = physx::PxVec3(0, 0, 1);
 
     physx::PxCapsuleControllerDesc player2Desc;
-    player2Desc.position = physx::PxExtendedVec3(0, 0, 0); 
+    player2Desc.position = physx::PxExtendedVec3(-400.224, 500, 60.2587);
     player2Desc.height = 50.0f;
     player2Desc.radius = 25.0f;
     player2Desc.clientID = 1;
@@ -197,21 +195,50 @@ void GameLogic::InitPlayersForGameStart()
 
     _playerPhysics[1].controller = _controllerManager->createController(player2Desc);
     _playerPhysics[1].moveDirection = physx::PxVec3(0, 0, 1);
+
+    _scene->unlockWrite();
 }
 
-bool GameLogic::MovePlayer(uint32_t playerId, const physx::PxVec3& displacement)
+bool GameLogic::MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir)
 {
-    physx::PxControllerFilters filters;
-    physx::PxControllerCollisionFlags collisionFlags =
-        _playerPhysics[playerId].controller->move(displacement, 0.001f, fixedTimeStep, filters);
+    auto& controller = _playerPhysics[playerId].controller;
+    if (!controller)
+        return false;
 
-    // collisionFlags를 사용하여 충돌 처리 로직 구현
-    return true;  // 이동 성공 여부 반환
+    physx::PxVec3 movement = moveDir * MOVE_SPEED;
+    _scene->lockWrite();
+    physx::PxControllerCollisionFlags collisionFlags = controller->move(movement, 0.0001f, FIXED_TIME_STEP, physx::PxControllerFilters());
+    _scene->unlockWrite();
+
+    // 플레이어 위치 업데이트
+    physx::PxExtendedVec3 position = controller->getPosition();
+    _players[playerId].x = position.x;
+    _players[playerId].y = position.y;
+    _players[playerId].z = position.z;
+
+    return true;
 }
 
 bool GameLogic::CheckCollision(uint32_t playerId, uint32_t targetId)
 {
     return true;  // 간단한 구현: 항상 충돌
+}
+
+void GameLogic::ApplyGravity(float deltaTime)
+{
+    for (auto& player : _playerPhysics) {
+        if (player.controller != nullptr) {
+            physx::PxVec3 gravity(0, GRAVITY * deltaTime, 0);
+            player.controller->move(physx::PxVec3(0, GRAVITY, 0), 0.0001f, deltaTime, physx::PxControllerFilters());
+        }
+    }
+}
+
+void GameLogic::AddActor(physx::PxActor* actor)
+{
+    _scene->lockWrite();
+    _scene->addActor(*actor);
+    _scene->unlockWrite();
 }
 
 void GameLogic::StartGame()

@@ -37,6 +37,19 @@ public:
 
 	void AddComponent(shared_ptr<Component> component);
 
+	template<typename T>
+	shared_ptr<T> GetMonoBehaviour() {
+		static_assert(std::is_base_of<MonoBehaviour, T>::value, "T must inherit from MonoBehaviour");
+		for (const auto& script : _scripts) {
+			if (auto castedScript = dynamic_pointer_cast<T>(script)) {
+				return castedScript;
+			}
+		}
+		return nullptr;
+	}
+
+	const vector<shared_ptr<MonoBehaviour>>& GetAllMonoBehaviours() const { return _scripts; }
+
 	void SetCheckFrustum(bool checkFrustum) { _checkFrustum = checkFrustum; }
 	bool GetCheckFrustum() { return _checkFrustum; }
 

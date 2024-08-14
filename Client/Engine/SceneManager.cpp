@@ -17,6 +17,7 @@
 #include "SphereCollider.h"
 #include "MeshData.h"
 #include "TestAnimation.h"
+#include "PlayerMove.h"
 
 void SceneManager::Update()
 {
@@ -347,7 +348,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 			for (auto& gameObject : gameObjects)
 			{
-				gameObject->SetName(L"Hamster1");
+				gameObject->SetName(L"Player" + to_wstring(GEngine->GetMyPlayerId()));
 				gameObject->SetCheckFrustum(false);
 				gameObject->SetStatic(false);
 				gameObject->GetTransform()->SetLocalPosition(Vec3(-460.224, 0, 60.2587));
@@ -355,6 +356,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
 				scene->AddGameObject(gameObject);
 				gameObject->AddComponent(make_shared<TestAnimation>());
+				gameObject->AddComponent(make_shared<PlayerMove>());
 			}
 		}
 
