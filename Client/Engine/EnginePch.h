@@ -193,3 +193,4 @@ extern unique_ptr<class Engine> GEngine;
 // Utils
 wstring s2ws(const string& s);
 string ws2s(const wstring& s);
+Vec4 Slerp(const Vec4& start, const Vec4& end, float ratio);

@@ -90,6 +90,8 @@ void FBXLoader::LoadBones(FbxNode* node, int32_t idx, int32_t parentIdx)
 
 void FBXLoader::LoadAnimationInfo()
 {
+	_animNames.Clear();
+
 	_scene->FillAnimStackNameArray(OUT _animNames);
 
 	const int32 animCount = _animNames.GetCount();
@@ -127,6 +129,43 @@ void FBXLoader::LoadTransform(FbxNode* node, FbxMeshInfo* meshInfo)
             meshInfo->globalTransform.m[i][j] = static_cast<float>(globalTransform.Get(i, j));
         }
     }
+}
+
+void FBXLoader::LoadVertexAnimation(FbxMesh* mesh, shared_ptr<FbxAnimClipInfo> animClip)
+{
+	FbxVector4* controlPoints = mesh->GetControlPoints();
+	int controlPointsCount = mesh->GetControlPointsCount();
+
+	FbxAnimStack* animStack = _scene->GetCurrentAnimationStack();
+	FbxAnimLayer* animLayer = animStack->GetMember<FbxAnimLayer>(0);
+
+	FbxTime startTime = animClip->startTime;
+	FbxTime endTime = animClip->endTime;
+	FbxTime frameTime;
+
+	frameTime.SetFrame(1, animClip->mode);
+
+	animClip->vertexKeyFrames.clear();  // 기존 데이터 초기화
+
+	for (FbxTime currentTime = startTime; currentTime <= endTime; currentTime += frameTime)
+	{
+		vector<FbxKeyFrameInfo> frameVertices;
+		for (int i = 0; i < controlPointsCount; ++i)
+		{
+			FbxAMatrix globalTransform = mesh->GetNode()->EvaluateGlobalTransform(currentTime);
+
+			// 정점의 변환 행렬 계산
+			FbxVector4 transformedVertex = globalTransform.MultT(controlPoints[i]);
+
+			// FbxKeyFrameInfo 구조체에 저장
+			FbxKeyFrameInfo keyFrameInfo;
+			keyFrameInfo.matTransform = globalTransform; // 정점의 변환 행렬 저장
+			keyFrameInfo.time = currentTime.GetSecondDouble(); // 해당 프레임의 시간을 저장
+
+			frameVertices.push_back(keyFrameInfo);
+		}
+		animClip->vertexKeyFrames.push_back(frameVertices);
+	}
 }
 
 FbxAMatrix FBXLoader::GetGlobalTransform(FbxNode* node)
@@ -518,9 +557,23 @@ void FBXLoader::CreateMaterials()
 
 void FBXLoader::LoadAnimationData(FbxMesh* mesh, FbxMeshInfo* meshInfo)
 {
+	
 	const int32 skinCount = mesh->GetDeformerCount(FbxDeformer::eSkin);
-	if (skinCount <= 0 || _animClips.empty())
+	if (skinCount <= 0)
+	{
+		// 본이 없지만 애니메이션 클립이 있는 경우 정점 애니메이션으로 처리
+		if (!_animClips.empty())
+		{
+			for (const auto& animClip : _animClips)
+			{
+				LoadVertexAnimation(mesh, animClip); // 정점 애니메이션 로드
+
+			}
+		}
+		meshInfo->hasVertexAnimation = true;
+		
 		return;
+	}
 
 	meshInfo->hasAnimation = true;
 
@@ -554,7 +607,6 @@ void FBXLoader::LoadAnimationData(FbxMesh* mesh, FbxMeshInfo* meshInfo)
 			}
 		}
 	}
-
 	FillBoneWeight(mesh, meshInfo);
 }
 
@@ -685,3 +737,5 @@ FbxAMatrix FBXLoader::GetTransform(FbxNode* node)
 	const FbxVector4 scaling = node->GetGeometricScaling(FbxNode::eSourcePivot);
 	return FbxAMatrix(translation, rotation, scaling);
 }
+
+

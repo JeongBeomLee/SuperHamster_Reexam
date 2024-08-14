@@ -17,6 +17,7 @@
 #include "SphereCollider.h"
 #include "MeshData.h"
 #include "TestAnimation.h"
+#include "VertexAnimator.h"
 
 void SceneManager::Update()
 {
@@ -330,36 +331,47 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene->AddGameObject(gameObject);
 			gameObject->AddComponent(make_shared<TestAnimation>());
 		}*/
-
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2.fbx");
-
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-
-		for (auto& gameObject : gameObjects)
+		
+		
 		{
-			static int id = 0;
-			gameObject->SetName(L"untitled" + to_wstring(id++));
-			gameObject->SetCheckFrustum(true);
-			gameObject->SetStatic(false);
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\switch_floor.fbx");
 
-			Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
-			Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
-			Vec3 GlobalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
-			Vec3 LocalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetRotation();
-			Vec3 Rotation = GlobalRotation + LocalRotation;
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
-			Rotation.x -= XM_PIDIV2;
-			Rotation.y -= XM_PI;
+			
+			for (auto& gameObject : gameObjects)
+			{
+				static int id = 0;
+				gameObject->SetName(L"untitled" + to_wstring(id++));
+				gameObject->SetCheckFrustum(true);
+				gameObject->SetStatic(false);
 
-			//gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
-			gameObject->GetTransform()->SetLocalPosition(Pos);
-			gameObject->GetTransform()->SetLocalScale(Scale);
-			gameObject->GetTransform()->SetLocalRotation(Rotation);
-			//gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
+				Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
+				Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
+				Vec3 GlobalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
+				Vec3 LocalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetRotation();
+				Vec3 Rotation = GlobalRotation + LocalRotation;
 
-			scene->AddGameObject(gameObject);
+				Rotation.x -= XM_PIDIV2;
+				//Rotation.z -= XM_PIDIV2;
+				Rotation.y -= XM_PI;
+
+				//gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
+				gameObject->GetTransform()->SetLocalPosition(Pos );
+				gameObject->GetTransform()->SetLocalScale(Scale);
+				gameObject->GetTransform()->SetLocalRotation(Rotation);
+				//gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
+
+				//if(gameObject->GetVertexAnimator()) // 애니메이션 멈추는 방법 
+				//	gameObject->GetVertexAnimator()->Stop();
+
+				if(gameObject->GetVertexAnimator())
+					gameObject->GetVertexAnimator()->SetSpeed(0.1f); // 속도를 낮출 수록 느려짐 
+
+				scene->AddGameObject(gameObject);
+			}
+			
 		}
-
 		// 100개 생성 (인스턴싱 사용, 1개는 안 그려짐)
 		//for (int i = 0; i < 100; ++i) {
 		//	shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");

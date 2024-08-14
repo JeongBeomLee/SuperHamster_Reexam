@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Animator.h"
+#include "VertexAnimator.h"
 
 MeshData::MeshData() : Object(OBJECT_TYPE::MESH_DATA)
 {
@@ -30,6 +31,8 @@ shared_ptr<MeshData> MeshData::LoadFromFBX(const wstring& path)
 
 		shared_ptr<Mesh> mesh = Mesh::CreateFromFBX(&loader.GetMesh(i), loader);
 		mesh->SetFbxMeshInfo(loader.GetMesh(i));
+
+
 
 		GET_SINGLE(Resources)->Add<Mesh>(mesh->GetName(), mesh);
 
@@ -109,6 +112,14 @@ vector<shared_ptr<GameObject>> MeshData::Instantiate()
 			gameObject->AddComponent(animator);
 			animator->SetBones(info.mesh->GetBones());
 			animator->SetAnimClip(info.mesh->GetAnimClip());
+		}
+
+		wstring cmpName = info.mesh->GetFbxMeshInfo().name;
+		if (info.mesh->IsVertexAnimMesh() && !cmpName.find(L"VX"))
+		{
+			shared_ptr<VertexAnimator> vertexAnimator = make_shared<VertexAnimator>();
+			gameObject->AddComponent(vertexAnimator);
+			vertexAnimator->SetAnimClip(info.mesh->GetVertexAnimClip());
 		}
 
 		v.push_back(gameObject);

@@ -65,6 +65,9 @@ shared_ptr<Mesh> Mesh::CreateFromFBX(const FbxMeshInfo* meshInfo, FBXLoader& loa
 	if (meshInfo->hasAnimation)
 		mesh->CreateBonesAndAnimations(loader);
 	
+	if (meshInfo->hasVertexAnimation)
+		mesh->CreateVertexAnimations(loader);
+
 	uint32 vertexCount = static_cast<uint32>(meshInfo->vertices.size());
 	uint32 indexCount = meshInfo->indices[0].empty() ? 0 : static_cast<uint32>(meshInfo->indices[0].size());
 	mesh->SetName(meshInfo->name + L"_" + std::to_wstring(vertexCount) + L"_" + std::to_wstring(indexCount));
@@ -249,6 +252,66 @@ void Mesh::CreateBonesAndAnimations(class FBXLoader& loader)
 	}
 #pragma endregion
 }
+
+void Mesh::CreateVertexAnimations(class FBXLoader& loader)
+{
+#pragma region AnimClip
+	uint32 maxFrameCount = 0;
+	vector<shared_ptr<FbxAnimClipInfo>>& animClips = loader.GetAnimClip();
+
+	for (shared_ptr<FbxAnimClipInfo>& ac : animClips)
+	{
+		AnimClipInfo info = {};
+
+		info.animName = ac->name;
+		info.duration = ac->endTime.GetSecondDouble() - ac->startTime.GetSecondDouble();
+
+		int32 startFrame = static_cast<int32>(ac->startTime.GetFrameCount(ac->mode));
+		int32 endFrame = static_cast<int32>(ac->endTime.GetFrameCount(ac->mode));
+		info.frameCount = endFrame - startFrame + 1; // 프레임 수는 시작 프레임과 종료 프레임을 모두 포함하도록 +1
+
+		// 정점 애니메이션 데이터를 처리
+		const int32 frameCount = static_cast<int32>(ac->vertexKeyFrames.size());
+
+		// 각 프레임마다 모든 정점의 변환 정보를 저장
+		info.vertexKeyFrames.resize(frameCount);
+
+		for (int32 f = 0; f < frameCount; ++f)
+		{
+			const vector<FbxKeyFrameInfo>& frameVertices = ac->vertexKeyFrames[f];
+			info.vertexKeyFrames[f].resize(frameVertices.size());
+
+			for (size_t v = 0; v < frameVertices.size(); ++v)
+			{
+				// 정점 변환 정보를 저장
+				info.vertexKeyFrames[f][v].frame = f;
+				info.vertexKeyFrames[f][v].time = frameVertices[v].time;
+				info.vertexKeyFrames[f][v].scale = Vec3(
+					static_cast<float>(frameVertices[v].matTransform.GetS().mData[0]),
+					static_cast<float>(frameVertices[v].matTransform.GetS().mData[1]),
+					static_cast<float>(frameVertices[v].matTransform.GetS().mData[2])
+				);
+				info.vertexKeyFrames[f][v].rotation = Vec4(
+					static_cast<float>(frameVertices[v].matTransform.GetQ().mData[0]),
+					static_cast<float>(frameVertices[v].matTransform.GetQ().mData[1]),
+					static_cast<float>(frameVertices[v].matTransform.GetQ().mData[2]),
+					static_cast<float>(frameVertices[v].matTransform.GetQ().mData[3])
+				);
+				info.vertexKeyFrames[f][v].translate = Vec3(
+					static_cast<float>(frameVertices[v].matTransform.GetT().mData[0]),
+					static_cast<float>(frameVertices[v].matTransform.GetT().mData[1]),
+					static_cast<float>(frameVertices[v].matTransform.GetT().mData[2])
+				);
+			}
+		}
+
+		maxFrameCount = max(maxFrameCount, static_cast<uint32>(frameCount));
+
+		_vertexAnimClips.push_back(info);
+	}
+#pragma endregion
+}
+
 
 Matrix Mesh::GetMatrix(FbxAMatrix& matrix)
 {

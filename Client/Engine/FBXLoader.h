@@ -49,7 +49,10 @@ struct FbxMeshInfo
     vector<vector<uint32_t>> indices;
     vector<FbxMaterialInfo> materials;
     vector<BoneWeight> boneWeights; // Bone weights
+
     bool hasAnimation;
+    bool hasVertexAnimation;
+    
 
     // 트랜스폼 정보 추가
     Matrix transform;         // 로컬 변환 행렬
@@ -127,6 +130,7 @@ struct FbxAnimClipInfo
     FbxTime                             endTime;
     FbxTime::EMode                      mode;
     vector<vector<FbxKeyFrameInfo>>     keyFrames;
+    vector<vector<FbxKeyFrameInfo>>     vertexKeyFrames;
 };
 
 class FBXLoader
@@ -143,12 +147,14 @@ public:
     vector<shared_ptr<FbxAnimClipInfo>>& GetAnimClip() { return _animClips; }
     wstring GetResourceDirectory() const { return _resourceDirectory; } // Added const correctness
 
+
 private:
     void Import(const wstring& path);
 
     void ParseNode(FbxNode* root);
     void LoadMesh(FbxMesh* mesh, FbxMeshInfo* meshInfo);
     void LoadMaterial(FbxSurfaceMaterial* surfaceMaterial);
+
 
     void        GetNormal(FbxMesh* mesh, FbxMeshInfo* container, int32_t idx, int32_t vertexCounter);
     void        GetTangent(FbxMesh* mesh, FbxMeshInfo* container, int32_t idx, int32_t vertexCounter);
@@ -163,6 +169,10 @@ private:
     void LoadBones(FbxNode* node, int32_t idx = 0, int32_t parentIdx = -1); // Made LoadBones overload explicit
     void LoadAnimationInfo();
     void LoadTransform(FbxNode* node, FbxMeshInfo* meshInfo);
+    void LoadVertexAnimation(FbxMesh* mesh, shared_ptr<FbxAnimClipInfo> animClip);
+
+
+
     FbxAMatrix GetGlobalTransform(FbxNode* node);
 
     void LoadAnimationData(FbxMesh* mesh, FbxMeshInfo* meshInfo);

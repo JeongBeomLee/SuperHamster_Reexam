@@ -35,6 +35,7 @@ struct AnimClipInfo
 	int32			frameCount;
 	double			duration;
 	vector<vector<KeyFrameInfo>>	keyFrames;
+	vector<vector<KeyFrameInfo>>	vertexKeyFrames; // 정점 애니메이션 키프레임
 };
 
 class Mesh : public Object
@@ -53,6 +54,7 @@ private:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
 	void CreateIndexBuffer(const vector<uint32>& buffer);
 	void CreateBonesAndAnimations(class FBXLoader& loader);
+	void CreateVertexAnimations(class FBXLoader& loader);
 	Matrix GetMatrix(FbxAMatrix& matrix);
 
 public:
@@ -60,10 +62,12 @@ public:
 	const vector<BoneInfo>*			GetBones() { return &_bones; }
 	uint32							GetBoneCount() { return static_cast<uint32>(_bones.size()); }
 	const vector<AnimClipInfo>*		GetAnimClip() { return &_animClips; }
+	const vector<AnimClipInfo>*		GetVertexAnimClip() { return &_vertexAnimClips; }
 	shared_ptr<StructuredBuffer>	GetBoneFrameDataBuffer(int32 index = 0) { return _frameBuffer[index]; } // 전체 본 프레임 정보
 	shared_ptr<StructuredBuffer>	GetBoneOffsetBuffer() { return  _offsetBuffer; }
 	FbxMeshInfo&					GetFbxMeshInfo() { return _fbxMeshInfo; }
 	bool							IsAnimMesh() { return !_animClips.empty(); }
+	bool 							IsVertexAnimMesh() { return !_vertexAnimClips.empty(); }
 
 	void							SetFbxMeshInfo(FbxMeshInfo info) { _fbxMeshInfo = info; }
 
@@ -76,6 +80,7 @@ private:
 
 	// Animation
 	vector<AnimClipInfo>			_animClips;
+	vector<AnimClipInfo>			_vertexAnimClips;
 	vector<BoneInfo>				_bones;
 
 	shared_ptr<StructuredBuffer>	_offsetBuffer; // 각 뼈의 offset 행렬
