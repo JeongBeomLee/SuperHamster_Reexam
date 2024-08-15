@@ -33,6 +33,7 @@ private:
     void HandleMove(SOCKET clientSocket, C2S_MovePacket* packet);
     void HandleAttack(SOCKET clientSocket, C2S_AttackPacket* packet);
     void HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* packet);
+    void HandleUpdatePlayerState(SOCKET clientSocket, C2S_UpdatePlayerStatePacket* packet);
 
     SOCKET _listenSocket;
     std::map<SOCKET, uint32_t> _clientSocketIdPairs;

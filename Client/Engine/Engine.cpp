@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "PlayerMove.h"
+#include "PlayerManager.h"
 
 Engine::Engine()
 {
@@ -74,6 +75,7 @@ void Engine::Update()
 {
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
+	GET_SINGLE(PlayerManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(InstancingManager)->ClearBuffer();
 
@@ -325,12 +327,12 @@ void Engine::CreateRenderTargetGroups()
 		vector<RenderTarget> rtVec(RENDER_TARGET_SHADOW_GROUP_MEMBER_COUNT);
 
 		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"ShadowTarget",
-			DXGI_FORMAT_R32_FLOAT, 4096, 4096,
+			DXGI_FORMAT_R32_FLOAT, 8192, 8192,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		shared_ptr<Texture> shadowDepthTexture = GET_SINGLE(Resources)->CreateTexture(L"ShadowDepthStencil",
-			DXGI_FORMAT_D32_FLOAT, 4096, 4096,
+			DXGI_FORMAT_D32_FLOAT, 8192, 8192,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
@@ -397,6 +399,8 @@ void Engine::RegisterPacketHandlers()
 		[this](PacketHeader* packet) { Handle_S2C_ATTACK_RESULT(packet); });
 	_networkManager->RegisterHandler(PacketType::S2C_INTERACTION_RESULT,
 		[this](PacketHeader* packet) { Handle_S2C_INTERACTION_RESULT(packet); });
+	_networkManager->RegisterHandler(PacketType::S2C_UPDATE_PLAYER_STATE,
+		[this](PacketHeader* packet) { Handle_S2C_UPDATE_PLAYER_STATE(packet); });
 }
 
 void Engine::Handle_S2C_LOGIN_RESULT(PacketHeader* packet)
@@ -470,6 +474,17 @@ void Engine::Handle_S2C_INTERACTION_RESULT(PacketHeader* packet)
 	else
 	{
 		std::cout << "Interaction failed." << std::endl;
+	}
+}
+
+void Engine::Handle_S2C_UPDATE_PLAYER_STATE(PacketHeader* packet)
+{
+	S2C_UpdatePlayerStatePacket* updatePlayerState = reinterpret_cast<S2C_UpdatePlayerStatePacket*>(packet);
+	uint32_t playerId = updatePlayerState->playerId;
+	Player* player = GET_SINGLE(PlayerManager)->GetPlayer(playerId);
+	if (player && !player->IsLocal())
+	{
+		player->SetState(static_cast<PLAYER_STATE>(updatePlayerState->newState));
 	}
 }
 

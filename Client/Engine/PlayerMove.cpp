@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "PlayerMove.h"
-#include "Engine.h"
 #include "Input.h"
 #include "NetworkManager.h"
 #include "Transform.h"
@@ -8,9 +7,15 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Timer.h"
+#include "PlayerManager.h"
 
 PlayerMove::PlayerMove()
 {
+}
+
+PlayerMove::PlayerMove(uint32_t playerId)
+{
+    _playerId = playerId;
 }
 
 PlayerMove::~PlayerMove()
@@ -19,29 +24,36 @@ PlayerMove::~PlayerMove()
 
 void PlayerMove::Update()
 {
-    ProcessInput();
+    if (IsLocal())
+    {
+        ProcessInput();
+    }
+    Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+    if (player)
+    {
+        player->Update(DELTA_TIME);
 
-    // 서버 위치로 부드럽게 보간
-    Vec3 currentPos = GetTransform()->GetLocalPosition();
-    Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
-    GetTransform()->SetLocalPosition(newPos);
+        // 서버 위치로 부드럽게 보간
+        Vec3 currentPos = GetTransform()->GetLocalPosition();
+        Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
+        GetTransform()->SetLocalPosition(newPos);
 
-    // 방향 업데이트
-    if (_serverDirection != Vec3::Zero) {
-        Vec3 correctedDir = Vec3(-_serverDirection.x, 0, -_serverDirection.z);
+        // 방향 업데이트
+        if (_serverDirection != Vec3::Zero) {
+            Vec3 correctedDir = Vec3(-_serverDirection.x, 0, -_serverDirection.z);
 
-        // 현재 회전과 목표 회전 사이를 보간
-        Vec3 currentRotation = GetTransform()->GetLocalRotation();
-        float targetYaw = atan2(correctedDir.x, correctedDir.z);
-        float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
+            // 현재 회전과 목표 회전 사이를 보간
+            Vec3 currentRotation = GetTransform()->GetLocalRotation();
+            float targetYaw = atan2(correctedDir.x, correctedDir.z);
+            float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
 
-        GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, newYaw, 0));
+            GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, newYaw, 0));
+        }
     }
 }
 
 void PlayerMove::Start()
 {
-    _playerId = GEngine->GetMyPlayerId();
     _serverPosition = GetTransform()->GetLocalPosition();
     _serverDirection = GetTransform()->GetLocalRotation();
 }
@@ -73,6 +85,7 @@ void PlayerMove::ProcessInput()
     if (moveDir != Vec3::Zero)
     {
         moveDir.Normalize();
+        ChangeState(PLAYER_STATE::RUN);
 
         // 로컬에서 즉시 이동
         Vec3 newPos = GetTransform()->GetLocalPosition() + moveDir * _moveSpeed * DELTA_TIME;
@@ -81,6 +94,10 @@ void PlayerMove::ProcessInput()
         // 서버에 이동 패킷 전송
         SendMovePacket(moveDir);
     }
+	else
+	{
+		ChangeState(PLAYER_STATE::IDLE);
+	}
 }
 
 void PlayerMove::SendMovePacket(const Vec3& direction)
@@ -115,4 +132,23 @@ float PlayerMove::LerpAngle(float a, float b, float t)
 float PlayerMove::repeat(float t, float length)
 {
     return t - floor(t / length) * length;
+}
+
+void PlayerMove::ChangeState(PLAYER_STATE newState)
+{
+    Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+    if (player && player->GetCurrentState() != newState)
+    {
+        player->SetState(newState);
+        if (IsLocal())
+        {
+            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, newState);
+        }
+    }
+}
+
+PLAYER_STATE PlayerMove::GetCurrentState() const
+{
+    Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+    return player ? player->GetCurrentState() : PLAYER_STATE::END;
 }

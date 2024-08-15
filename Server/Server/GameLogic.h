@@ -51,6 +51,19 @@ enum class PLAYER_GUN
     END
 };
 
+enum class PLAYER_STATE
+{
+    FIRE = 3,
+    GETUP = 4,
+    IDLE = 5,
+    HIT = 6,
+    RUN = 8,
+    ROLL = 9,
+    AIM = 11,
+
+    END
+};
+
 class GameLogic
 {
 public:
@@ -59,7 +72,7 @@ public:
 
     void InitializePhysics();
     void LoadMap(const char* filename);
-    void UpdatePhysics(float deltaTime);
+    void Update(float deltaTime);
 
     void InitPlayersForGameStart();
     bool MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir);
@@ -78,6 +91,8 @@ public:
     AttackResult ProcessAttack(uint32_t playerId, uint32_t attackType);
 
     bool ProcessInteraction(uint32_t playerId, uint32_t targetId, uint32_t interactionType);
+	void UpdatePlayerState(uint32_t playerId, PLAYER_STATE newState) { _players[playerId].state = newState; }
+	PLAYER_STATE GetPlayerState(uint32_t playerId) const { return _players[playerId].state; }
 
 private:
     const int MAX_NUM_PX_THREADS = 4;  // 물리 시뮬레이션 스레드 개수
@@ -89,13 +104,14 @@ private:
     const float PLAYER_ATTACK_RANGE = 50.0f;  // 플레이어 공격 범위
 
     // 플레이어 상태 관리
-    struct PlayerState
+    struct PlayerInfo
     {
         float x, y, z;
         float health;
         PLAYER_GUN gun;
+        PLAYER_STATE state;
     };
-    PlayerState _players[2];
+    PlayerInfo _players[2];
 
     std::mt19937 _rng;  // 난수 생성기
 

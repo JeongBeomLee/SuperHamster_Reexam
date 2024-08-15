@@ -39,6 +39,8 @@ public:
 
     std::unique_ptr<NetworkManager>& GetNetworkManager() { return _networkManager; }
 	int GetMyPlayerId() const { return _myPlayerId; }
+	int GetOtherPlayerId() const { return 1 - _myPlayerId; }
+	void SetMyPlayerId(int playerId) { _myPlayerId = playerId; }
 
 	void LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData);
 	void SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath);
@@ -64,6 +66,7 @@ private:
 	void Handle_S2C_MOVE_RESULT(PacketHeader* packet);
 	void Handle_S2C_ATTACK_RESULT(PacketHeader* packet);
 	void Handle_S2C_INTERACTION_RESULT(PacketHeader* packet);
+	void Handle_S2C_UPDATE_PLAYER_STATE(PacketHeader* packet);
 
 	void InitializePhysics();
 	void UpdatePhysics();
@@ -86,8 +89,7 @@ private:
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
 
 	std::unique_ptr<NetworkManager> _networkManager;
-	//int _myPlayerId = -1;
-	int _myPlayerId = 0;	// 메인 화면이 없어서 임시 방편으로 0으로 설정
+	int _myPlayerId = -1;
 
 	physx::PxDefaultAllocator		_allocator;
 	physx::PxDefaultErrorCallback	_errorCallback;

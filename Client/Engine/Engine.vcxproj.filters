@@ -28,6 +28,18 @@
     <Filter Include="Object\Scripts">
       <UniqueIdentifier>{1cfe4b64-4ca1-4958-b16f-73f8ae1985c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Player">
+      <UniqueIdentifier>{216f0edc-9b1a-4c2b-8e89-2340a48905a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\StateMachine">
+      <UniqueIdentifier>{c2090732-3dbc-49e0-bc00-b5ecee83c166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\StateMachine\PlayerState">
+      <UniqueIdentifier>{2df349cc-d353-4673-86c3-851cff027aed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\StateMachine\PlayerState\States">
+      <UniqueIdentifier>{4c38097d-7de9-4ae2-ad53-e6dc32387bd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -158,6 +170,39 @@
     </ClCompile>
     <ClCompile Include="PlayerMove.cpp">
       <Filter>Object\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerStateMachine.cpp">
+      <Filter>Object\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>Object\StateMachine\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="RunState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="AimState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="FireState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GetUpState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="HitState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="RollState.cpp">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +337,39 @@
     </ClInclude>
     <ClInclude Include="PlayerMove.h">
       <Filter>Object\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateMachine.h">
+      <Filter>Object\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>Object\StateMachine\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="RunState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="AimState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="FireState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GetUpState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="HitState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="RollState.h">
+      <Filter>Object\StateMachine\PlayerState\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

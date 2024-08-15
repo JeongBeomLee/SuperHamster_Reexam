@@ -14,6 +14,11 @@ Game::~Game()
 
 void Game::Init(const WindowInfo& info)
 {
+	int myGameID = -1;
+	cout << "My Game ID: " << endl;
+	cin >> myGameID;
+
+	GEngine->SetMyPlayerId(myGameID);
 	GEngine->Init(info);
 	GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
 }

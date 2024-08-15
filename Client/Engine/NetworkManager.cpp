@@ -90,6 +90,17 @@ void NetworkManager::RegisterHandler(PacketType type, PacketHandler handler)
     _packetHandlers[type] = handler;
 }
 
+void NetworkManager::SendStateUpdate(uint32_t playerId, PLAYER_STATE newState)
+{
+    C2S_UpdatePlayerStatePacket* packet = new C2S_UpdatePlayerStatePacket();
+    packet->type = PacketType::C2S_UPDATE_PLAYER_STATE;
+    packet->size = sizeof(C2S_UpdatePlayerStatePacket);
+    packet->playerId = playerId;
+    packet->newState = static_cast<uint32_t>(newState);
+
+    SendPacket(packet);
+}
+
 void NetworkManager::RecvThread()
 {
     char buffer[MAX_PACKET_SIZE];

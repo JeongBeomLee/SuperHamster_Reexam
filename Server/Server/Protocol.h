@@ -23,6 +23,8 @@ enum class PacketType : uint16_t
     S2C_SYNC_TRANSFORM,      // 트랜스폼 동기화
     C2S_INTERACTION,         // 상호작용 요청
     S2C_INTERACTION_RESULT,  // 상호작용 결과
+    C2S_UPDATE_PLAYER_STATE, // 플레이어 상태 업데이트
+    S2C_UPDATE_PLAYER_STATE, // 플레이어 상태 업데이트
     S2C_GAME_OVER,           // 게임 오버
 };
 
@@ -148,4 +150,16 @@ struct S2C_GameOverPacket : PacketHeader
 {
     bool victory;
     uint32_t score;
+};
+
+struct S2C_UpdatePlayerStatePacket : PacketHeader
+{
+    uint32_t playerId;
+    uint32_t newState;
+};
+
+struct C2S_UpdatePlayerStatePacket : PacketHeader
+{
+    uint32_t playerId;
+    uint32_t newState;
 };

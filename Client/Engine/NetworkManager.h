@@ -1,4 +1,6 @@
 #pragma once
+#include "PlayerStateMachine.h"
+
 class NetworkManager
 {
 public:
@@ -13,6 +15,8 @@ public:
     // 패킷 핸들러 등록 함수
     using PacketHandler = std::function<void(PacketHeader*)>;
     void RegisterHandler(PacketType type, PacketHandler handler);
+
+    void SendStateUpdate(uint32_t playerId, PLAYER_STATE newState);
 
 private:
     void RecvThread();

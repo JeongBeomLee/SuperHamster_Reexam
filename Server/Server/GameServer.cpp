@@ -137,6 +137,9 @@ void GameServer::ProcessPacket(SOCKET clientSocket, PacketHeader* packet)
     case PacketType::C2S_INTERACTION:
         HandleInteraction(clientSocket, reinterpret_cast<C2S_InteractionPacket*>(packet));
         break;
+    case PacketType::C2S_UPDATE_PLAYER_STATE:
+        HandleUpdatePlayerState(clientSocket, reinterpret_cast<C2S_UpdatePlayerStatePacket*>(packet));
+        break;
     default:
         std::cerr << "Unknown packet type: " << static_cast<int>(packet->type) << std::endl;
         break;
@@ -186,7 +189,7 @@ void GameServer::HandleGameStart(SOCKET clientSocket, C2S_GameStartPacket* packe
         if (IsGameReady()) {
             response.success = true;
             response.playerNumber = playerId;
-            _gameLogic.StartGame();
+            //_gameLogic.StartGame();
 
             std::cout << "Game started for players " << std::endl;
 
@@ -265,6 +268,23 @@ void GameServer::HandleInteraction(SOCKET clientSocket, C2S_InteractionPacket* p
     BroadcastPacket(&response);
 }
 
+void GameServer::HandleUpdatePlayerState(SOCKET clientSocket, C2S_UpdatePlayerStatePacket* packet)
+{
+	uint32_t playerId = _clientSocketIdPairs[clientSocket];
+    PLAYER_STATE newState = static_cast<PLAYER_STATE>(packet->newState);
+
+	_gameLogic.UpdatePlayerState(playerId, newState);
+
+    // 다른 클라이언트에게 상태 변경을 브로드캐스트
+    S2C_UpdatePlayerStatePacket response;
+    response.type = PacketType::S2C_UPDATE_PLAYER_STATE;
+    response.size = sizeof(S2C_UpdatePlayerStatePacket);
+    response.playerId = playerId;
+    response.newState = packet->newState;
+
+    BroadcastPacket(&response);
+}
+
 bool GameServer::IsGameReady()
 {
     return _clientSocketIdPairs.size() == 2;
@@ -294,7 +314,7 @@ void GameServer::PhysicsLoop()
 
         while (accumulator >= FIXED_TIME_STEP)
         {
-            _gameLogic.UpdatePhysics(FIXED_TIME_STEP);
+            _gameLogic.Update(FIXED_TIME_STEP);
             accumulator -= FIXED_TIME_STEP;
         }
 

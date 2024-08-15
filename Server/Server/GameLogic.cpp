@@ -26,12 +26,15 @@ void GameLogic::InitializePhysics()
 		return;
     }
 
+#ifdef _DEBUG
     _pvd = PxCreatePvd(*_foundation);
     _pvdTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
     _pvd->connect(*_pvdTransport, physx::PxPvdInstrumentationFlag::eALL);
-    
     _physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, _pvd);
-    //_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale());
+#else
+    _physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true);
+#endif
+
     if (!_physics) {
         std::cerr << "PxCreatePhysics failed!" << std::endl;
         return;
@@ -52,6 +55,11 @@ void GameLogic::InitializePhysics()
 		std::cerr << "createScene failed!" << std::endl;
 		return;
 	}
+
+#ifdef _DEBUG
+    _pvdSceneClient = pxDefaultScene->getScenePvdClient();
+    _pvdSceneClient->setScenePvdFlags(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | PxPvdSceneFlag::eTRANSMIT_CONTACTS | PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+#endif // _DEBUG
 
     _controllerManager = PxCreateControllerManager(*_scene);
 
@@ -137,7 +145,7 @@ void GameLogic::LoadMap(const char* filename)
     std::cout << "Map loaded from " << filename << std::endl;
 }
 
-void GameLogic::UpdatePhysics(float deltaTime)
+void GameLogic::Update(float deltaTime)
 {
     _scene->lockWrite();
 
@@ -215,6 +223,8 @@ bool GameLogic::MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir)
     _players[playerId].x = position.x;
     _players[playerId].y = position.y;
     _players[playerId].z = position.z;
+
+    _playerPhysics[playerId].moveDirection = moveDir;
 
     return true;
 }

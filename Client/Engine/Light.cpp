@@ -86,8 +86,8 @@ void Light::SetLightType(LIGHT_TYPE type)
 		_shadowCamera->GetCamera()->SetScale(1.f);
 		_shadowCamera->GetCamera()->SetFar(10000.f);
 		_shadowCamera->GetCamera()->SetFOV(XM_PI / 2.f);
-		_shadowCamera->GetCamera()->SetWidth(4096);
-		_shadowCamera->GetCamera()->SetHeight(4096);
+		_shadowCamera->GetCamera()->SetWidth(8192);
+		_shadowCamera->GetCamera()->SetHeight(8192);
 
 		break;
 	case LIGHT_TYPE::POINT_LIGHT:

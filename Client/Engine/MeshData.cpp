@@ -62,6 +62,7 @@ void MeshData::Save(const wstring& _strFilePath)
 
 void MeshData::CountMeshMaterialPairs()
 {
+	_meshMaterialCount.clear();
 	for (const auto& info : _meshRenders)
 	{
 		for (const auto& material : info.materials)
@@ -91,8 +92,10 @@ vector<shared_ptr<GameObject>> MeshData::Instantiate()
 			// 같은 메시-머터리얼 페어가 2개 이상 사용되면 인스턴싱 활성화
 			if (_meshMaterialCount[{info.mesh->GetID(), info.materials[i]->GetID()}] >= 2)
 			{
-				material = info.materials[i];
-				material->SetInt(0, 1);  // 인스턴싱 활성화
+				//material = info.materials[i];
+				//material->SetInt(0, 1);  // 인스턴싱 활성화
+				material = info.materials[i]->Clone();
+				material->SetInt(0, 0);  // 인스턴싱 비활성화
 			}
 			else
 			{
