@@ -430,7 +430,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		{
 			shared_ptr<GameObject> particle = make_shared<GameObject>();
 			particle->AddComponent(make_shared<Transform>());
-			particle->AddComponent(make_shared<ParticleSystem>());
+			particle->AddComponent(make_shared<ParticleSystem>(L"G", L"..\\Resources\\Texture\\Particle\\Star.png", L"GlowParticle"));
 			particle->SetCheckFrustum(false);
 			particle->GetTransform()->SetLocalPosition(Vec3(0, 0, -0));
 			scene->AddGameObject(particle);
@@ -441,7 +441,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		{
 			shared_ptr<GameObject> particle = make_shared<GameObject>();
 			particle->AddComponent(make_shared<Transform>());
-			particle->AddComponent(make_shared<ParticleSystem>(L"T", L"..\\Resources\\Texture\\Particle\\layser.png",L"TParticle"));
+			particle->AddComponent(make_shared<ParticleSystem>(L"T", L"..\\Resources\\Texture\\Particle\\layser.png",L"PortalParticle"));
 			particle->SetCheckFrustum(false);
 			particle->GetTransform()->SetLocalPosition(Vec3(0, -200, 0));
 			scene->AddGameObject(particle);
