@@ -426,6 +426,26 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		//	
 		//	scene->AddGameObject(debugObject);
 		//}
+#pragma region ParticleSystem
+		{
+			shared_ptr<GameObject> particle = make_shared<GameObject>();
+			particle->AddComponent(make_shared<Transform>());
+			particle->AddComponent(make_shared<ParticleSystem>());
+			particle->SetCheckFrustum(false);
+			particle->GetTransform()->SetLocalPosition(Vec3(0, 0, -0));
+			scene->AddGameObject(particle);
+		}
+		#pragma endregion
+
+#pragma region ParticleSystem
+		{
+			shared_ptr<GameObject> particle = make_shared<GameObject>();
+			particle->AddComponent(make_shared<Transform>());
+			particle->AddComponent(make_shared<ParticleSystem>(L"T", L"..\\Resources\\Texture\\Particle\\layser.png",L"TParticle"));
+			particle->SetCheckFrustum(false);
+			particle->GetTransform()->SetLocalPosition(Vec3(0, -200, 0));
+			scene->AddGameObject(particle);
+		}
 	}
 #pragma endregion
 

@@ -919,6 +919,31 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"LineDebugVisualization", shader);
 	}
 
+	// TestParticle
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::PARTICLE,
+			RASTERIZER_TYPE::CULL_BACK,
+			DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
+			BLEND_TYPE::ALPHA_BLEND,
+			D3D_PRIMITIVE_TOPOLOGY_POINTLIST
+		};
+
+		ShaderArg arg =
+		{
+			"VS_Main",
+			"",
+			"",
+			"GS_Main",
+			"PS_Main"
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\Test.fx", info, arg);
+		Add<Shader>(L"TParticle", shader);
+	}
+
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1054,4 +1079,11 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>(L"LineDebugVisualization", material);
 	}
 
+	//Testparticle
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"TParticle");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+		Add<Material>(L"TParticle", material);
+	}
 }

@@ -332,5 +332,8 @@
     <FxCompile Include="..\Resources\Shader\debugVisualization.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Test.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

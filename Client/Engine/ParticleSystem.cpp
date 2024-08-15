@@ -15,18 +15,33 @@ ParticleSystem::ParticleSystem() : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 	_computeSharedBuffer->Init(sizeof(ComputeSharedInfo), 1);
 
 	_mesh = GET_SINGLE(Resources)->LoadPointMesh();
-	_material = GET_SINGLE(Resources)->Get<Material>(L"Particle");
-	shared_ptr<Texture> tex = GET_SINGLE(Resources)->Load<Texture>(
-		L"Bubbles", L"..\\Resources\\Texture\\Particle\\bubble.png");
-
-	_material->SetTexture(0, tex);
-
 	_computeMaterial = GET_SINGLE(Resources)->Get<Material>(L"ComputeParticle");
+
+	SetShader(L"Particle");
+	SetTexture(L"bubble", L"..\\Resources\\Texture\\Particle\\bubble.png");
 }
+
 
 ParticleSystem::~ParticleSystem()
 {
 }
+
+ParticleSystem::ParticleSystem(const std::wstring& textureName, const std::wstring& texturePath, const std::wstring& shaderName) : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
+{
+	_particleBuffer = make_shared<StructuredBuffer>();
+	_particleBuffer->Init(sizeof(ParticleInfo), _maxParticle);
+
+	_computeSharedBuffer = make_shared<StructuredBuffer>();
+	_computeSharedBuffer->Init(sizeof(ComputeSharedInfo), 1);
+
+	_mesh = GET_SINGLE(Resources)->LoadPointMesh();
+	SetShader(shaderName);
+	SetTexture(textureName, texturePath);
+	_computeMaterial = GET_SINGLE(Resources)->Get<Material>(L"ComputeParticle");
+
+}
+
+
 
 void ParticleSystem::FinalUpdate()
 {
@@ -62,3 +77,17 @@ void ParticleSystem::Render()
 
 	_mesh->Render(_maxParticle);
 }
+
+
+
+void ParticleSystem::SetShader(const std::wstring& shaderName)
+{
+	_material = GET_SINGLE(Resources)->Get<Material>(shaderName);
+}
+
+void ParticleSystem::SetTexture(const std::wstring& textureName, const std::wstring& texturePath)
+{
+	shared_ptr<Texture> tex = GET_SINGLE(Resources)->Load<Texture>(textureName, texturePath);
+	_material->SetTexture(0, tex);
+}
+
