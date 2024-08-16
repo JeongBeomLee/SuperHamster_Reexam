@@ -33,21 +33,28 @@ void PlayerMove::Update()
     {
         player->Update(DELTA_TIME);
 
-        // 서버 위치로 부드럽게 보간
-        Vec3 currentPos = GetTransform()->GetLocalPosition();
-        Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
-        player->SetPosition(newPos);
+        if (GetCurrentState() == PLAYER_STATE::ROLL)
+        {
+            UpdateRoll(DELTA_TIME);
+        }
+        else
+        {
+            // 서버 위치로 부드럽게 보간
+            Vec3 currentPos = GetTransform()->GetLocalPosition();
+            Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
+            player->SetPosition(newPos);
 
-        // 방향 업데이트
-        if (_serverDirection != Vec3::Zero) {
-            Vec3 correctedDir = Vec3(-_serverDirection.x, 0, -_serverDirection.z);
+            // 방향 업데이트
+            if (_serverDirection != Vec3::Zero) {
+                Vec3 correctedDir = Vec3(-_serverDirection.x, 0, -_serverDirection.z);
 
-            // 현재 회전과 목표 회전 사이를 보간
-            Vec3 currentRotation = GetTransform()->GetLocalRotation();
-            float targetYaw = atan2(correctedDir.x, correctedDir.z);
-            float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
+                // 현재 회전과 목표 회전 사이를 보간
+                Vec3 currentRotation = GetTransform()->GetLocalRotation();
+                float targetYaw = atan2(correctedDir.x, correctedDir.z);
+                float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
 
-            player->SetRotation(Vec3(-XM_PIDIV2, newYaw, 0));
+                player->SetRotation(Vec3(-XM_PIDIV2, newYaw, 0));
+            }
         }
     }
 }
@@ -61,6 +68,15 @@ void PlayerMove::Start()
 void PlayerMove::ProcessInput()
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+
+    // SPACE 키를 눌렀을 때 돌진 시작
+    if (INPUT->GetButtonDown(KEY_TYPE::SPACE))
+    {
+        StartRoll();
+        return;
+    }
+
+	if (player->GetCurrentState() == PLAYER_STATE::ROLL) return;
 
     // A 키를 누르고 있는 동안 AIM 상태 유지
     if (INPUT->GetButton(KEY_TYPE::A))
@@ -130,6 +146,48 @@ void PlayerMove::HandleMoveResult(const S2C_MoveResultPacket& packet)
         _serverPosition = Vec3(packet.posX, packet.posY, packet.posZ);
         _serverDirection = Vec3(packet.dirX, packet.dirY, packet.dirZ);
     }
+}
+
+void PlayerMove::StartRoll()
+{
+    Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+    if (player)
+    {
+        player->SetState(PLAYER_STATE::ROLL);
+        _rollTimer = 0.0f;
+
+        // 현재 이동 방향 또는 바라보는 방향으로 돌진
+        _rollDirection = _serverDirection != Vec3::Zero ? _serverDirection : GetTransform()->GetLook();
+        _rollDirection.y = 0; // Y축 이동 방지
+        _rollDirection.Normalize();
+
+        // 서버에 상태 변경 알림
+        GEngine->GetNetworkManager()->SendStateUpdate(_playerId, PLAYER_STATE::ROLL);
+    }
+}
+
+void PlayerMove::UpdateRoll(float deltaTime)
+{
+    _rollTimer += deltaTime;
+    if (_rollTimer >= _rollDuration)
+    {
+        // 돌진 종료
+        Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+        if (player)
+        {
+            player->SetState(PLAYER_STATE::IDLE);
+            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, PLAYER_STATE::IDLE);
+        }
+        return;
+    }
+    
+    // 돌진 이동 적용
+    Vec3 rollMovement = _rollDirection * _rollSpeed * deltaTime;
+    Vec3 newPos = GetTransform()->GetLocalPosition() + rollMovement;
+    GetTransform()->SetLocalPosition(newPos);
+
+    // 서버에 이동 패킷 전송
+    SendMovePacket(_rollDirection);
 }
 
 float PlayerMove::LerpAngle(float a, float b, float t)

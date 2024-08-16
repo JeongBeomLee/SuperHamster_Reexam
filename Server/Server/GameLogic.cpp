@@ -214,10 +214,17 @@ bool GameLogic::MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir)
         return false;
 
     _scene->lockWrite();
+
     if (_players[playerId].state != PLAYER_STATE::AIM) {
-        physx::PxVec3 movement = moveDir * MOVE_SPEED;
+        float moveSpeed = MOVE_SPEED;
+        if (_players[playerId].state == PLAYER_STATE::ROLL)
+        {
+            moveSpeed = ROLL_SPEED; // ROLL_SPEED는 적절한 값으로 정의해야 함
+        }
+        physx::PxVec3 movement = moveDir * moveSpeed;
         physx::PxControllerCollisionFlags collisionFlags = controller->move(movement, 0.0001f, FIXED_TIME_STEP, physx::PxControllerFilters());
     }
+
     _scene->unlockWrite();
 
     // 플레이어 위치 업데이트

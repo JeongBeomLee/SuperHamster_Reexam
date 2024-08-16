@@ -100,6 +100,7 @@ private:
 
     const float GRAVITY = -9.81f;
     const float MOVE_SPEED = 10.0f;
+    const float ROLL_SPEED = 15.0f;
 
     const float PLAYER_ATTACK_RANGE = 50.0f;  // 플레이어 공격 범위
 
