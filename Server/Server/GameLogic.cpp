@@ -57,8 +57,8 @@ void GameLogic::InitializePhysics()
 	}
 
 #ifdef _DEBUG
-    _pvdSceneClient = pxDefaultScene->getScenePvdClient();
-    _pvdSceneClient->setScenePvdFlags(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | PxPvdSceneFlag::eTRANSMIT_CONTACTS | PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+    _pvdSceneClient = _scene->getScenePvdClient();
+    _pvdSceneClient->setScenePvdFlags(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
 #endif // _DEBUG
 
     _controllerManager = PxCreateControllerManager(*_scene);
@@ -213,9 +213,11 @@ bool GameLogic::MovePlayer(uint32_t playerId, const physx::PxVec3& moveDir)
     if (!controller)
         return false;
 
-    physx::PxVec3 movement = moveDir * MOVE_SPEED;
     _scene->lockWrite();
-    physx::PxControllerCollisionFlags collisionFlags = controller->move(movement, 0.0001f, FIXED_TIME_STEP, physx::PxControllerFilters());
+    if (_players[playerId].state != PLAYER_STATE::AIM) {
+        physx::PxVec3 movement = moveDir * MOVE_SPEED;
+        physx::PxControllerCollisionFlags collisionFlags = controller->move(movement, 0.0001f, FIXED_TIME_STEP, physx::PxControllerFilters());
+    }
     _scene->unlockWrite();
 
     // 플레이어 위치 업데이트

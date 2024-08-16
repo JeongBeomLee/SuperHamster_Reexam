@@ -1,15 +1,28 @@
 #include "pch.h"
 #include "Player.h"
-#include "IdleState.h"
-#include "RunState.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "Animator.h"
+#include "Engine.h"
+#include "NetworkManager.h"
+
+#include "IdleState.h"
+#include "RunState.h"
+#include "AimState.h"
+#include "FireState.h"
+#include "GetUpState.h"
+#include "RollState.h"
+#include "HitState.h"
 
 Player::Player(uint32_t playerId, bool isLocal) : _playerId(playerId), _isLocal(isLocal)
 {
     _stateMachine.RegisterState<IdleState>(PLAYER_STATE::IDLE);
     _stateMachine.RegisterState<RunState>(PLAYER_STATE::RUN);
+    _stateMachine.RegisterState<AimState>(PLAYER_STATE::AIM);
+    _stateMachine.RegisterState<FireState>(PLAYER_STATE::FIRE);
+    _stateMachine.RegisterState<GetUpState>(PLAYER_STATE::GETUP);
+    _stateMachine.RegisterState<RollState>(PLAYER_STATE::ROLL);
+    _stateMachine.RegisterState<HitState>(PLAYER_STATE::HIT);
     _stateMachine.SetOwner(this);
 
     _gameObject = std::make_shared<GameObject>();
@@ -23,6 +36,11 @@ Player::Player(uint32_t playerId, bool isLocal, std::shared_ptr<GameObject> game
 {
     _stateMachine.RegisterState<IdleState>(PLAYER_STATE::IDLE);
     _stateMachine.RegisterState<RunState>(PLAYER_STATE::RUN);
+    _stateMachine.RegisterState<AimState>(PLAYER_STATE::AIM);
+    _stateMachine.RegisterState<FireState>(PLAYER_STATE::FIRE);
+    _stateMachine.RegisterState<GetUpState>(PLAYER_STATE::GETUP);
+    _stateMachine.RegisterState<RollState>(PLAYER_STATE::ROLL);
+    _stateMachine.RegisterState<HitState>(PLAYER_STATE::HIT);
     _stateMachine.SetOwner(this);
 
     _animator = _gameObject->GetAnimator();
@@ -38,7 +56,13 @@ void Player::Update(float deltaTime)
 
 void Player::SetState(PLAYER_STATE newState)
 {
-    _stateMachine.ChangeState(newState);
+    if (GetCurrentState() != newState) {
+        _stateMachine.ChangeState(newState);
+        if (IsLocal())
+        {
+            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, newState);
+        }
+    }
 }
 
 void Player::SetPosition(const Vec3& position)

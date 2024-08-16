@@ -36,7 +36,7 @@ void PlayerMove::Update()
         // 서버 위치로 부드럽게 보간
         Vec3 currentPos = GetTransform()->GetLocalPosition();
         Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
-        GetTransform()->SetLocalPosition(newPos);
+        player->SetPosition(newPos);
 
         // 방향 업데이트
         if (_serverDirection != Vec3::Zero) {
@@ -47,7 +47,7 @@ void PlayerMove::Update()
             float targetYaw = atan2(correctedDir.x, correctedDir.z);
             float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
 
-            GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, newYaw, 0));
+            player->SetRotation(Vec3(-XM_PIDIV2, newYaw, 0));
         }
     }
 }
@@ -60,6 +60,14 @@ void PlayerMove::Start()
 
 void PlayerMove::ProcessInput()
 {
+    Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+
+    // A 키를 누르고 있는 동안 AIM 상태 유지
+    if (INPUT->GetButton(KEY_TYPE::A))
+    {
+        player->SetState(PLAYER_STATE::AIM);
+    }
+
     Vec3 moveDir = Vec3::Zero;
 
     // 카메라 기준으로 이동 방향 결정
@@ -85,19 +93,22 @@ void PlayerMove::ProcessInput()
     if (moveDir != Vec3::Zero)
     {
         moveDir.Normalize();
-        ChangeState(PLAYER_STATE::RUN);
 
-        // 로컬에서 즉시 이동
-        Vec3 newPos = GetTransform()->GetLocalPosition() + moveDir * _moveSpeed * DELTA_TIME;
-        GetTransform()->SetLocalPosition(newPos);
+        if (GetCurrentState() != PLAYER_STATE::AIM)
+        {
+            player->SetState(PLAYER_STATE::RUN);
+            // 로컬에서 즉시 이동
+            Vec3 newPos = GetTransform()->GetLocalPosition() + moveDir * _moveSpeed * DELTA_TIME;
+            player->SetPosition(newPos);
+        }
 
         // 서버에 이동 패킷 전송
         SendMovePacket(moveDir);
     }
-	else
-	{
-		ChangeState(PLAYER_STATE::IDLE);
-	}
+    else if (GetCurrentState() != PLAYER_STATE::AIM)
+    {
+        player->SetState(PLAYER_STATE::IDLE);
+    }
 }
 
 void PlayerMove::SendMovePacket(const Vec3& direction)
@@ -137,13 +148,9 @@ float PlayerMove::repeat(float t, float length)
 void PlayerMove::ChangeState(PLAYER_STATE newState)
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
-    if (player && player->GetCurrentState() != newState)
+    if (player)
     {
         player->SetState(newState);
-        if (IsLocal())
-        {
-            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, newState);
-        }
     }
 }
 
