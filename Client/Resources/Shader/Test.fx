@@ -44,7 +44,7 @@ VS_OUT VS_Main(VS_IN input)
     Particle particle = g_data[id];
     
     float t = particle.curTime;
-    float amplitude = 25.0; // 일정한 반경
+    float amplitude = 50.0; // 일정한 반경
     float period = 1.0; // 파티클 주기 조절
     float maxHeight = 5.0; // 최대 높이
 

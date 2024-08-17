@@ -16,18 +16,24 @@ struct ParticleInfo
 	int32	alive;
 	int32	padding[3];
 };
-
+ 
 struct ComputeSharedInfo
 {
 	int32 addCount;
 	int32 padding[3];
 };
 
+
+
+
+
+
 class ParticleSystem : public Component
 {
 public:
 	ParticleSystem();
 	virtual ~ParticleSystem();
+	ParticleSystem(wstring type);
 	ParticleSystem(const std::wstring& textureName, const std::wstring& texturePath, const std::wstring& shaderName);
 
 public:

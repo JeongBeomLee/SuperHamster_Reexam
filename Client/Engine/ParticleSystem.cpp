@@ -26,7 +26,7 @@ ParticleSystem::~ParticleSystem()
 {
 }
 
-ParticleSystem::ParticleSystem(const std::wstring& textureName, const std::wstring& texturePath, const std::wstring& shaderName) : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
+ParticleSystem::ParticleSystem(wstring name) : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 {
 	_particleBuffer = make_shared<StructuredBuffer>();
 	_particleBuffer->Init(sizeof(ParticleInfo), _maxParticle);
@@ -35,11 +35,48 @@ ParticleSystem::ParticleSystem(const std::wstring& textureName, const std::wstri
 	_computeSharedBuffer->Init(sizeof(ComputeSharedInfo), 1);
 
 	_mesh = GET_SINGLE(Resources)->LoadPointMesh();
-	SetShader(shaderName);
-	SetTexture(textureName, texturePath);
 	_computeMaterial = GET_SINGLE(Resources)->Get<Material>(L"ComputeParticle");
 
+	if (name == L"Default") {
+		SetShader(L"Particle");
+		SetTexture(L"bubble", L"..\\Resources\\Texture\\Particle\\bubble.png");
+		_maxParticle = 1;
+
+		_minLifeTime = 0.5f;
+		_maxLifeTime = 1.f;
+		_minSpeed = 100;
+		_maxSpeed = 50;
+		_startScale = 0.5f;
+		_endScale = 10.f;
+	}
+
+	else if (name == L"Glow") {
+		SetShader(L"GlowParticle");
+		SetTexture(L"glow", L"..\\Resources\\Texture\\Particle\\Star.png");
+		_maxParticle = 100;
+
+		_minLifeTime = 0.5f;
+		_maxLifeTime = 1.f;
+		_minSpeed = 100;
+		_maxSpeed = 50;
+
+		_startScale = 0.5f;
+		_endScale = 25.f;
+	}
+	else if(name == L"Portal"){
+		SetShader(L"PortalParticle");
+		SetTexture(L"portal", L"..\\Resources\\Texture\\Particle\\layser.png");
+		_maxParticle = 1000;
+		_minLifeTime = 0.9f;
+		_maxLifeTime = 5.f;
+		_minSpeed = 100;
+		_maxSpeed = 50;
+
+		_startScale = 10.f;
+		_endScale = 10.f;
+	}
 }
+
 
 
 
