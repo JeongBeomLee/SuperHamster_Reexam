@@ -19,6 +19,7 @@
 #include "TestAnimation.h"
 #include "PlayerMove.h"
 #include "PlayerManager.h"
+#include "AIController.h"
 
 void SceneManager::Update()
 {
@@ -419,6 +420,93 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		//	
 		//	scene->AddGameObject(debugObject);
 		//}
+
+		/*{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2_TelepachyRat.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Rat");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-2700, 100.f, 340.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(-0.f, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(0.8f, 0.8f, 0.8f));
+				shared_ptr<AIController> AI = make_shared<AIController>();
+				AI->SetMonsterType(MonsterType::TelepachyRat);
+				gameObject->AddComponent(AI);
+
+				scene->AddGameObject(gameObject);
+
+			}
+
+		}
+
+		{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2_TelepachyRat.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Rat2");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-2900, 100.f, 340.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(-0.f, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(0.8f, 0.8f, 0.8f));
+				shared_ptr<AIController> AI = make_shared<AIController>();
+				AI->SetMonsterType(MonsterType::TelepachyRat);
+				gameObject->AddComponent(AI);
+
+				scene->AddGameObject(gameObject);
+
+			}
+
+		}
+		{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2_TelepachyRat.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Rat3");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-2800, 100.f, 340.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(-0.f, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+				shared_ptr<AIController> AI = make_shared<AIController>();
+				AI->SetMonsterType(MonsterType::TelepachyRat);
+				gameObject->AddComponent(AI);
+
+				scene->AddGameObject(gameObject);
+
+			}
+
+		}*/
+
+		{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2_Haunt.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Haunt");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-300.f, 150.f, 300.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(-0.f, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(1, 1, 1));
+				shared_ptr<AIController> AI = make_shared<AIController>();
+				AI->SetMonsterType(MonsterType::Haunt);
+				gameObject->AddComponent(AI);
+
+				scene->AddGameObject(gameObject);
+
+			}
+
+		}
 	}
 #pragma endregion
 

@@ -281,7 +281,17 @@ void Engine::ShowFps()
 	uint32 fps = GET_SINGLE(Timer)->GetFps();
 
 	WCHAR text[100] = L"";
-	::wsprintf(text, L"FPS : %d", fps);
+
+	Player* localPlayer = GET_SINGLE(PlayerManager)->GetLocalPlayer();
+	if (localPlayer)
+	{
+		Vec3 playerPos = localPlayer->GetGameObject()->GetTransform()->GetLocalPosition();
+		::swprintf_s(text, 100, L"FPS : %d | Pos : (%.2f, %.2f, %.2f)", fps, playerPos.x, playerPos.y, playerPos.z);
+	}
+	else
+	{
+		::swprintf_s(text, 100, L"FPS : %d", fps);
+	}
 
 	::SetWindowText(_window.hwnd, text);
 }

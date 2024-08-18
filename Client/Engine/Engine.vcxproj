@@ -175,6 +175,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIController.h" />
     <ClInclude Include="AimState.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="BaseCollider.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIController.cpp" />
     <ClCompile Include="AimState.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BaseCollider.cpp" />

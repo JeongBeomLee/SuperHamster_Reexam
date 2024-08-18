@@ -21,6 +21,11 @@ void Texture::Load(const wstring& path)
 		::LoadFromDDSFile(path.c_str(), DDS_FLAGS_NONE, nullptr, _image);
 	else if (ext == L".tga" || ext == L".TGA")
 		::LoadFromTGAFile(path.c_str(), nullptr, _image);
+	else if (ext == L".psd" || ext == L".PSD") {
+		// 확장자 png로 변경
+		wstring newPath = path.substr(0, path.size() - 3) + L"png";
+		::LoadFromWICFile(newPath.c_str(), WIC_FLAGS_NONE, nullptr, _image);
+	}
 	else // png, jpg, jpeg, bmp
 		::LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, nullptr, _image);
 

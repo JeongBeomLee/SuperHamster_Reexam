@@ -204,6 +204,7 @@
     <ClCompile Include="RollState.cpp">
       <Filter>Object\StateMachine\PlayerState\States</Filter>
     </ClCompile>
+    <ClCompile Include="AIController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -371,6 +372,7 @@
     <ClInclude Include="RollState.h">
       <Filter>Object\StateMachine\PlayerState\States</Filter>
     </ClInclude>
+    <ClInclude Include="AIController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
