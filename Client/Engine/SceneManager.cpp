@@ -485,6 +485,43 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			}
 
 		}*/
+		{
+		for(int i=1;i<3;i++){
+				shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\spike_trap.fbx");
+
+				vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+
+				for (auto& gameObject : gameObjects)
+				{
+					static int id = 0;
+					gameObject->SetName(L"untitled" + to_wstring(id++));
+					gameObject->SetCheckFrustum(true);
+					gameObject->SetStatic(false);
+
+					Vec3 Pos = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalPosition();
+					Vec3 Scale = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalScale();
+					Vec3 GlobalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetGlobalRotation();
+					Vec3 LocalRotation = gameObject->GetMeshRenderer()->GetMesh()->GetFbxMeshInfo().GetRotation();
+					Vec3 Rotation = GlobalRotation + LocalRotation;
+
+					Rotation.x -= XM_PIDIV2;
+					//Rotation.z -= XM_PIDIV2;
+					Rotation.y -= XM_PI;
+
+					//gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 500.f));
+					gameObject->GetTransform()->SetLocalPosition(Pos + Vec3(-3100.f, 50, i*100));
+					gameObject->GetTransform()->SetLocalScale(Scale * Vec3(0.5f, 0.5f, 0.5f));
+					gameObject->GetTransform()->SetLocalRotation(Rotation);
+					//gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
+
+					//if(gameObject->GetVertexAnimator()) // 애니메이션 멈추는 방법 
+					//	gameObject->GetVertexAnimator()->Stop();
+
+					scene->AddGameObject(gameObject);
+				}
+		}
+}
+
 
 		{
 			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage2_Haunt.fbx");
