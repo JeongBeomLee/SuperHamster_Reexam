@@ -38,6 +38,10 @@ public:
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
     std::unique_ptr<NetworkManager>& GetNetworkManager() { return _networkManager; }
+	physx::PxPhysics* GetPhysics() { return _physics; }
+	physx::PxScene* GetScene() { return _scene; }
+	physx::PxControllerManager* GetControllerManager() { return _controllerManager; }
+
 	int GetMyPlayerId() const { return _myPlayerId; }
 	int GetOtherPlayerId() const { return 1 - _myPlayerId; }
 	void SetMyPlayerId(int playerId) { _myPlayerId = playerId; }

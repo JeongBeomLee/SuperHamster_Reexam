@@ -15,7 +15,9 @@ NetworkManager::~NetworkManager()
 
 bool NetworkManager::Connect(const std::string& serverIP, int port)
 {
+    int DelayZeroOpt = 1;
     _socket = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&DelayZeroOpt, sizeof(DelayZeroOpt));
     if (_socket == INVALID_SOCKET)
     {
         std::cerr << "Failed to create socket" << std::endl;

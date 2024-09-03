@@ -21,6 +21,7 @@ public:
 
     std::shared_ptr<GameObject> GetGameObject() const { return _gameObject; }
     void PlayAnimation(const PLAYER_STATE state);
+    void ApplyGravity(float deltaTime);
 
 private:
     uint32_t _playerId;
@@ -28,4 +29,15 @@ private:
     PlayerStateMachine _stateMachine;
     std::shared_ptr<GameObject> _gameObject;
     std::shared_ptr<Animator> _animator;
+
+    struct PlayerPhysicsState
+    {
+        physx::PxController* controller;
+        physx::PxVec3 moveDirection;
+    };
+
+    PlayerPhysicsState _playerPhysics;
+
+public:
+    const PlayerPhysicsState& GetPlayerPhysics() { return _playerPhysics; }
 };

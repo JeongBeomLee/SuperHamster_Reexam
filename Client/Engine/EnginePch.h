@@ -220,7 +220,7 @@ public:								\
 
 #define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
-constexpr uint32 MAX_NUM_PX_THREADS = 1;
+constexpr uint32 MAX_NUM_PX_THREADS = 2;
 
 struct TransformParams
 {

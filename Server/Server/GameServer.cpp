@@ -16,7 +16,9 @@ GameServer::~GameServer()
 
 bool GameServer::Start(int port)
 {
+    int DelayZeroOpt = 1;
     _listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(_listenSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&DelayZeroOpt, sizeof(DelayZeroOpt));
     if (_listenSocket == INVALID_SOCKET) {
         std::cerr << "Failed to create socket" << std::endl;
         return false;

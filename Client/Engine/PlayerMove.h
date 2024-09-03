@@ -31,6 +31,7 @@ public:
 private:
     uint32_t _playerId = -1;
     float _moveSpeed = 500.0f;
+    Vec3 _inputDirection = Vec3::Zero;
     Vec3 _serverPosition;
     Vec3 _serverDirection;
     float _lerpSpeed = 10.0f; // 서버 위치로의 보간 속도

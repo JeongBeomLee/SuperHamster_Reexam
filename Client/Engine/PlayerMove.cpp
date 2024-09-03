@@ -28,6 +28,7 @@ void PlayerMove::Update()
     {
         ProcessInput();
     }
+
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
     if (player)
     {
@@ -119,7 +120,7 @@ void PlayerMove::ProcessInput()
         }
 
         // 서버에 이동 패킷 전송
-        SendMovePacket(moveDir);
+        //SendMovePacket(moveDir);
     }
     else if (GetCurrentState() != PLAYER_STATE::AIM)
     {
