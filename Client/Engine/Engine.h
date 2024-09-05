@@ -11,7 +11,6 @@
 #include "Texture.h"
 #include "RenderTargetGroup.h"
 #include "Timer.h"
-#include "NetworkManager.h"
 #include "MeshData.h"
 
 class Engine
@@ -37,7 +36,6 @@ public:
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
-    std::unique_ptr<NetworkManager>& GetNetworkManager() { return _networkManager; }
 	physx::PxPhysics* GetPhysics() { return _physics; }
 	physx::PxScene* GetScene() { return _scene; }
 	physx::PxControllerManager* GetControllerManager() { return _controllerManager; }
@@ -61,17 +59,6 @@ private:
 	void CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 count);
 	void CreateRenderTargetGroups();
 
-	void NetworkUpdate();
-	void RegisterPacketHandlers();
-
-	// 패킷 핸들러 함수들
-	void Handle_S2C_LOGIN_RESULT(PacketHeader* packet);
-	void Handle_S2C_GAME_START_RESULT(PacketHeader* packet);
-	void Handle_S2C_MOVE_RESULT(PacketHeader* packet);
-	void Handle_S2C_ATTACK_RESULT(PacketHeader* packet);
-	void Handle_S2C_INTERACTION_RESULT(PacketHeader* packet);
-	void Handle_S2C_UPDATE_PLAYER_STATE(PacketHeader* packet);
-
 	void InitializePhysics();
 	void UpdatePhysics();
 
@@ -92,7 +79,6 @@ private:
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
 
-	std::unique_ptr<NetworkManager> _networkManager;
 	int _myPlayerId = -1;
 
 	physx::PxDefaultAllocator		_allocator;

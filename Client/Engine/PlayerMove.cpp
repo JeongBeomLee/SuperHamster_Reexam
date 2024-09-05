@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "PlayerMove.h"
 #include "Input.h"
-#include "NetworkManager.h"
 #include "Transform.h"
 #include "SceneManager.h"
 #include "Scene.h"
@@ -38,32 +37,11 @@ void PlayerMove::Update()
         {
             UpdateRoll(DELTA_TIME);
         }
-        else
-        {
-            // 서버 위치로 부드럽게 보간
-            Vec3 currentPos = GetTransform()->GetLocalPosition();
-            Vec3 newPos = Vec3::Lerp(currentPos, _serverPosition, _lerpSpeed * DELTA_TIME);
-            player->SetPosition(newPos);
-
-            // 방향 업데이트
-            if (_serverDirection != Vec3::Zero) {
-                Vec3 correctedDir = Vec3(-_serverDirection.x, 0, -_serverDirection.z);
-
-                // 현재 회전과 목표 회전 사이를 보간
-                Vec3 currentRotation = GetTransform()->GetLocalRotation();
-                float targetYaw = atan2(correctedDir.x, correctedDir.z);
-                float newYaw = LerpAngle(currentRotation.y, targetYaw, _rotationLerpSpeed * DELTA_TIME);
-
-                player->SetRotation(Vec3(-XM_PIDIV2, newYaw, 0));
-            }
-        }
     }
 }
 
 void PlayerMove::Start()
 {
-    _serverPosition = GetTransform()->GetLocalPosition();
-    _serverDirection = GetTransform()->GetLocalRotation();
 }
 
 void PlayerMove::ProcessInput()
@@ -98,6 +76,7 @@ void PlayerMove::ProcessInput()
     cameraForward.Normalize();
     cameraRight.Normalize();
 
+    // 방향키 입력에 따라서 이동 방향 결정
     if (INPUT->GetButton(KEY_TYPE::UP))
         moveDir += cameraForward;
     if (INPUT->GetButton(KEY_TYPE::DOWN))
@@ -106,7 +85,7 @@ void PlayerMove::ProcessInput()
         moveDir -= cameraRight;
     if (INPUT->GetButton(KEY_TYPE::RIGHT))
         moveDir += cameraRight;
-
+    
     if (moveDir != Vec3::Zero)
     {
         moveDir.Normalize();
@@ -118,34 +97,10 @@ void PlayerMove::ProcessInput()
             Vec3 newPos = GetTransform()->GetLocalPosition() + moveDir * _moveSpeed * DELTA_TIME;
             player->SetPosition(newPos);
         }
-
-        // 서버에 이동 패킷 전송
-        //SendMovePacket(moveDir);
     }
     else if (GetCurrentState() != PLAYER_STATE::AIM)
     {
         player->SetState(PLAYER_STATE::IDLE);
-    }
-}
-
-void PlayerMove::SendMovePacket(const Vec3& direction)
-{
-    C2S_MovePacket* packet = new C2S_MovePacket();
-    packet->type = PacketType::C2S_MOVE;
-    packet->size = sizeof(C2S_MovePacket);
-    packet->playerId = _playerId;
-    packet->dirX = direction.x;
-    packet->dirZ = direction.z;
-
-    GEngine->GetNetworkManager()->SendPacket(packet);
-}
-
-void PlayerMove::HandleMoveResult(const S2C_MoveResultPacket& packet)
-{
-    if (packet.playerId == _playerId)
-    {
-        _serverPosition = Vec3(packet.posX, packet.posY, packet.posZ);
-        _serverDirection = Vec3(packet.dirX, packet.dirY, packet.dirZ);
     }
 }
 
@@ -158,12 +113,9 @@ void PlayerMove::StartRoll()
         _rollTimer = 0.0f;
 
         // 현재 이동 방향 또는 바라보는 방향으로 돌진
-        _rollDirection = _serverDirection != Vec3::Zero ? _serverDirection : GetTransform()->GetLook();
+        _rollDirection = GetTransform()->GetLook();
         _rollDirection.y = 0; // Y축 이동 방지
         _rollDirection.Normalize();
-
-        // 서버에 상태 변경 알림
-        GEngine->GetNetworkManager()->SendStateUpdate(_playerId, PLAYER_STATE::ROLL);
     }
 }
 
@@ -177,7 +129,6 @@ void PlayerMove::UpdateRoll(float deltaTime)
         if (player)
         {
             player->SetState(PLAYER_STATE::IDLE);
-            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, PLAYER_STATE::IDLE);
         }
         return;
     }
@@ -186,9 +137,6 @@ void PlayerMove::UpdateRoll(float deltaTime)
     Vec3 rollMovement = _rollDirection * _rollSpeed * deltaTime;
     Vec3 newPos = GetTransform()->GetLocalPosition() + rollMovement;
     GetTransform()->SetLocalPosition(newPos);
-
-    // 서버에 이동 패킷 전송
-    SendMovePacket(_rollDirection);
 }
 
 float PlayerMove::LerpAngle(float a, float b, float t)

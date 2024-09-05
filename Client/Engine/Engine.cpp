@@ -53,22 +53,6 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Resources)->Init();
 
 	InitializePhysics();
-	_networkManager = std::make_unique<NetworkManager>();
-	if (_networkManager->Connect(SERVER_IP, PORT))
-	{
-		// 패킷 핸들러 등록
-		RegisterPacketHandlers();
-		// 로그인 패킷 전송
-		C2S_LoginPacket* loginPacket = new C2S_LoginPacket();
-		loginPacket->type = PacketType::C2S_LOGIN;
-		loginPacket->size = sizeof(C2S_LoginPacket);
-		_networkManager->SendPacket(loginPacket);
-	}
-	else
-	{
-		// 연결 실패
-		std::cerr << "Failed to connect to server" << std::endl;
-	}
 }
 
 void Engine::Update()
@@ -82,7 +66,6 @@ void Engine::Update()
 	Render();
 	ShowFps();
 
-	NetworkUpdate();
 	//UpdatePhysics();
 }
 
@@ -379,112 +362,6 @@ void Engine::CreateRenderTargetGroups()
 
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<RenderTargetGroup>();
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
-	}
-}
-
-void Engine::NetworkUpdate()
-{
-	_networkManager->Update();
-}
-
-void Engine::RegisterPacketHandlers()
-{
-	_networkManager->RegisterHandler(PacketType::S2C_LOGIN_RESULT,
-		[this](PacketHeader* packet) { Handle_S2C_LOGIN_RESULT(packet); });
-	_networkManager->RegisterHandler(PacketType::S2C_GAME_START_RESULT,
-		[this](PacketHeader* packet) { Handle_S2C_GAME_START_RESULT(packet); });
-	_networkManager->RegisterHandler(PacketType::S2C_MOVE_RESULT,
-		[this](PacketHeader* packet) { Handle_S2C_MOVE_RESULT(packet); });
-	_networkManager->RegisterHandler(PacketType::S2C_ATTACK_RESULT,
-		[this](PacketHeader* packet) { Handle_S2C_ATTACK_RESULT(packet); });
-	_networkManager->RegisterHandler(PacketType::S2C_INTERACTION_RESULT,
-		[this](PacketHeader* packet) { Handle_S2C_INTERACTION_RESULT(packet); });
-	_networkManager->RegisterHandler(PacketType::S2C_UPDATE_PLAYER_STATE,
-		[this](PacketHeader* packet) { Handle_S2C_UPDATE_PLAYER_STATE(packet); });
-}
-
-void Engine::Handle_S2C_LOGIN_RESULT(PacketHeader* packet)
-{
-	S2C_LoginResultPacket* loginResult = reinterpret_cast<S2C_LoginResultPacket*>(packet);
-	if (loginResult->success)
-	{
-		std::cout << "Login successful. My Player ID: " << loginResult->playerId << std::endl;
-		_myPlayerId = loginResult->playerId;
-		// 게임 시작 요청 패킷 전송
-	}
-	else
-	{
-		std::cout << "Login failed." << std::endl;
-	}
-}
-
-void Engine::Handle_S2C_GAME_START_RESULT(PacketHeader* packet)
-{
-	S2C_GameStartResultPacket* gameStartResult = reinterpret_cast<S2C_GameStartResultPacket*>(packet);
-	if (gameStartResult->success)
-	{
-		std::cout << "Game started. " << std::endl;
-		// 게임 시작 관련 추가 로직
-	}
-	else
-	{
-		std::cout << "Failed to start game." << std::endl;
-	}
-}
-
-void Engine::Handle_S2C_MOVE_RESULT(PacketHeader* packet)
-{
-	S2C_MoveResultPacket* moveResult = reinterpret_cast<S2C_MoveResultPacket*>(packet);
-	auto scene = GET_SINGLE(SceneManager)->GetActiveScene();
-	auto player = scene->GetGameObjectByName(L"Player" + std::to_wstring(moveResult->playerId));
-	if (player)
-	{
-		auto playerMove = player->GetMonoBehaviour<PlayerMove>();
-		if (playerMove)
-		{
-			playerMove->HandleMoveResult(*moveResult);
-		}
-	}
-}
-
-void Engine::Handle_S2C_ATTACK_RESULT(PacketHeader* packet)
-{
-	S2C_AttackResultPacket* attackResult = reinterpret_cast<S2C_AttackResultPacket*>(packet);
-	if (attackResult->hit)
-	{
-		std::cout << "Player " << attackResult->playerId << " hit target " << attackResult->targetId
-			<< " for " << attackResult->damage << " damage." << std::endl;
-		// 데미지 적용, 이펙트 표시 등의 추가 로직
-	}
-	else
-	{
-		std::cout << "Player " << attackResult->playerId << " missed." << std::endl;
-	}
-}
-
-void Engine::Handle_S2C_INTERACTION_RESULT(PacketHeader* packet)
-{
-	S2C_InteractionResultPacket* interactionResult = reinterpret_cast<S2C_InteractionResultPacket*>(packet);
-	if (interactionResult->success)
-	{
-		std::cout << "Player " << interactionResult->playerId << " interacted with "
-			<< interactionResult->targetId << std::endl;
-		// 상호작용 결과 처리 로직
-	}
-	else
-	{
-		std::cout << "Interaction failed." << std::endl;
-	}
-}
-
-void Engine::Handle_S2C_UPDATE_PLAYER_STATE(PacketHeader* packet)
-{
-	S2C_UpdatePlayerStatePacket* updatePlayerState = reinterpret_cast<S2C_UpdatePlayerStatePacket*>(packet);
-	uint32_t playerId = updatePlayerState->playerId;
-	Player* player = GET_SINGLE(PlayerManager)->GetPlayer(playerId);
-	if (player && !player->IsLocal())
-	{
-		player->SetState(static_cast<PLAYER_STATE>(updatePlayerState->newState));
 	}
 }
 

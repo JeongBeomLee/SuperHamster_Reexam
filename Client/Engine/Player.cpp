@@ -4,7 +4,6 @@
 #include "Transform.h"
 #include "Animator.h"
 #include "Engine.h"
-#include "NetworkManager.h"
 
 #include "IdleState.h"
 #include "RunState.h"
@@ -104,10 +103,6 @@ void Player::SetState(PLAYER_STATE newState)
     if (GetCurrentState() != newState) 
     {
         _stateMachine.ChangeState(newState);
-        if (IsLocal())
-        {
-            GEngine->GetNetworkManager()->SendStateUpdate(_playerId, newState);
-        }
     }
 }
 
