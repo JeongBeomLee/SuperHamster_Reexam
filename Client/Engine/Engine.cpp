@@ -24,6 +24,10 @@ Engine::~Engine()
 	_cpuDispatcher->release();
 	_physics->release();
 	_foundation->release();
+	if(_pvd)
+		_pvd->release();
+	if(_pvdTransport)
+		_pvdTransport->release();
 }
 
 void Engine::Init(const WindowInfo& info)
@@ -66,7 +70,7 @@ void Engine::Update()
 	Render();
 	ShowFps();
 
-	//UpdatePhysics();
+	UpdatePhysics();
 }
 
 void Engine::ToggleFullscreen()
@@ -156,6 +160,7 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 		meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
 		meshDesc.points.stride = sizeof(physx::PxVec3);
 		meshDesc.points.data = pxVertices.data();
+
 		meshDesc.triangles.count = static_cast<physx::PxU32>(pxIndices.size() / 3);
 		meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
 		meshDesc.triangles.data = pxIndices.data();
@@ -206,7 +211,7 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 	desc.position = physx::PxExtendedVec3(-460.224, 300, 60.2587);
 	_playerController = _controllerManager->createController(desc);*/
 
-	std::cout << "Physics initialized" << std::endl;
+	std::cout << "Game Map Loaded.\n";
 }
 
 void Engine::SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath)
@@ -373,7 +378,14 @@ void Engine::InitializePhysics()
 		return;
 	}
 
+#ifdef _DEBUG
+	_pvd = PxCreatePvd(*_foundation);
+	_pvdTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
+	_pvd->connect(*_pvdTransport, physx::PxPvdInstrumentationFlag::eALL);
+	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, _pvd);
+#else
 	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true);
+#endif
 	if (!_physics) {
 		std::cerr << "PxCreatePhysics failed!" << std::endl;
 		return;
@@ -389,20 +401,16 @@ void Engine::InitializePhysics()
 	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
 	sceneDesc.cpuDispatcher = _cpuDispatcher;
 	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
-	sceneDesc.kineKineFilteringMode = physx::PxPairFilteringMode::eKEEP;
-	sceneDesc.staticKineFilteringMode = physx::PxPairFilteringMode::eKEEP;
 	_scene = _physics->createScene(sceneDesc);
 	if (!_scene) {
 		std::cerr << "createScene failed!" << std::endl;
 		return;
 	}
 
-	// µð¹ö±ë
-	//_pvdSceneClient = _scene->getScenePvdClient();
-	//_pvdSceneClient->setScenePvdFlags(
-	//	physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | 
-	//	physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | 
-	//	physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+#ifdef _DEBUG
+	_pvdSceneClient = _scene->getScenePvdClient();
+	_pvdSceneClient->setScenePvdFlags(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
+#endif // _DEBUG
 
 	_controllerManager = PxCreateControllerManager(*_scene);
 }

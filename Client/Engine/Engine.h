@@ -89,6 +89,7 @@ private:
 	physx::PxScene*					_scene				= nullptr;
 	physx::PxControllerManager*		_controllerManager	= nullptr;
 
+	// µð¹ö±ë¿ë
 	physx::PxPvd*					_pvd = nullptr;
 	physx::PxPvdTransport*			_pvdTransport = nullptr;
 	physx::PxPvdSceneClient*		_pvdSceneClient = nullptr;

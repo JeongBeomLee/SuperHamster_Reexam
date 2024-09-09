@@ -15,7 +15,7 @@ Game::~Game()
 void Game::Init(const WindowInfo& info)
 {
 	int myGameID = -1;
-	cout << "My Game ID: " << endl;
+	//cout << "My Game ID: " << endl;
 
 	GEngine->SetMyPlayerId(myGameID);
 	GEngine->Init(info);
