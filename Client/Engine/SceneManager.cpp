@@ -319,20 +319,20 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma region FBX
 	{
 		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Stage1.fbx");
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
 			GEngine->LoadMapMeshForPhysics(meshData);
 			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 
 			for (auto& gameObject : gameObjects)
 			{
 				static int id = 0;
-				gameObject->SetName(L"Stage1_" + to_wstring(id++));
+				gameObject->SetName(L"Map" + to_wstring(id++));
 				gameObject->SetCheckFrustum(false);
 				gameObject->SetStatic(false);
 
 				Vec3 Pos = Vec3(0.f, 0.f, 0.f);
 				Vec3 Scale = Vec3(1.f, 1.f, 1.f);
-				Vec3 Rotation = Vec3(-XM_PIDIV2, 0.f, 0.f);
+				Vec3 Rotation = Vec3(-XM_PIDIV2, XM_PIDIV2, 0.f);
 
 				gameObject->GetTransform()->SetLocalPosition(Pos);
 				gameObject->GetTransform()->SetLocalScale(Scale);
@@ -343,7 +343,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 
 		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
 
 			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 			int playerID = GEngine->GetMyPlayerId();
@@ -352,10 +352,11 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject->SetName(L"Player" + to_wstring(playerID));
 				gameObject->SetCheckFrustum(false);
 				gameObject->SetStatic(false);
-				gameObject->GetTransform()->SetLocalPosition(Vec3(-460.224, 0, 60.2587));
-				gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
-				gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
+				gameObject->GetTransform()->SetLocalPosition(Vec3(-460.224, 150.f, 60.2587));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
 				scene->AddGameObject(gameObject);
+				//gameObject->AddComponent(make_shared<TestAnimation>());
 				gameObject->AddComponent(make_shared<PlayerMove>(playerID));
 
 				GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, gameObject);

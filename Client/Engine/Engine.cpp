@@ -154,7 +154,7 @@ void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 			}
 		}
 
-		//SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
+		SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
 
 		physx::PxTriangleMeshDesc meshDesc;
 		meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());

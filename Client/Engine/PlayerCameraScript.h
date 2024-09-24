@@ -16,9 +16,9 @@ public:
 
 private:
 	float _speed		= 500.f;
-	float _RotationX	= 45.f;
+	float _RotationX	= 80.f;
 	float _RotationY	= -180.f;
-	float _Distance		= 1000.f;
+	float _Distance		= 1250.f;
 	float _Height		= 250.f;
 };
 
