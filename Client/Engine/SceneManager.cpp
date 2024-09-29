@@ -343,7 +343,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 
 		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\untitled.fbx");
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
 
 			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 			int playerID = GEngine->GetMyPlayerId();

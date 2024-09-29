@@ -3,17 +3,18 @@
 
 enum class PLAYER_STATE
 {
-    DIE = 0,
-    FIRE = 1,
-    DANCE1 = 2,
-    GETUP = 3,
-    DANCE2 = 4,
-    AIM = 5,
-    HIT = 6,
-    RUN = 7,
-    ROLL = 8,
-    IDLE = 9,
-    
+    RUN = 0,
+    ROLL = 1,
+    AIM = 2,
+    FIRE = 3,
+    HIT = 4,
+    GETUP = 5,
+    DIE = 6,
+    DANCE1 = 7,
+    DANCE2 = 8,
+    DANCE3 = 9,
+    DANCE4 = 10,
+    IDLE = 11,
 
     END
 };
