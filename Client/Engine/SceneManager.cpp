@@ -294,8 +294,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			material->SetTexture(0, texture);
 			meshRenderer->SetMaterial(material);
 		}
-		obj->AddComponent(meshRenderer);
-		scene->AddGameObject(obj);
+		//obj->AddComponent(meshRenderer);
+		//scene->AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -343,7 +343,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 
 		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
 
 			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
 			int playerID = GEngine->GetMyPlayerId();

@@ -38,7 +38,7 @@ void PlayerCameraScript::LateUpdate()
 
 	// 카메라의 위치 설정
 	Vec3 cameraDirection = GetTransform()->GetLook();
-	Vec3 cameraPos = playerPos - cameraDirection * _Distance + Vec3(0.0f, _Height, 0.0f);
+	Vec3 cameraPos = playerPos - (cameraDirection * _Distance);
 	GetTransform()->SetLocalPosition(cameraPos);
 	//GetTransform()->LookAt(playerPos);
 }
