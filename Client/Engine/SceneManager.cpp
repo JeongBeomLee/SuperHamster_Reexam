@@ -294,8 +294,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			material->SetTexture(0, texture);
 			meshRenderer->SetMaterial(material);
 		}
-		//obj->AddComponent(meshRenderer);
-		//scene->AddGameObject(obj);
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -303,9 +303,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
-		light->GetTransform()->SetLocalPosition(Vec3(-5500.f, 5000.f, -3000.f));
+		light->GetTransform()->SetLocalPosition(Vec3(-4.49838f, 1000.f, -1171.68f));
 		light->AddComponent(make_shared<Light>());
-		light->GetLight()->SetLightDirection(Vec3(1, -1, 1));
+		light->GetLight()->SetLightDirection(Vec3(0, -1, 0));
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		light->GetLight()->SetDiffuse(Vec3(1.f, 1.f, 1.f));
 		light->GetLight()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));

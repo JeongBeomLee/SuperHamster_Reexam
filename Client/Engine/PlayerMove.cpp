@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "Timer.h"
 #include "PlayerManager.h"
+#include "Player.h"
+#include "GameObject.h"
 
 PlayerMove::PlayerMove()
 {
@@ -47,6 +49,12 @@ void PlayerMove::Start()
 void PlayerMove::ProcessInput()
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
+
+    if (INPUT->GetButtonDown(KEY_TYPE::KEY_1))
+	{
+        Vec3 playerPos = player->GetGameObject()->GetTransform()->GetLocalPosition();
+        cout << "Player Position: " << playerPos.x << ", " << playerPos.y << ", " << playerPos.z << endl;
+	}
 
     // SPACE 키를 눌렀을 때 돌진 시작
     if (INPUT->GetButtonDown(KEY_TYPE::SPACE))
