@@ -14,6 +14,7 @@ public:
     virtual void Update() override;
 
     void ProcessInput();
+    void RotateTowardMovementDirection(const Vec3& moveDir);
 
     void StartRoll();
     void UpdateRoll(float deltaTime);

@@ -318,49 +318,55 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	
 #pragma region FBX
 	{
-		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
-			GEngine->LoadMapMeshForPhysics(meshData);
-			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
+		GEngine->LoadMapMeshForPhysics(mapMeshData);
+		vector<shared_ptr<GameObject>> mapObjects = mapMeshData->Instantiate();
 
-			for (auto& gameObject : gameObjects)
-			{
-				static int id = 0;
-				gameObject->SetName(L"Map" + to_wstring(id++));
-				gameObject->SetCheckFrustum(false);
-				gameObject->SetStatic(false);
+		for (auto& obj : mapObjects) {
+			static int id = 0;
+			obj->SetName(L"Map" + to_wstring(id++));
+			obj->SetCheckFrustum(false);
+			obj->SetStatic(false);
 
-				Vec3 Pos = Vec3(0.f, 0.f, 0.f);
-				Vec3 Scale = Vec3(1.f, 1.f, 1.f);
-				Vec3 Rotation = Vec3(-XM_PIDIV2, XM_PIDIV2, 0.f);
+			Vec3 Pos = Vec3(0.f, 0.f, 0.f);
+			Vec3 Scale = Vec3(1.f, 1.f, 1.f);
+			Vec3 Rotation = Vec3(-XM_PIDIV2, XM_PIDIV2, 0.f);
 
-				gameObject->GetTransform()->SetLocalPosition(Pos);
-				gameObject->GetTransform()->SetLocalScale(Scale);
-				gameObject->GetTransform()->SetLocalRotation(Rotation);
+			obj->GetTransform()->SetLocalPosition(Pos);
+			obj->GetTransform()->SetLocalScale(Scale);
+			obj->GetTransform()->SetLocalRotation(Rotation);
 
-				scene->AddGameObject(gameObject);
-			}
+			scene->AddGameObject(obj);
 		}
 
-		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
+		shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
+		vector<shared_ptr<GameObject>> playerObjects = playerMeshData->Instantiate();
+		int playerID = GEngine->GetMyPlayerId();
+		for (auto& obj : playerObjects) {
+			obj->SetName(L"Player" + to_wstring(playerID));
+			obj->SetCheckFrustum(false);
+			obj->SetStatic(false);
+			obj->GetTransform()->SetLocalPosition(Vec3(-460.224, 150.f, 60.2587));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			obj->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
+			scene->AddGameObject(obj);
+			//obj->AddComponent(make_shared<TestAnimation>());
+			obj->AddComponent(make_shared<PlayerMove>(playerID));
 
-			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-			int playerID = GEngine->GetMyPlayerId();
-			for (auto& gameObject : gameObjects)
-			{
-				gameObject->SetName(L"Player" + to_wstring(playerID));
-				gameObject->SetCheckFrustum(false);
-				gameObject->SetStatic(false);
-				gameObject->GetTransform()->SetLocalPosition(Vec3(-460.224, 150.f, 60.2587));
-				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-				gameObject->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
-				scene->AddGameObject(gameObject);
-				//gameObject->AddComponent(make_shared<TestAnimation>());
-				gameObject->AddComponent(make_shared<PlayerMove>(playerID));
+			GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, obj);
+		}
 
-				GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, gameObject);
-			}
+		shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+		vector<shared_ptr<GameObject>> defaultGunObjects = defaultGunMeshData->Instantiate();
+		shared_ptr<GameObject> player = playerObjects[0];
+		for (auto& obj : defaultGunObjects) {
+			obj->SetName(L"defaultGun");
+			obj->SetCheckFrustum(false);
+			obj->SetStatic(false);
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			obj->AttachToBone(player, L"mixamorig:RightHand");
+			scene->AddGameObject(obj);
 		}
 
 		{

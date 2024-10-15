@@ -2,6 +2,8 @@
 #include "Transform.h"
 #include "Engine.h"
 #include "Camera.h"
+#include "Animator.h"
+#include "GameObject.h"
 
 Transform::Transform() : Component(COMPONENT_TYPE::TRANSFORM)
 {
@@ -25,8 +27,10 @@ void Transform::FinalUpdate()
 	_matWorld = _matLocal;
 
 	shared_ptr<Transform> parent = GetParent().lock();
-	if (parent != nullptr)
-	{
+	if (parent != nullptr) {
+		if (!_attachBoneName.empty()) {
+			_matWorld *= GetBoneMatrix(_attachBoneName);
+		}
 		_matWorld *= parent->GetLocalToWorldMatrix();
 	}
 }
@@ -43,7 +47,6 @@ void Transform::PushData()
 
 	CONST_BUFFER(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushGraphicsData(&transformParams, sizeof(transformParams));
 }
-
 
 void Transform::LookAt(const Vec3& dir)
 {
@@ -117,4 +120,28 @@ Vec3 Transform::DecomposeRotationMatrix(const Matrix& rotation)
 	}
 
 	return ret;
+}
+
+void Transform::AttachToBone(const std::shared_ptr<GameObject>& parent, const std::wstring& boneName)
+{
+	_parentObject = parent;
+	_attachBoneName = boneName;
+}
+
+const Matrix& Transform::GetBoneMatrix(const std::wstring& boneName) const
+{
+	shared_ptr<GameObject> parentObj = _parentObject.lock();
+	if (parentObj) {
+		shared_ptr<Animator> animator = parentObj->GetAnimator();
+		if (animator) {
+			const vector<BoneInfo>* boneInfos = animator->GetBones();
+			for (int i=0; i < boneInfos->size(); ++i) {
+				if ((*boneInfos)[i].boneName == boneName) {
+					return animator->GetBoneFinalMatrix(i);
+				}
+			}
+		}
+	}
+	static Matrix identityMatrix = Matrix::Identity;
+	return identityMatrix;
 }

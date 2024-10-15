@@ -13,6 +13,9 @@ public:
 	virtual ~Animator();
 
 public:
+	const vector<BoneInfo>* GetBones() { return _bones; }
+	Matrix GetBoneFinalMatrix(uint32 idx) { return _boneFinalMatrices[idx]; }
+
 	void SetBones(const vector<BoneInfo>* bones) { _bones = bones; }
 	void SetAnimClip(const vector<AnimClipInfo>* animClips);
 	void PushData();
@@ -20,13 +23,15 @@ public:
 	int32 GetAnimCount() { return static_cast<uint32>(_animClips->size()); }
 	int32 GetCurrentClipIndex() { return _clipIndex; }
 	void Play(uint32 idx);
+	void UpdateBoneFinalMatrices();
 
 public:
 	virtual void FinalUpdate() override;
 
 private:
-	const vector<BoneInfo>* _bones;
-	const vector<AnimClipInfo>* _animClips;
+	const vector<BoneInfo>*			_bones;
+	const vector<AnimClipInfo>*		_animClips;
+	vector<Matrix>					_boneFinalMatrices;
 
 	float							_updateTime = 0.f;
 	int32							_clipIndex = 0;

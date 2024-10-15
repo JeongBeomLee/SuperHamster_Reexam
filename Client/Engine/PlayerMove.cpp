@@ -25,18 +25,15 @@ PlayerMove::~PlayerMove()
 
 void PlayerMove::Update()
 {
-    if (IsLocal())
-    {
+    if (IsLocal()) {
         ProcessInput();
     }
 
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
-    if (player)
-    {
+    if (player) {
         player->Update(DELTA_TIME);
 
-        if (GetCurrentState() == PLAYER_STATE::ROLL)
-        {
+        if (GetCurrentState() == PLAYER_STATE::ROLL) {
             UpdateRoll(DELTA_TIME);
         }
     }
@@ -50,24 +47,22 @@ void PlayerMove::ProcessInput()
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
 
-    if (INPUT->GetButtonDown(KEY_TYPE::KEY_1))
-	{
+    if (INPUT->GetButtonDown(KEY_TYPE::KEY_1)) {
         Vec3 playerPos = player->GetGameObject()->GetTransform()->GetLocalPosition();
         cout << "Player Position: " << playerPos.x << ", " << playerPos.y << ", " << playerPos.z << endl;
 	}
 
     // SPACE 키를 눌렀을 때 돌진 시작
-    if (INPUT->GetButtonDown(KEY_TYPE::SPACE))
-    {
+    if (INPUT->GetButtonDown(KEY_TYPE::SPACE)) {
         StartRoll();
         return;
     }
 
+    // 돌진 중에는 이동 불가
 	if (player->GetCurrentState() == PLAYER_STATE::ROLL) return;
 
     // A 키를 누르고 있는 동안 AIM 상태 유지
-    if (INPUT->GetButton(KEY_TYPE::A))
-    {
+    if (INPUT->GetButton(KEY_TYPE::A)) {
         player->SetState(PLAYER_STATE::AIM);
     }
 
@@ -94,29 +89,46 @@ void PlayerMove::ProcessInput()
     if (INPUT->GetButton(KEY_TYPE::RIGHT))
         moveDir += cameraRight;
     
-    if (moveDir != Vec3::Zero)
-    {
+    if (moveDir != Vec3::Zero) {
         moveDir.Normalize();
 
-        if (GetCurrentState() != PLAYER_STATE::AIM)
-        {
+        if (GetCurrentState() != PLAYER_STATE::AIM) {
             player->SetState(PLAYER_STATE::RUN);
             // 로컬에서 즉시 이동
             Vec3 newPos = GetTransform()->GetLocalPosition() + moveDir * _moveSpeed * DELTA_TIME;
             player->SetPosition(newPos);
         }
+
+        // 이동 방향으로 회전
+        RotateTowardMovementDirection(moveDir);
     }
-    else if (GetCurrentState() != PLAYER_STATE::AIM)
-    {
+    else if (GetCurrentState() != PLAYER_STATE::AIM) {
         player->SetState(PLAYER_STATE::IDLE);
+    }
+}
+
+void PlayerMove::RotateTowardMovementDirection(const Vec3& moveDir)
+{
+    if (moveDir != Vec3::Zero) {
+        // 현재 rotation 가져오기
+        Vec3 currentRotation = GetTransform()->GetLocalRotation();
+
+        // moveDir를 기반으로 목표 rotation 계산
+        float targetYaw = atan2(-moveDir.x, -moveDir.z);
+
+        // rotation을 부드럽게 보간
+        float rotationSpeed = 10.0f; // 회전 속도 조절 가능
+        float newYaw = LerpAngle(currentRotation.y, targetYaw, rotationSpeed * DELTA_TIME);
+
+        // 새로운 rotation 설정
+        GetTransform()->SetLocalRotation(Vec3(currentRotation.x, newYaw, currentRotation.z));
     }
 }
 
 void PlayerMove::StartRoll()
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
-    if (player)
-    {
+    if (player) {
         player->SetState(PLAYER_STATE::ROLL);
         _rollTimer = 0.0f;
 
@@ -130,19 +142,17 @@ void PlayerMove::StartRoll()
 void PlayerMove::UpdateRoll(float deltaTime)
 {
     _rollTimer += deltaTime;
-    if (_rollTimer >= _rollDuration)
-    {
+    if (_rollTimer >= _rollDuration) {
         // 돌진 종료
         Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
-        if (player)
-        {
+        if (player) {
             player->SetState(PLAYER_STATE::IDLE);
         }
         return;
     }
     
     // 돌진 이동 적용
-    Vec3 rollMovement = _rollDirection * _rollSpeed * deltaTime;
+    Vec3 rollMovement = -_rollDirection * _rollSpeed * deltaTime;
     Vec3 newPos = GetTransform()->GetLocalPosition() + rollMovement;
     GetTransform()->SetLocalPosition(newPos);
 }
@@ -163,8 +173,7 @@ float PlayerMove::repeat(float t, float length)
 void PlayerMove::ChangeState(PLAYER_STATE newState)
 {
     Player* player = GET_SINGLE(PlayerManager)->GetPlayer(_playerId);
-    if (player)
-    {
+    if (player) {
         player->SetState(newState);
     }
 }

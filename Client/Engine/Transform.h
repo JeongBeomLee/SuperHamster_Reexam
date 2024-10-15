@@ -38,6 +38,8 @@ public:
 public:
 	void SetParent(shared_ptr<Transform> parent) { _parent = parent; }
 	weak_ptr<Transform> GetParent() { return _parent; }
+	void AttachToBone(const std::shared_ptr<GameObject>& parent, const std::wstring& boneName);
+	const Matrix& GetBoneMatrix(const std::wstring& boneName) const;
 
 private:
 	// Parent ±‚¡ÿ
@@ -49,5 +51,7 @@ private:
 	Matrix _matWorld = {};
 
 	weak_ptr<Transform> _parent;
+	weak_ptr<GameObject> _parentObject;
+	wstring _attachBoneName;
 };
 

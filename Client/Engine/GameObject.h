@@ -62,6 +62,8 @@ public:
 	void SetActive(bool active) { _isActive = active; }
 	bool IsActive() { return _isActive; }
 
+	void AttachToBone(const std::shared_ptr<GameObject>& parent, const std::wstring& boneName);
+
 private:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<shared_ptr<MonoBehaviour>> _scripts;
