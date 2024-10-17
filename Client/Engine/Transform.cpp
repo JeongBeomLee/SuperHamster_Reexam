@@ -28,10 +28,13 @@ void Transform::FinalUpdate()
 
 	shared_ptr<Transform> parent = GetParent().lock();
 	if (parent != nullptr) {
-		if (!_attachBoneName.empty()) {
-			_matWorld *= GetBoneMatrix(_attachBoneName);
+		if (!_attachBoneName.empty()) { 
+			//_matWorld = GetBoneMatrix(_attachBoneName);	// 붙일 본의 행렬을 가져와서 곱해준다.
+			Matrix attachBoneMatrix = GetBoneMatrix(_attachBoneName);
+			_matWorld *= attachBoneMatrix;	// 붙일 본의 행렬을 가져와서 곱해준다.
 		}
-		_matWorld *= parent->GetLocalToWorldMatrix();
+		Matrix parentWorldMatrix = parent->GetLocalToWorldMatrix();
+		_matWorld *= parentWorldMatrix;	// 그 후 부모의 행렬을 곱해줘서 부모의 공간으로 변환한다.
 	}
 }
 
@@ -130,18 +133,29 @@ void Transform::AttachToBone(const std::shared_ptr<GameObject>& parent, const st
 
 const Matrix& Transform::GetBoneMatrix(const std::wstring& boneName) const
 {
+	static Matrix identityMatrix = Matrix::Identity;
 	shared_ptr<GameObject> parentObj = _parentObject.lock();
-	if (parentObj) {
-		shared_ptr<Animator> animator = parentObj->GetAnimator();
-		if (animator) {
-			const vector<BoneInfo>* boneInfos = animator->GetBones();
-			for (int i=0; i < boneInfos->size(); ++i) {
-				if ((*boneInfos)[i].boneName == boneName) {
-					return animator->GetBoneFinalMatrix(i);
-				}
-			}
+	if (!parentObj)
+		return identityMatrix;
+
+	shared_ptr<Animator> animator = parentObj->GetAnimator();
+	if (!animator)
+		return identityMatrix;
+
+	const vector<BoneInfo>* boneInfos = animator->GetBones();
+	if (!boneInfos)
+		return identityMatrix;
+
+	for (size_t i = 0; i < boneInfos->size(); ++i) {
+		if ((*boneInfos)[i].boneName == boneName) {
+			const Matrix& boneMatrix = animator->GetBoneFinalMatrix(i);
+			// 컴파일러 최적화를 방지하기 위한 volatile 사용
+			volatile float checkSum = boneMatrix._11 + boneMatrix._22 + boneMatrix._33 + boneMatrix._44;
+			if (checkSum == 4.0f)	// identityMatrix인지 체크
+				return identityMatrix;
+			return boneMatrix;
 		}
 	}
-	static Matrix identityMatrix = Matrix::Identity;
+
 	return identityMatrix;
 }

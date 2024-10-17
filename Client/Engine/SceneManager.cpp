@@ -155,7 +155,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->GetCamera()->SetFar(5000.f);
 		camera->GetCamera()->SetMainCamera(true);
 		//camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
-		camera->GetTransform()->SetLocalPosition(Vec3(-358.388, 633.076, 1065.6));
+		camera->GetTransform()->SetLocalPosition(Vec3(-358.388f, 633.076f, 1065.6f));
 		camera->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(20.f), XMConvertToRadians(-180.f), XMConvertToRadians(0.f)));
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true); // UI´Â ¾È ÂïÀ½
@@ -346,7 +346,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			obj->SetName(L"Player" + to_wstring(playerID));
 			obj->SetCheckFrustum(false);
 			obj->SetStatic(false);
-			obj->GetTransform()->SetLocalPosition(Vec3(-460.224, 150.f, 60.2587));
+			obj->GetTransform()->SetLocalPosition(Vec3(-460.224f, 150.f, 60.2587f));
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			obj->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
 			scene->AddGameObject(obj);
@@ -363,6 +363,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			obj->SetName(L"defaultGun");
 			obj->SetCheckFrustum(false);
 			obj->SetStatic(false);
+			//obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 			obj->AttachToBone(player, L"mixamorig:RightHand");
