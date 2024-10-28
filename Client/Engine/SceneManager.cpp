@@ -363,10 +363,11 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			obj->SetName(L"defaultGun");
 			obj->SetCheckFrustum(false);
 			obj->SetStatic(false);
-			//obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
-			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-			obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+			obj->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+			obj->GetTransform()->SetLocalScale(Vec3(60.f, 60.f, 60.f));
 			obj->AttachToBone(player, L"mixamorig:RightHand");
+			//obj->AddComponent(make_shared<DebugScriptForGun>());
 			scene->AddGameObject(obj);
 		}
 

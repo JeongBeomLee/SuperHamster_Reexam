@@ -29,8 +29,7 @@ void Transform::FinalUpdate()
 	shared_ptr<Transform> parent = GetParent().lock();
 	if (parent != nullptr) {
 		if (!_attachBoneName.empty()) { 
-			//_matWorld = GetBoneMatrix(_attachBoneName);	// 붙일 본의 행렬을 가져와서 곱해준다.
-			Matrix attachBoneMatrix = GetBoneMatrix(_attachBoneName);
+			Matrix attachBoneMatrix = GetBoneMatrix(_attachBoneName);	// 이렇게 안해주면 연산 중에 임시객체가 소멸
 			_matWorld *= attachBoneMatrix;	// 붙일 본의 행렬을 가져와서 곱해준다.
 		}
 		Matrix parentWorldMatrix = parent->GetLocalToWorldMatrix();

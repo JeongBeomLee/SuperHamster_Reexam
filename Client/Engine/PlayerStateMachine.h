@@ -28,10 +28,7 @@ public:
     PLAYER_STATE GetCurrentState() const { return _currentState; }
 
     template<typename T>
-    void RegisterState(PLAYER_STATE state)
-    {
-        _states[state] = std::make_unique<T>();
-    }
+    void RegisterState(PLAYER_STATE state) { _states[state] = std::make_unique<T>(); }
 
 private:
     PLAYER_STATE _currentState = PLAYER_STATE::IDLE;
