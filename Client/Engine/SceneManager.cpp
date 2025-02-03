@@ -116,6 +116,7 @@ shared_ptr<GameObject> SceneManager::Pick(int32 screenX, int32 screenY)
 
 	return picked;
 }
+
 shared_ptr<Scene> SceneManager::LoadTestScene()
 {
 #pragma region LayerMask
@@ -356,20 +357,20 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, obj);
 		}
 
-		shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
-		vector<shared_ptr<GameObject>> defaultGunObjects = defaultGunMeshData->Instantiate();
-		shared_ptr<GameObject> player = playerObjects[0];
-		for (auto& obj : defaultGunObjects) {
-			obj->SetName(L"defaultGun");
-			obj->SetCheckFrustum(false);
-			obj->SetStatic(false);
-			obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
-			obj->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-			obj->GetTransform()->SetLocalScale(Vec3(60.f, 60.f, 60.f));
-			obj->AttachToBone(player, L"mixamorig:RightHand");
-			//obj->AddComponent(make_shared<DebugScriptForGun>());
-			scene->AddGameObject(obj);
-		}
+		//shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+		//vector<shared_ptr<GameObject>> defaultGunObjects = defaultGunMeshData->Instantiate();
+		//shared_ptr<GameObject> player = playerObjects[0];
+		//for (auto& obj : defaultGunObjects) {
+		//	obj->SetName(L"defaultGun");
+		//	obj->SetCheckFrustum(false);
+		//	obj->SetStatic(false);
+		//	obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+		//	obj->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+		//	obj->GetTransform()->SetLocalScale(Vec3(60.f, 60.f, 60.f));
+		//	obj->AttachToBone(player, L"mixamorig:RightHand");
+		//	//obj->AddComponent(make_shared<DebugScriptForGun>());
+		//	scene->AddGameObject(obj);
+		//}
 
 		{
 			//shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");

@@ -25,8 +25,7 @@ void Game::Init(const WindowInfo& info)
 void Game::Update()
 {
 	GEngine->Update();
-	if (INPUT->GetButtonDown(KEY_TYPE::F11))
-	{
+	if (INPUT->GetButtonDown(KEY_TYPE::F11)) {
 		GEngine->ToggleFullscreen();
 	}
 }

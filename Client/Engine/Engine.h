@@ -68,6 +68,11 @@ private:
 	D3D12_VIEWPORT	_viewport = {};
 	D3D12_RECT		_scissorRect = {};
 
+	const uint32 MAX_OBJECT_COUNT = 5000;
+	const uint32 MAX_GRAPHICS_DESC_HEAP_COUNT = 1000; // 1000 * 14(CBV, SRV 개수) = 14000
+	const uint32 MAX_TRANSFORM_MATRICES = MAX_OBJECT_COUNT; // 1개 오브젝트당 1개의 트랜스폼
+	const uint32 MAX_MATERIALS = MAX_OBJECT_COUNT; // 1개 오브젝트당 1개의 머티리얼
+
 	shared_ptr<Device> _device = make_shared<Device>();
 	shared_ptr<GraphicsCommandQueue> _graphicsCmdQueue = make_shared<GraphicsCommandQueue>();
 	shared_ptr<ComputeCommandQueue> _computeCmdQueue = make_shared<ComputeCommandQueue>();

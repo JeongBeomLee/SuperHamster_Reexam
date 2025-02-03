@@ -43,12 +43,12 @@ void Engine::Init(const WindowInfo& info)
 	_computeCmdQueue->Init(_device->GetDevice());
 	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _graphicsCmdQueue->GetCmdQueue());
 	_rootSignature->Init();
-	_graphicsDescHeap->Init(256 * 12);
+	_graphicsDescHeap->Init(MAX_GRAPHICS_DESC_HEAP_COUNT);
 	_computeDescHeap->Init();
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
-	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), 256 * 12);
-	CreateConstantBuffer(CBV_REGISTER::b2, sizeof(MaterialParams), 256 * 12);
+	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), MAX_TRANSFORM_MATRICES);
+	CreateConstantBuffer(CBV_REGISTER::b2, sizeof(MaterialParams), MAX_MATERIALS);
 
 	CreateRenderTargetGroups();
 
