@@ -28,11 +28,14 @@ void Transform::FinalUpdate()
 
 	shared_ptr<Transform> parent = GetParent().lock();
 	if (parent != nullptr) {
+		Matrix parentWorldMatrix = parent->GetLocalToWorldMatrix();
 		if (!_attachBoneName.empty()) { 
 			Matrix attachBoneMatrix = GetBoneMatrix(_attachBoneName);	// 이렇게 안해주면 연산 중에 임시객체가 소멸
-			_matWorld *= attachBoneMatrix;	// 붙일 본의 행렬을 가져와서 곱해준다.
+			// attachBoneMatrix의 유효성 검사
+			if (attachBoneMatrix != Matrix::Identity) {
+				_matWorld *= attachBoneMatrix;	// 붙일 본의 행렬을 가져와서 곱해준다.
+			}
 		}
-		Matrix parentWorldMatrix = parent->GetLocalToWorldMatrix();
 		_matWorld *= parentWorldMatrix;	// 그 후 부모의 행렬을 곱해줘서 부모의 공간으로 변환한다.
 	}
 }
@@ -150,9 +153,13 @@ const Matrix& Transform::GetBoneMatrix(const std::wstring& boneName) const
 			const Matrix& boneMatrix = animator->GetBoneFinalMatrix(i);
 			// 컴파일러 최적화를 방지하기 위한 volatile 사용
 			volatile float checkSum = boneMatrix._11 + boneMatrix._22 + boneMatrix._33 + boneMatrix._44;
-			if (checkSum == 4.0f)	// identityMatrix인지 체크
+			if (fabs(checkSum - 4.0f) < FLT_EPSILON)
 				return identityMatrix;
-			return boneMatrix;
+			
+			// 16바이트 정렬된 메모리에서 반환 (안해주면 release에서 이상한 값이 나옴)
+			alignas(16) static Matrix alignedBoneMatrix;
+			alignedBoneMatrix = boneMatrix;
+			return alignedBoneMatrix;
 		}
 	}
 
