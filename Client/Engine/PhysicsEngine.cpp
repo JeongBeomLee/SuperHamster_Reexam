@@ -247,8 +247,18 @@ std::shared_ptr<PhysicsObject> PhysicsEngine::CreateTriangleMesh(
 	PxShape* shape = nullptr;
 
 	// 메시는 주로 정적 객체로 사용
-	actor = m_physics->createRigidStatic(PxTransform(position));
-	actor->setName("TriangleMesh");
+	// x축 기준 -90도 회전, y축 기준 90도 회전
+	physx::PxQuat rotX = physx::PxQuat(-PxHalfPi, PxVec3(1, 0, 0));
+	physx::PxQuat rotY = physx::PxQuat(PxHalfPi, PxVec3(0, 1, 0));
+	physx::PxQuat rotation = rotY * rotX;
+
+	// 메시 회전 후 생성
+	physx::PxTransform pose = physx::PxTransform(position, rotation);
+	actor = m_physics->createRigidStatic(pose);
+
+	//actor = m_physics->createRigidStatic(PxTransform(position, rotX));
+	//actor->setName("TriangleMesh");
+
 	shape = PxRigidActorExt::createExclusiveShape(*actor,
 		PxTriangleMeshGeometry(triangleMesh), *m_defaultMaterial);
 

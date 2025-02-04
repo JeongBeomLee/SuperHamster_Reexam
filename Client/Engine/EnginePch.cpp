@@ -25,3 +25,16 @@ string ws2s(const wstring& s)
 	::WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0);
 	return r;
 }
+
+float repeat(float t, float length)
+{
+	return t - floor(t / length) * length;
+}
+
+float ScalarLerpAngle(float a, float b, float t)
+{
+	float delta = repeat((b - a), XM_2PI);
+	if (delta > XM_PI)
+		delta -= XM_2PI;
+	return a + delta * t;
+}

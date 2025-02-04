@@ -11,6 +11,8 @@ class ParticleSystem;
 class Terrain;
 class BaseCollider;
 class Animator;
+class CharacterController;
+class PlayerMovement;
 
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
@@ -34,6 +36,8 @@ public:
 	shared_ptr<Terrain> GetTerrain();
 	shared_ptr<BaseCollider> GetCollider();
 	shared_ptr<Animator> GetAnimator();
+	shared_ptr<CharacterController> GetCharacterController();
+	shared_ptr<PlayerMovement> GetPlayerMovement();
 
 	void AddComponent(shared_ptr<Component> component);
 
@@ -56,8 +60,9 @@ public:
 	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
 	uint8 GetLayerIndex() { return _layerIndex; }
 
+	/* static한 오브젝트는 그림자 렌더링 대상에서 제외됨. */
 	void SetStatic(bool flag) { _static = flag; }
-	bool IsStatic() { return _static; }
+	bool IsStatic() { return _static; } 
 
 	void SetActive(bool active) { _isActive = active; }
 	bool IsActive() { return _isActive; }

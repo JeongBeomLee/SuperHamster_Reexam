@@ -1,15 +1,37 @@
 #include "pch.h"
 #include "RollState.h"
 #include "Player.h"
+#include "PlayerMovement.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 void RollState::Enter(Player* player)
 {
-	player->PlayAnimation(PLAYER_STATE::ROLL);
+    player->PlayAnimation(PLAYER_STATE::ROLL);
+
+    // 구르기 시작할 때의 방향 저장
+    auto movement = player->GetMovementComponent();
+    m_rollDirection = movement->GetMoveDirection();
+    if (m_rollDirection == Vec3::Zero) {
+        m_rollDirection = player->GetGameObject()->GetTransform()->GetLook();
+    }
+
+    m_rollTimer = 0.0f;
 }
 
 void RollState::Update(Player* player, float deltaTime)
 {
-	// 돌진 상태에서의 추가 로직이 필요하다면 여기에 구현
+    m_rollTimer += deltaTime;
+    const float rollDuration = 0.5f;
+    const float rollSpeed = 1000.0f;
+
+    if (m_rollTimer >= rollDuration) {
+        player->SetState(PLAYER_STATE::IDLE);
+        return;
+    }
+
+    // 구르기 동안 저장된 방향으로 빠르게 이동
+    UpdateMovement(player, m_rollDirection * rollSpeed, deltaTime);
 }
 
 void RollState::Exit(Player* player)

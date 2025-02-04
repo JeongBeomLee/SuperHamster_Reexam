@@ -40,7 +40,10 @@ void Engine::Init(const WindowInfo& info)
 	_rootSignature->Init();
 	_graphicsDescHeap->Init(MAX_GRAPHICS_DESC_HEAP_COUNT);
 	_computeDescHeap->Init();
-	_physicsEngine->Initialize();
+	if (!_physicsEngine->Initialize()) {
+		Logger::Instance().Error("물리 엔진 초기화 실패");
+		return;
+	}
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), MAX_TRANSFORM_MATRICES);

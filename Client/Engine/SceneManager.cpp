@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "Light.h"
+#include "PhysicsBody.h"
 
 #include "PlayerCameraScript.h"
 #include "Resources.h"
@@ -320,46 +321,70 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma region FBX
 	{
 		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
-		GEngine->LoadMapMeshForPhysics(mapMeshData);
-		vector<shared_ptr<GameObject>> mapObjects = mapMeshData->Instantiate();
+		//GEngine->LoadMapMeshForPhysics(mapMeshData);
+		shared_ptr<GameObject> mapObject = mapMeshData->Instantiate()[0];
 
-		for (auto& obj : mapObjects) {
-			static int id = 0;
-			obj->SetName(L"Map" + to_wstring(id++));
-			obj->SetCheckFrustum(false);
-			obj->SetStatic(false);
+		static int id = 0;
+		mapObject->SetName(L"Map" + to_wstring(id++));
+		mapObject->SetCheckFrustum(false);
+		mapObject->SetStatic(false);
 
-			Vec3 Pos = Vec3(0.f, 0.f, 0.f);
-			Vec3 Scale = Vec3(1.f, 1.f, 1.f);
-			Vec3 Rotation = Vec3(-XM_PIDIV2, XM_PIDIV2, 0.f);
+		Vec3 Pos = Vec3(0.f, 0.f, 0.f);
+		Vec3 Scale = Vec3(1.f, 1.f, 1.f);
+		Vec3 Rotation = Vec3(-XM_PIDIV2, XM_PIDIV2, 0.f);
 
-			obj->GetTransform()->SetLocalPosition(Pos);
-			obj->GetTransform()->SetLocalScale(Scale);
-			obj->GetTransform()->SetLocalRotation(Rotation);
+		mapObject->GetTransform()->SetLocalPosition(Pos);
+		mapObject->GetTransform()->SetLocalScale(Scale);
+		mapObject->GetTransform()->SetLocalRotation(Rotation);
 
-			scene->AddGameObject(obj);
+		// PhysicsBody 컴포넌트 추가
+		auto physicsBody = make_shared<PhysicsBody>();
+		mapObject->AddComponent(physicsBody);
+		
+		// 메시 데이터 준비
+		auto meshRenderer = mapObject->GetMeshRenderer();
+		if (meshRenderer && meshRenderer->GetMesh()) {
+			auto fbxMeshInfo = meshRenderer->GetMesh()->GetFbxMeshInfo();
+
+			PhysicsBody::MeshParams params;
+			for (const auto& vertex : fbxMeshInfo.vertices) {
+				params.vertices.push_back(PxVec3(vertex.pos.x, vertex.pos.y, vertex.pos.z));
+			}
+
+			for (const auto& indices : fbxMeshInfo.indices) {
+				params.indices.insert(params.indices.end(), indices.begin(), indices.end());
+			}
+
+			// 충돌 그룹 설정
+			physicsBody->SetCollisionGroup(CollisionGroup::Ground);
+			physicsBody->SetCollisionMask(
+				CollisionGroup::Default |
+				CollisionGroup::Character |
+				CollisionGroup::Enemy |
+				CollisionGroup::Projectile |
+				CollisionGroup::Trigger |
+				CollisionGroup::Obstacle
+			);
+
+			// TriangleMesh 생성
+			physicsBody->CreateBody(
+				PhysicsObjectType::STATIC,
+				PhysicsShapeType::TriangleMesh,
+				params);
 		}
 
+		scene->AddGameObject(mapObject);
+
+		// 플레이어 생성
 		shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
-		vector<shared_ptr<GameObject>> playerObjects = playerMeshData->Instantiate();
+		shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
 		int playerID = GEngine->GetMyPlayerId();
-		for (auto& obj : playerObjects) {
-			obj->SetName(L"Player" + to_wstring(playerID));
-			obj->SetCheckFrustum(false);
-			obj->SetStatic(false);
-			obj->GetTransform()->SetLocalPosition(Vec3(-460.224f, 150.f, 60.2587f));
-			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-			obj->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
-			scene->AddGameObject(obj);
-			//obj->AddComponent(make_shared<TestAnimation>());
-			obj->AddComponent(make_shared<PlayerMove>(playerID));
-
-			GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, obj);
-		}
+		GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, playerObj);
+		scene->AddGameObject(playerObj);
 
 		shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
 		vector<shared_ptr<GameObject>> defaultGunObjects = defaultGunMeshData->Instantiate();
-		shared_ptr<GameObject> player = playerObjects[0];
+		shared_ptr<GameObject> player = playerObj;
 		for (auto& obj : defaultGunObjects) {
 			obj->SetName(L"defaultGun");
 			obj->SetCheckFrustum(false);

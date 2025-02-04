@@ -174,9 +174,6 @@
     <ClCompile Include="TestAnimation.cpp">
       <Filter>Object\Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMove.cpp">
-      <Filter>Object\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Object\Player</Filter>
     </ClCompile>
@@ -221,6 +218,15 @@
     </ClCompile>
     <ClCompile Include="ContactReportCallback.cpp">
       <Filter>Physics\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsBody.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterController.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMovement.cpp">
+      <Filter>Object\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,9 +356,6 @@
     <ClInclude Include="TestAnimation.h">
       <Filter>Object\Scripts</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerMove.h">
-      <Filter>Object\Scripts</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Object\Player</Filter>
     </ClInclude>
@@ -403,6 +406,15 @@
     </ClInclude>
     <ClInclude Include="ContactReportCallback.h">
       <Filter>Physics\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsBody.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterController.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovement.h">
+      <Filter>Object\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -180,6 +180,7 @@
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterControllerHitReport.h" />
+    <ClInclude Include="CharacterController.h" />
     <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -208,12 +209,13 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PhysicsBody.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsTypes.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
-    <ClInclude Include="PlayerMove.h" />
+    <ClInclude Include="PlayerMovement.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PlayerStateMachine.h" />
     <ClInclude Include="RenderTargetGroup.h" />
@@ -242,6 +244,7 @@
     <ClCompile Include="BaseCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterControllerHitReport.cpp" />
+    <ClCompile Include="CharacterController.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
@@ -274,10 +277,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PhysicsBody.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
-    <ClCompile Include="PlayerMove.cpp" />
+    <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
     <ClCompile Include="RenderTargetGroup.cpp" />

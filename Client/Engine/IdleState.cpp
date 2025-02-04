@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "IdleState.h"
 #include "Player.h"
+#include "Input.h"
 
 void IdleState::Enter(Player* player)
 {
@@ -9,7 +10,20 @@ void IdleState::Enter(Player* player)
 
 void IdleState::Update(Player* player, float deltaTime)
 {
-    // Idle 상태에서의 추가 로직
+    if (IsMovementInput()) {
+        player->SetState(PLAYER_STATE::RUN);
+        return;
+    }
+
+    if (INPUT->GetButton(KEY_TYPE::A)) {
+        player->SetState(PLAYER_STATE::AIM);
+        return;
+    }
+
+    if (INPUT->GetButtonDown(KEY_TYPE::SPACE)) {
+        player->SetState(PLAYER_STATE::ROLL);
+        return;
+    }
 }
 
 void IdleState::Exit(Player* player)
