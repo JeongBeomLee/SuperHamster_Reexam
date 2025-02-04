@@ -19,19 +19,14 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-	_controllerManager->release();
-	_scene->release();
-	_cpuDispatcher->release();
-	_physics->release();
-	_foundation->release();
-	if(_pvd)
-		_pvd->release();
-	if(_pvdTransport)
-		_pvdTransport->release();
 }
 
 void Engine::Init(const WindowInfo& info)
 {
+	// 로거 초기화
+	Logger::Instance().AddOutput(std::make_unique<DebugOutput>());
+	Logger::Instance().Info("Engine 초기화 시작");
+
 	_window = info;	
 
 	// 그려질 화면 크기를 설정
@@ -45,6 +40,7 @@ void Engine::Init(const WindowInfo& info)
 	_rootSignature->Init();
 	_graphicsDescHeap->Init(MAX_GRAPHICS_DESC_HEAP_COUNT);
 	_computeDescHeap->Init();
+	_physicsEngine->Initialize();
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), MAX_TRANSFORM_MATRICES);
@@ -55,8 +51,6 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Input)->Init(info.hwnd);
 	GET_SINGLE(Timer)->Init();
 	GET_SINGLE(Resources)->Init();
-
-	InitializePhysics();
 }
 
 void Engine::Update()
@@ -64,13 +58,12 @@ void Engine::Update()
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
 	GET_SINGLE(PlayerManager)->Update();
+	PHYSICS_ENGINE->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(InstancingManager)->ClearBuffer();
 
 	Render();
 	ShowFps();
-
-	UpdatePhysics();
 }
 
 void Engine::ToggleFullscreen()
@@ -124,84 +117,84 @@ void Engine::ToggleFullscreen()
 
 void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
 {
-	vector<MeshRenderInfo> meshRenders = meshData->GetMeshRenders();
-	physx::PxCookingParams params(_physics->getTolerancesScale());
-	params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
-	params.midphaseDesc = physx::PxMeshMidPhase::eBVH34;
-	params.convexMeshCookingType = physx::PxConvexMeshCookingType::eQUICKHULL;
-	params.buildGPUData = true;
-	params.meshWeldTolerance = 0.001f;
-	
-	for (MeshRenderInfo& info : meshRenders)
-	{
-		shared_ptr<Mesh> mesh = info.mesh;
-		FbxMeshInfo fbxMeshInfo = mesh->GetFbxMeshInfo();
+	//vector<MeshRenderInfo> meshRenders = meshData->GetMeshRenders();
+	//physx::PxCookingParams params(_physics->getTolerancesScale());
+	//params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
+	//params.midphaseDesc = physx::PxMeshMidPhase::eBVH34;
+	//params.convexMeshCookingType = physx::PxConvexMeshCookingType::eQUICKHULL;
+	//params.buildGPUData = true;
+	//params.meshWeldTolerance = 0.001f;
+	//
+	//for (MeshRenderInfo& info : meshRenders)
+	//{
+	//	shared_ptr<Mesh> mesh = info.mesh;
+	//	FbxMeshInfo fbxMeshInfo = mesh->GetFbxMeshInfo();
 
-		std::vector<Vertex> vertices = fbxMeshInfo.vertices;
-		std::vector<physx::PxVec3> pxVertices;
-		for(const Vertex& vertex : vertices)
-		{
-			pxVertices.emplace_back(vertex.pos.x, vertex.pos.y, vertex.pos.z);
-		}
+	//	std::vector<Vertex> vertices = fbxMeshInfo.vertices;
+	//	std::vector<physx::PxVec3> pxVertices;
+	//	for(const Vertex& vertex : vertices)
+	//	{
+	//		pxVertices.emplace_back(vertex.pos.x, vertex.pos.y, vertex.pos.z);
+	//	}
 
-		std::vector<std::vector<uint32>> indices = fbxMeshInfo.indices;
-		std::vector<physx::PxU32> pxIndices;
-		for (const std::vector<uint32>& index : indices)
-		{
-			for (uint32 i : index)
-			{
-				pxIndices.emplace_back(i);
-			}
-		}
+	//	std::vector<std::vector<uint32>> indices = fbxMeshInfo.indices;
+	//	std::vector<physx::PxU32> pxIndices;
+	//	for (const std::vector<uint32>& index : indices)
+	//	{
+	//		for (uint32 i : index)
+	//		{
+	//			pxIndices.emplace_back(i);
+	//		}
+	//	}
 
-		SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
+	//	SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
 
-		physx::PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
-		meshDesc.points.stride = sizeof(physx::PxVec3);
-		meshDesc.points.data = pxVertices.data();
+	//	physx::PxTriangleMeshDesc meshDesc;
+	//	meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
+	//	meshDesc.points.stride = sizeof(physx::PxVec3);
+	//	meshDesc.points.data = pxVertices.data();
 
-		meshDesc.triangles.count = static_cast<physx::PxU32>(pxIndices.size() / 3);
-		meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
-		meshDesc.triangles.data = pxIndices.data();
+	//	meshDesc.triangles.count = static_cast<physx::PxU32>(pxIndices.size() / 3);
+	//	meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
+	//	meshDesc.triangles.data = pxIndices.data();
 
-		// PxTriangleMeshDesc를 직렬화하기 위한 메모리 스트림 생성
-		physx::PxDefaultMemoryOutputStream writeBuffer;
-		physx::PxTriangleMeshCookingResult::Enum result;
-		bool status = PxCookTriangleMesh(params, meshDesc, writeBuffer, &result);
-		if (!status) {
-			std::cerr << "Failed to cook triangle mesh." << std::endl;
-		}
+	//	// PxTriangleMeshDesc를 직렬화하기 위한 메모리 스트림 생성
+	//	physx::PxDefaultMemoryOutputStream writeBuffer;
+	//	physx::PxTriangleMeshCookingResult::Enum result;
+	//	bool status = PxCookTriangleMesh(params, meshDesc, writeBuffer, &result);
+	//	if (!status) {
+	//		std::cerr << "Failed to cook triangle mesh." << std::endl;
+	//	}
 
-		if (writeBuffer.getSize() == 0) {
-			std::cerr << "WriteBuffer is empty." << std::endl;
-		}
+	//	if (writeBuffer.getSize() == 0) {
+	//		std::cerr << "WriteBuffer is empty." << std::endl;
+	//	}
 
-		// 직렬화된 데이터를 PxInputStream으로 변환
-		physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-		physx::PxTriangleMesh* triangleMesh = _physics->createTriangleMesh(readBuffer);
+	//	// 직렬화된 데이터를 PxInputStream으로 변환
+	//	physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+	//	physx::PxTriangleMesh* triangleMesh = _physics->createTriangleMesh(readBuffer);
 
-		physx::PxMeshScale meshScale(physx::PxVec3(1, 1, 1));
-		physx::PxTriangleMeshGeometry triangleMeshGeometry(triangleMesh, meshScale);
-		physx::PxRigidStatic* triangleMeshActor = _physics->createRigidStatic(physx::PxTransform(physx::PxVec3(0, 0, 0)));
-		physx::PxShape* triangleMeshShape = _physics->createShape(triangleMeshGeometry, *_physics->createMaterial(0.5f, 0.5f, 0.1f));
+	//	physx::PxMeshScale meshScale(physx::PxVec3(1, 1, 1));
+	//	physx::PxTriangleMeshGeometry triangleMeshGeometry(triangleMesh, meshScale);
+	//	physx::PxRigidStatic* triangleMeshActor = _physics->createRigidStatic(physx::PxTransform(physx::PxVec3(0, 0, 0)));
+	//	physx::PxShape* triangleMeshShape = _physics->createShape(triangleMeshGeometry, *_physics->createMaterial(0.5f, 0.5f, 0.1f));
 
-		// x축 기준 -90도 회전
-		physx::PxQuat rotX = physx::PxQuat(-XM_PIDIV2, physx::PxVec3(1, 0, 0));
-		physx::PxTransform transform(physx::PxVec3(0, 0, 0), rotX);
-		if (!transform.isValid()) {
-			std::cerr << "Invalid PxTransform detected." << std::endl;
-			return;
-		}
-		triangleMeshActor->setGlobalPose(transform);
+	//	// x축 기준 -90도 회전
+	//	physx::PxQuat rotX = physx::PxQuat(-XM_PIDIV2, physx::PxVec3(1, 0, 0));
+	//	physx::PxTransform transform(physx::PxVec3(0, 0, 0), rotX);
+	//	if (!transform.isValid()) {
+	//		std::cerr << "Invalid PxTransform detected." << std::endl;
+	//		return;
+	//	}
+	//	triangleMeshActor->setGlobalPose(transform);
 
-		triangleMeshActor->attachShape(*triangleMeshShape);
-		_scene->addActor(*triangleMeshActor);
+	//	triangleMeshActor->attachShape(*triangleMeshShape);
+	//	_scene->addActor(*triangleMeshActor);
 
-		// 메모리 해제
-		triangleMeshShape->release();
-		triangleMesh->release();
-	}
+	//	// 메모리 해제
+	//	triangleMeshShape->release();
+	//	triangleMesh->release();
+	//}
 
 	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
 	/*physx::PxCapsuleControllerDesc desc;
@@ -368,56 +361,4 @@ void Engine::CreateRenderTargetGroups()
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<RenderTargetGroup>();
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
 	}
-}
-
-void Engine::InitializePhysics()
-{
-	_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
-	if (!_foundation) {
-		std::cerr << "PxCreateFoundation failed!" << std::endl;
-		return;
-	}
-
-#ifdef _DEBUG
-	_pvd = PxCreatePvd(*_foundation);
-	_pvdTransport = physx::PxDefaultPvdSocketTransportCreate("localhost", 5425, 10);
-	_pvd->connect(*_pvdTransport, physx::PxPvdInstrumentationFlag::eALL);
-	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, _pvd);
-#else
-	_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true);
-#endif
-	if (!_physics) {
-		std::cerr << "PxCreatePhysics failed!" << std::endl;
-		return;
-	}
-
-	_cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(MAX_NUM_PX_THREADS);
-	if (!_cpuDispatcher) {
-		std::cerr << "PxDefaultCpuDispatcherCreate failed!" << std::endl;
-		return;
-	}
-
-	physx::PxSceneDesc sceneDesc(_physics->getTolerancesScale());
-	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
-	sceneDesc.cpuDispatcher = _cpuDispatcher;
-	sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
-	_scene = _physics->createScene(sceneDesc);
-	if (!_scene) {
-		std::cerr << "createScene failed!" << std::endl;
-		return;
-	}
-
-#ifdef _DEBUG
-	_pvdSceneClient = _scene->getScenePvdClient();
-	_pvdSceneClient->setScenePvdFlags(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS | physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES);
-#endif // _DEBUG
-
-	_controllerManager = PxCreateControllerManager(*_scene);
-}
-
-void Engine::UpdatePhysics()
-{
-	float deltaTime = GET_SINGLE(Timer)->GetDeltaTime();
-	_scene->simulate(deltaTime);
-	_scene->fetchResults(true);
 }

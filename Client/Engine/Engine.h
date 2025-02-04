@@ -12,6 +12,7 @@
 #include "RenderTargetGroup.h"
 #include "Timer.h"
 #include "MeshData.h"
+#include "PhysicsEngine.h"
 
 class Engine
 {
@@ -36,9 +37,7 @@ public:
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
 
-	physx::PxPhysics* GetPhysics() { return _physics; }
-	physx::PxScene* GetScene() { return _scene; }
-	physx::PxControllerManager* GetControllerManager() { return _controllerManager; }
+	PhysicsEngine* GetPhysicsEngine() const { return _physicsEngine.get(); }
 
 	int GetMyPlayerId() const { return _myPlayerId; }
 	int GetOtherPlayerId() const { return 1 - _myPlayerId; }
@@ -59,9 +58,6 @@ private:
 	void CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 count);
 	void CreateRenderTargetGroups();
 
-	void InitializePhysics();
-	void UpdatePhysics();
-
 private:
 	// 그려질 화면 크기 관련
 	WindowInfo		_window;
@@ -80,23 +76,11 @@ private:
 	shared_ptr<RootSignature> _rootSignature = make_shared<RootSignature>();
 	shared_ptr<GraphicsDescriptorHeap> _graphicsDescHeap = make_shared<GraphicsDescriptorHeap>();
 	shared_ptr<ComputeDescriptorHeap> _computeDescHeap = make_shared<ComputeDescriptorHeap>();
+	std::unique_ptr<PhysicsEngine> _physicsEngine = std::make_unique<PhysicsEngine>();
 
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
 
 	int _myPlayerId = -1;
-
-	physx::PxDefaultAllocator		_allocator;
-	physx::PxDefaultErrorCallback	_errorCallback;
-	physx::PxDefaultCpuDispatcher*	_cpuDispatcher		= nullptr;
-	physx::PxFoundation*			_foundation			= nullptr;
-	physx::PxPhysics*				_physics			= nullptr;
-	physx::PxScene*					_scene				= nullptr;
-	physx::PxControllerManager*		_controllerManager	= nullptr;
-
-	// 디버깅용
-	physx::PxPvd*					_pvd = nullptr;
-	physx::PxPvdTransport*			_pvdTransport = nullptr;
-	physx::PxPvdSceneClient*		_pvdSceneClient = nullptr;
 };
 

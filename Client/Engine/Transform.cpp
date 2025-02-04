@@ -150,7 +150,7 @@ const Matrix& Transform::GetBoneMatrix(const std::wstring& boneName) const
 
 	for (size_t i = 0; i < boneInfos->size(); ++i) {
 		if ((*boneInfos)[i].boneName == boneName) {
-			const Matrix& boneMatrix = animator->GetBoneFinalMatrix(i);
+			const Matrix& boneMatrix = animator->GetBoneFinalMatrix(static_cast<uint32>(i));
 			// 컴파일러 최적화를 방지하기 위한 volatile 사용
 			volatile float checkSum = boneMatrix._11 + boneMatrix._22 + boneMatrix._33 + boneMatrix._44;
 			if (fabs(checkSum - 4.0f) < FLT_EPSILON)

@@ -40,6 +40,15 @@
     <Filter Include="Object\StateMachine\PlayerState\States">
       <UniqueIdentifier>{4c38097d-7de9-4ae2-ad53-e6dc32387bd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{3fbbfb21-7c0e-4398-b520-2ef7a790faad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{a9a9e47d-d629-4c7c-b49f-d31c532a2cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Callback">
+      <UniqueIdentifier>{93fcc4ff-7b2f-4fc3-a2ac-3e3e519bd045}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -200,6 +209,18 @@
     </ClCompile>
     <ClCompile Include="RollState.cpp">
       <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsEngine.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterControllerHitReport.cpp">
+      <Filter>Physics\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="ContactReportCallback.cpp">
+      <Filter>Physics\Callback</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -364,6 +385,24 @@
     </ClInclude>
     <ClInclude Include="RollState.h">
       <Filter>Object\StateMachine\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsEngine.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsObject.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsTypes.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterControllerHitReport.h">
+      <Filter>Physics\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactReportCallback.h">
+      <Filter>Physics\Callback</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

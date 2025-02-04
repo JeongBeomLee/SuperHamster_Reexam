@@ -29,15 +29,4 @@ private:
     PlayerStateMachine _stateMachine;
     std::shared_ptr<GameObject> _gameObject;
     std::shared_ptr<Animator> _animator;
-
-    struct PlayerPhysicsState
-    {
-        physx::PxController* controller;
-        physx::PxVec3 moveDirection;
-    };
-
-    PlayerPhysicsState _playerPhysics;
-
-public:
-    const PlayerPhysicsState& GetPlayerPhysics() { return _playerPhysics; }
 };

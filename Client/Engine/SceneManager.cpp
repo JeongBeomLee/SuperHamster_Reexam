@@ -366,7 +366,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			obj->SetStatic(false);
 			obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
 			obj->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-			obj->GetTransform()->SetLocalScale(Vec3(60.0f, 60.0f, 60.0f));
+			obj->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
 			obj->AttachToBone(player, L"mixamorig:RightHand");
 			scene->AddGameObject(obj);
 		}

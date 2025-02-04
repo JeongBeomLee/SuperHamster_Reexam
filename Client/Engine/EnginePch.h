@@ -16,12 +16,13 @@
 #include <array>
 #include <list>
 #include <map>
-#include <iostream>;
+#include <iostream>
 #include <thread>
 #include <mutex>
 #include <queue>
 #include <functional>
 #include <fstream>
+#include <format>
 using namespace std;
 
 #include <filesystem>
@@ -45,7 +46,11 @@ using namespace Microsoft::WRL;
 
 #include "FBX/fbxsdk.h"
 #include "../../Server/Server/Protocol.h"
+
 #include "PxPhysicsAPI.h"
+using namespace physx;
+
+#include "Logger.h"
 
 // 각종 lib
 #pragma comment(lib, "d3d12")
@@ -164,7 +169,7 @@ enum
 	SWAP_CHAIN_BUFFER_COUNT = 2,
 	CBV_REGISTER_COUNT = CBV_REGISTER::END,
 	SRV_REGISTER_COUNT = static_cast<uint8>(SRV_REGISTER::END) - static_cast<uint8>(CBV_REGISTER_COUNT),
-	CBV_SRV_REGISTER_COUNT = CBV_REGISTER_COUNT + SRV_REGISTER_COUNT,
+	CBV_SRV_REGISTER_COUNT = static_cast<uint8>(CBV_REGISTER_COUNT) + static_cast<uint8>(SRV_REGISTER_COUNT),
 	UAV_REGISTER_COUNT = static_cast<uint8>(UAV_REGISTER::END) - CBV_SRV_REGISTER_COUNT,
 	TOTAL_REGISTER_COUNT = CBV_SRV_REGISTER_COUNT + UAV_REGISTER_COUNT
 };
@@ -215,6 +220,8 @@ public:								\
 #define GRAPHICS_ROOT_SIGNATURE		GEngine->GetRootSignature()->GetGraphicsRootSignature()
 #define COMPUTE_ROOT_SIGNATURE		GEngine->GetRootSignature()->GetComputeRootSignature()
 
+#define PHYSICS_ENGINE 	GEngine->GetPhysicsEngine()
+
 #define INPUT				GET_SINGLE(Input)
 #define DELTA_TIME			GET_SINGLE(Timer)->GetDeltaTime()
 
@@ -237,6 +244,13 @@ struct AnimFrameParams
 	Vec4	scale;
 	Vec4	rotation; // Quaternion
 	Vec4	translation;
+};
+
+// 물리 객체의 타입을 구분하기 위한 열거형 클래스
+enum class PhysicsObjectType {
+	STATIC,
+	DYNAMIC,
+	KINEMATIC
 };
 
 extern unique_ptr<class Engine> GEngine;
