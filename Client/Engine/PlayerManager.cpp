@@ -14,7 +14,7 @@ Player* PlayerManager::CreatePlayer(uint32_t playerId, bool isLocal, std::shared
 
     gameObject->SetCheckFrustum(false);
     gameObject->SetStatic(false);
-    gameObject->GetTransform()->SetLocalPosition(Vec3(-360.224f, 200.f, 60.2587f));
+    gameObject->GetTransform()->SetLocalPosition(Vec3(-60.224f, 200.f, 60.2587f));
     gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
     gameObject->GetTransform()->SetLocalScale(Vec3(75.f, 75.f, 75.f));
 

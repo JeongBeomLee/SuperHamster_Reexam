@@ -6,12 +6,13 @@
 void AimState::Enter(Player* player)
 {
 	player->PlayAnimation(PLAYER_STATE::AIM);
+    player->GetMovementComponent()->StopMovement();
 }
 
 void AimState::Update(Player* player, float deltaTime)
 {
-    // A 키를 땠을 때 IDLE
-    if (INPUT->GetButtonUp(KEY_TYPE::A)) {
+	// A 키를 떼거나 이동 입력이 없을 때 IDLE 상태로 전환
+    if (!INPUT->GetButton(KEY_TYPE::A)) {
         player->SetState(PLAYER_STATE::IDLE);
         return;
     }
@@ -20,6 +21,14 @@ void AimState::Update(Player* player, float deltaTime)
     if (INPUT->GetButtonDown(KEY_TYPE::S)) {
         player->SetState(PLAYER_STATE::FIRE);
         return;
+    }
+
+    // 입력에 따른 조준 방향 계산
+    Vec3 aimDir = GetTargetDirection();
+    // 방향 입력이 있을 경우에만 회전
+    if (aimDir != Vec3::Zero) {
+        aimDir.Normalize();
+        UpdateRotation(player, aimDir, deltaTime);
     }
 }
 

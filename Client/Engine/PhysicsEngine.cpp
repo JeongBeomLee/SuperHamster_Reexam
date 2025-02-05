@@ -313,8 +313,8 @@ std::shared_ptr<PhysicsObject> PhysicsEngine::CreateCapsuleController(
 	desc.position = PxExtendedVec3(position.x, position.y, position.z);
 	desc.radius = radius;
 	desc.height = height;
-	desc.stepOffset = 0.5f;          // 계단 등반 높이
-	desc.slopeLimit = 0.707f;        // 약 45도
+	desc.stepOffset = 0.1f;          // 계단 등반 높이
+	desc.slopeLimit = cosf(physx::PxDegToRad(45.f)); // 플레이어 이동 시 올라갈 수 있는 경사 설정
 	desc.material = m_defaultMaterial;
 	desc.upDirection = PxVec3(0, 1, 0);
 	desc.reportCallback = m_controllerHitReport.get();    // 충돌 콜백

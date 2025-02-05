@@ -19,8 +19,8 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
     EventManager::Instance().Publish(event);*/
 
-    Logger::Instance().Debug("캐릭터가 물리 객체와 충돌. 충돌 위치: ({}, {}, {})",
-        hit.worldPos.x, hit.worldPos.y, hit.worldPos.z);
+    /*Logger::Instance().Debug("캐릭터가 물리 객체와 충돌. 충돌 위치: ({}, {}, {})",
+        hit.worldPos.x, hit.worldPos.y, hit.worldPos.z);*/
 }
 
 void CharacterControllerHitReport::onControllerHit(const PxControllersHit& hit)

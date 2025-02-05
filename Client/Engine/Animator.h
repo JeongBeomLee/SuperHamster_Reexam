@@ -25,6 +25,12 @@ public:
 	void Play(uint32 idx);
 	void UpdateBoneFinalMatrices();
 
+	// 현재 애니메이션 관련 정보 조회
+	bool IsAnimationFinished() const { return _animationFinished; }
+	float GetCurrentAnimationDuration() const;
+	float GetCurrentAnimationProgress() const;
+	const AnimClipInfo* GetCurrentAnimClip() const;
+
 public:
 	virtual void FinalUpdate() override;
 
@@ -36,6 +42,7 @@ private:
 	float							_updateTime = 0.f;
 	int32							_clipIndex = 0;
 	int32							_frame = 0;
+	bool							_animationFinished = false;
 	int32							_nextFrame = 0;
 	float							_frameRatio = 0;
 

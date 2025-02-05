@@ -19,27 +19,7 @@ void RunState::Update(Player* player, float deltaTime)
         return;
     }
 
-    // 카메라 기준 이동 방향 계산
-    Vec3 moveDir = Vec3::Zero;
-    auto camera = GET_SINGLE(SceneManager)->GetActiveScene()->GetMainCamera();
-    Vec3 forward = camera->GetTransform()->GetLook();
-    Vec3 right = camera->GetTransform()->GetRight();
-
-    // Y축 영향 제거
-    forward.y = 0;
-    right.y = 0;
-    forward.Normalize();
-    right.Normalize();
-
-    if (INPUT->GetButton(KEY_TYPE::UP))
-        moveDir += forward;
-    if (INPUT->GetButton(KEY_TYPE::DOWN))
-        moveDir -= forward;
-    if (INPUT->GetButton(KEY_TYPE::LEFT))
-        moveDir -= right;
-    if (INPUT->GetButton(KEY_TYPE::RIGHT))
-        moveDir += right;
-
+    Vec3 moveDir = GetTargetDirection();
     if (moveDir != Vec3::Zero) {
         moveDir.Normalize();
         UpdateMovement(player, moveDir, deltaTime);

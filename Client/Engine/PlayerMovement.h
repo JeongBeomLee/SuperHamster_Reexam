@@ -14,6 +14,7 @@ public:
     void ProcessMovement(float deltaTime);
     void SetMoveDirection(const Vec3& direction);
     void StopMovement();
+    void SmoothRotation(const Vec3& targetDirection, float deltaTime);
 
     const Vec3& GetMoveDirection() const { return m_moveDirection; }
     float GetMoveSpeed() const { return m_moveSpeed; }
@@ -21,7 +22,6 @@ public:
 private:
     void UpdateMovement(float deltaTime);
     Vec3 CalculateMovementVector(float deltaTime);
-    void SmoothRotation(const Vec3& targetDirection, float deltaTime);
 
 private:
     std::shared_ptr<CharacterController> m_characterController;

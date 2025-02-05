@@ -35,7 +35,6 @@ public:
     void SetContactOffset(float offset);
 
 private:
-	void UpdateVelocity(float deltaTime);
     void UpdateTransform();
 
 private:
@@ -46,7 +45,7 @@ private:
     float m_moveSpeed = 500.0f;      // 이동 속도
     float m_maxVelocity = 1000.0f;   // 최대 속도
     float m_gravity = -981.0f;       // 중력 (기본값: -981.0f = -9.81 * 100)
-    float m_groundedOffset = 0.2f;   // 지면 체크 오프셋
+    float m_groundedOffset = 10.0f;   // 지면 체크 오프셋
     bool m_isGrounded = false;       // 지면 접촉 상태
 };
 

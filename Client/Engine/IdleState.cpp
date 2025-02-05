@@ -6,6 +6,7 @@
 void IdleState::Enter(Player* player)
 {
     player->PlayAnimation(PLAYER_STATE::IDLE);
+    player->GetMovementComponent()->StopMovement();
 }
 
 void IdleState::Update(Player* player, float deltaTime)
@@ -17,6 +18,7 @@ void IdleState::Update(Player* player, float deltaTime)
 
     if (INPUT->GetButton(KEY_TYPE::A)) {
         player->SetState(PLAYER_STATE::AIM);
+        player->GetMovementComponent()->StopMovement();
         return;
     }
 

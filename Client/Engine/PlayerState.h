@@ -16,4 +16,5 @@ protected:
     void UpdateMovement(Player* player, const Vec3& direction, float deltaTime);
     void UpdateRotation(Player* player, const Vec3& targetDirection, float deltaTime);
     bool IsMovementInput() const;
+	Vec3 GetTargetDirection() const;
 };

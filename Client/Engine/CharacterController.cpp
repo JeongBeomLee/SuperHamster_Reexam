@@ -26,7 +26,7 @@ void CharacterController::Initialize()
     auto physicsObject = PHYSICS_ENGINE->CreateCapsuleController(
         PxVec3(position.x, position.y, position.z),
         50.0f,   // 반지름
-        200.0f,   // 높이
+        150.0f,   // 높이
         CollisionGroup::Character,
         CollisionGroup::Default | CollisionGroup::Ground |
         CollisionGroup::Obstacle | CollisionGroup::Character
@@ -123,12 +123,12 @@ void CharacterController::UpdateTransform()
     if (!m_controller) return;
 
     // 컨트롤러의 위치를 Transform 컴포넌트에 반영
-    const PxExtendedVec3& position = m_controller->getPosition();
+	const PxExtendedVec3& position = m_controller->getFootPosition();
 
     auto transform = GetTransform();
     transform->SetLocalPosition(XMFLOAT3(
         static_cast<float>(position.x),
-        static_cast<float>(position.y),
+        static_cast<float>(position.y + m_groundedOffset),
         static_cast<float>(position.z)
     ));
 }

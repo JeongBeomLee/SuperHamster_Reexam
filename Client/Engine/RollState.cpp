@@ -13,7 +13,7 @@ void RollState::Enter(Player* player)
     auto movement = player->GetMovementComponent();
     m_rollDirection = movement->GetMoveDirection();
     if (m_rollDirection == Vec3::Zero) {
-        m_rollDirection = player->GetGameObject()->GetTransform()->GetLook();
+        m_rollDirection = -player->GetGameObject()->GetTransform()->GetLook();
     }
 
     m_rollTimer = 0.0f;

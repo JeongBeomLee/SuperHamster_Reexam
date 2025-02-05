@@ -22,8 +22,12 @@ void Animator::FinalUpdate()
 	_updateTime += DELTA_TIME;
 
 	const AnimClipInfo& animClip = _animClips->at(_clipIndex);
-	if (_updateTime >= animClip.duration)
-		_updateTime = 0.f;
+	// 애니메이션 종료 체크
+    _animationFinished = (_updateTime >= animClip.duration);
+    
+    if (_animationFinished) {
+        _updateTime = 0.f;
+    }
 
 	const int32 ratio = static_cast<int32>(animClip.frameCount / animClip.duration);
 	_frame = static_cast<int32>(_updateTime * ratio);
@@ -99,4 +103,28 @@ void Animator::UpdateBoneFinalMatrices()
 
 		_boneFinalMatrices[i] = matBone;
 	}
+}
+
+float Animator::GetCurrentAnimationDuration() const
+{
+	if (!_animClips || _clipIndex >= _animClips->size())
+		return 0.0f;
+
+	return _animClips->at(_clipIndex).duration;
+}
+
+float Animator::GetCurrentAnimationProgress() const
+{
+	if (!_animClips || _clipIndex >= _animClips->size())
+		return 0.0f;
+
+	return _updateTime / _animClips->at(_clipIndex).duration;
+}
+
+const AnimClipInfo* Animator::GetCurrentAnimClip() const
+{
+	if (!_animClips || _clipIndex >= _animClips->size())
+		return nullptr;
+
+	return &_animClips->at(_clipIndex);
 }
