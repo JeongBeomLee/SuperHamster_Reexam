@@ -18,8 +18,8 @@
 #include "SphereCollider.h"
 #include "MeshData.h"
 #include "TestAnimation.h"
-#include "PlayerMove.h"
 #include "PlayerManager.h"
+#include "ProjectileManager.h"
 
 void SceneManager::Update()
 {
@@ -40,10 +40,8 @@ void SceneManager::Render()
 
 void SceneManager::LoadScene(wstring sceneName)
 {
-	// TODO : 기존 Scene 정리
-	// TODO : 파일에서 Scene 정보 로드
-
 	_activeScene = LoadTestScene();
+	GET_SINGLE(ProjectileManager)->Initialize();
 
 	_activeScene->Awake();
 	_activeScene->Start();
@@ -324,8 +322,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		//GEngine->LoadMapMeshForPhysics(mapMeshData);
 		shared_ptr<GameObject> mapObject = mapMeshData->Instantiate()[0];
 
-		static int id = 0;
-		mapObject->SetName(L"Map" + to_wstring(id++));
+		mapObject->SetName(L"Map");
 		mapObject->SetCheckFrustum(false);
 		mapObject->SetStatic(false);
 
@@ -371,8 +368,11 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				PhysicsObjectType::STATIC,
 				PhysicsShapeType::TriangleMesh,
 				params);
-		}
 
+			physicsBody->GetPhysicsObject()->GetActor()->setName("MapObject");
+			physicsBody->GetPhysicsObject()->GetActor()->userData = mapObject.get();
+		}
+		
 		scene->AddGameObject(mapObject);
 
 		// 플레이어 생성
@@ -382,19 +382,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, playerObj);
 		scene->AddGameObject(playerObj);
 
+		// 총 부착
 		shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
-		vector<shared_ptr<GameObject>> defaultGunObjects = defaultGunMeshData->Instantiate();
+		shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
 		shared_ptr<GameObject> player = playerObj;
-		for (auto& obj : defaultGunObjects) {
-			obj->SetName(L"defaultGun");
-			obj->SetCheckFrustum(false);
-			obj->SetStatic(false);
-			obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
-			obj->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-			obj->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
-			obj->AttachToBone(player, L"mixamorig:RightHand");
-			scene->AddGameObject(obj);
-		}
+		defaultGunObject->SetName(L"defaultGun");
+		defaultGunObject->SetCheckFrustum(false);
+		defaultGunObject->SetStatic(false);
+		defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+		defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+		defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+		defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
+		scene->AddGameObject(defaultGunObject);
 
 		{
 			//shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
@@ -417,23 +416,23 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			//}
 		}
 
-		//{
-		//	shared_ptr<GameObject> debugObject = make_shared<GameObject>();
-		//	debugObject->AddComponent(make_shared<Transform>());
-		//	debugObject->AddComponent(make_shared<MeshRenderer>());
+		{
+			/*shared_ptr<GameObject> debugObject = make_shared<GameObject>();
+			debugObject->AddComponent(make_shared<Transform>());
+			debugObject->AddComponent(make_shared<MeshRenderer>());
 
-		//	auto meshRenderer = debugObject->GetMeshRenderer();
-		//	meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadCubeMesh());
+			auto meshRenderer = debugObject->GetMeshRenderer();
+			meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadCapsuleMesh(10.f, 500.f));
 
-		//	auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization");
-		//	material->SetVec4(0, Vec4(0.f, 1.f, 1.f, 1.f));
-		//	meshRenderer->SetMaterial(material);
+			auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization");
+			material->SetVec4(0, Vec4(0.f, 1.f, 1.f, 1.f));
+			meshRenderer->SetMaterial(material);
 
-		//	debugObject->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
-		//	debugObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		//	
-		//	scene->AddGameObject(debugObject);
-		//}
+			debugObject->GetTransform()->SetLocalPosition(Vec3(-60.224f, 200.f, 60.2587f));
+			debugObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+			
+			scene->AddGameObject(debugObject);*/
+		}
 
 		//{
 		//	shared_ptr<GameObject> debugObject = make_shared<GameObject>();

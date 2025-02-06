@@ -93,5 +93,5 @@ void PlayerMovement::SetMoveDirection(const Vec3& direction)
 void PlayerMovement::StopMovement()
 {
     m_moveDirection = Vec3::Zero;
-    m_currentDirection = Vec3::Zero;
+    //m_currentDirection = Vec3::Zero;
 }

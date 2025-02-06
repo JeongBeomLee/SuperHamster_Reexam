@@ -56,6 +56,8 @@ public:
     void SetAngularVelocity(const PxVec3& velocity);
 
     // 충돌 그룹 설정
+    CollisionGroup GetCollisionGroup() const { return m_group; }
+	CollisionGroup GetCollisionMask() const { return m_mask; }
     void SetCollisionGroup(CollisionGroup group) { m_group = group; }
     void SetCollisionMask(CollisionGroup mask) { m_mask = mask; }
 
@@ -63,6 +65,8 @@ public:
     bool IsKinematic() const;
     bool IsDynamic() const;
     bool IsStatic() const;
+
+	std::shared_ptr<PhysicsObject> GetPhysicsObject() const { return m_physicsObject; }
 
 private:
     void UpdatePhysicsTransform();  // 물리 엔진의 변환 행렬을 가져와서 Transform 업데이트

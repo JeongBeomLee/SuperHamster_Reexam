@@ -3,7 +3,7 @@
 
 // 패킷 최대 크기
 constexpr int MAX_PACKET_SIZE = 1024;
-constexpr char SERVER_IP[] = "127.0.0.1";
+//constexpr char SERVER_IP[] = "127.0.0.1";
 //constexpr char SERVER_IP[] = "192.168.0.15";
 constexpr int PORT = 9000;
 

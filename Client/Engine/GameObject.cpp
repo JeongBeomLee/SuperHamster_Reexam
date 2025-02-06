@@ -11,6 +11,7 @@
 #include "Animator.h"
 #include "CharacterController.h"
 #include "PlayerMovement.h"
+#include "PhysicsBody.h"
 
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
@@ -152,6 +153,12 @@ shared_ptr<PlayerMovement> GameObject::GetPlayerMovement()
 {
 	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PLAYER_MOVEMENT);
 	return static_pointer_cast<PlayerMovement>(component);
+}
+
+shared_ptr<PhysicsBody> GameObject::GetPhysicsBody()
+{
+	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PHYSICS_BODY);
+	return static_pointer_cast<PhysicsBody>(component);
 }
 
 void GameObject::AddComponent(shared_ptr<Component> component)

@@ -260,3 +260,4 @@ wstring s2ws(const string& s);
 string ws2s(const wstring& s);
 float repeat(float t, float length);
 float ScalarLerpAngle(float a, float b, float t);
+void QuaternionToEulerAngles(FXMVECTOR q, XMFLOAT3* pEuler);

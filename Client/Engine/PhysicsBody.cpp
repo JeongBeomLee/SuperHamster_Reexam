@@ -150,37 +150,34 @@ void PhysicsBody::UpdatePhysicsTransform() {
     // PhysX의 변환 행렬을 GameObject의 Transform에 적용
     auto worldMatrix = m_physicsObject->GetTransformMatrix();
 
+    // 좌표계 변환을 위한 회전 행렬 생성 (PhysX Z-up -> DirectX Y-up)
+    XMMATRIX coordinateConversion = XMMatrixRotationRollPitchYaw(XM_PIDIV2, 0.f, 0.f);
+
+    // 변환 행렬에 좌표계 변환 적용
+    worldMatrix = XMMatrixMultiply(coordinateConversion, worldMatrix);
+
     // 위치, 회전, 크기 추출
     XMVECTOR scale, rotationQuat, translation;
     XMMatrixDecompose(&scale, &rotationQuat, &translation, worldMatrix);
 
-    // x축으로 90도 회전
-    XMMATRIX rotationMatrix = XMMatrixRotationY(XMConvertToRadians(90.0f));
-    rotationQuat = XMQuaternionMultiply(rotationQuat, XMQuaternionRotationMatrix(rotationMatrix));
-
     // Transform 컴포넌트 업데이트
     auto transform = GetTransform();
 
+    // 위치 설정
     XMFLOAT3 position;
     XMStoreFloat3(&position, translation);
 	transform->SetLocalPosition(position);
 
     // 회전 설정 - 쿼터니온을 오일러 각으로 변환
-    XMFLOAT4 quat;
-    XMStoreFloat4(&quat, rotationQuat);
+    /*XMFLOAT3 rotationEuler;
+    QuaternionToEulerAngles(rotationQuat, &rotationEuler);*/
 
-    // 오일러 각 계산 (XYZ 순서)
-    float yaw = atan2f(2.0f * (quat.w * quat.y + quat.x * quat.z),
-        1.0f - 2.0f * (quat.y * quat.y + quat.x * quat.x));
-    float pitch = asinf(2.0f * (quat.w * quat.x - quat.z * quat.y));
-    float roll = atan2f(2.0f * (quat.w * quat.z + quat.y * quat.x),
-        1.0f - 2.0f * (quat.x * quat.x + quat.z * quat.z));
+    // 오일러 각을 각도로 변환
+    /*rotationEuler.x = XMConvertToDegrees(rotationEuler.x + XM_PIDIV2);
+    rotationEuler.y = XMConvertToDegrees(rotationEuler.y);
+    rotationEuler.z = XMConvertToDegrees(rotationEuler.z);
 
-    transform->SetLocalRotation(XMFLOAT3(
-        XMConvertToDegrees(pitch),
-        XMConvertToDegrees(yaw),
-        XMConvertToDegrees(roll)
-    ));
+    transform->SetLocalRotation(rotationEuler);*/
 
     XMFLOAT3 scaleFloat;
     XMStoreFloat3(&scaleFloat, scale);

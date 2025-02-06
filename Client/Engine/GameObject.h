@@ -13,6 +13,7 @@ class BaseCollider;
 class Animator;
 class CharacterController;
 class PlayerMovement;
+class PhysicsBody;
 
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
@@ -38,6 +39,7 @@ public:
 	shared_ptr<Animator> GetAnimator();
 	shared_ptr<CharacterController> GetCharacterController();
 	shared_ptr<PlayerMovement> GetPlayerMovement();
+	shared_ptr<PhysicsBody> GetPhysicsBody();
 
 	void AddComponent(shared_ptr<Component> component);
 

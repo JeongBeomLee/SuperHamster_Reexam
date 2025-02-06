@@ -228,6 +228,10 @@
     <ClCompile Include="PlayerMovement.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -416,6 +420,10 @@
     <ClInclude Include="PlayerMovement.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -463,6 +471,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\debugVisualization.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\laser.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

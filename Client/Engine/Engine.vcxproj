@@ -218,6 +218,8 @@
     <ClInclude Include="PlayerMovement.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PlayerStateMachine.h" />
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileManager.h" />
     <ClInclude Include="RenderTargetGroup.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="RollState.h" />
@@ -284,6 +286,8 @@
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
+    <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileManager.cpp" />
     <ClCompile Include="RenderTargetGroup.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="RollState.cpp" />
@@ -313,6 +317,7 @@
     <FxCompile Include="..\Resources\Shader\debugVisualization.fx" />
     <FxCompile Include="..\Resources\Shader\deferred.fx" />
     <FxCompile Include="..\Resources\Shader\forward.fx" />
+    <FxCompile Include="..\Resources\Shader\laser.fx" />
     <FxCompile Include="..\Resources\Shader\lighting.fx" />
     <FxCompile Include="..\Resources\Shader\math.fx" />
     <FxCompile Include="..\Resources\Shader\params.fx" />

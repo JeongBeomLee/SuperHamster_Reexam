@@ -183,14 +183,16 @@ std::shared_ptr<PhysicsObject> PhysicsEngine::CreateCapsule(
 
 	switch (type) {
 	case PhysicsObjectType::STATIC: {
-		actor = m_physics->createRigidStatic(PxTransform(position));
+		actor = m_physics->createRigidStatic(
+			PxTransform(position));
 		actor->setName("StaticCapsule");
 		shape = PxRigidActorExt::createExclusiveShape(*actor,
 			PxCapsuleGeometry(radius, halfHeight), *m_defaultMaterial);
 		break;
 	}
 	case PhysicsObjectType::DYNAMIC: {
-		PxRigidDynamic* dynamicActor = m_physics->createRigidDynamic(PxTransform(position));
+		PxRigidDynamic* dynamicActor = m_physics->createRigidDynamic(
+			PxTransform(position));
 		dynamicActor->setName("DynamicCapsule");
 		shape = PxRigidActorExt::createExclusiveShape(*dynamicActor,
 			PxCapsuleGeometry(radius, halfHeight), *m_defaultMaterial);

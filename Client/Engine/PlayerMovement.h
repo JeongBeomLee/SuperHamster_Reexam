@@ -17,6 +17,7 @@ public:
     void SmoothRotation(const Vec3& targetDirection, float deltaTime);
 
     const Vec3& GetMoveDirection() const { return m_moveDirection; }
+	const Vec3& GetCurrentDirection() const { return m_currentDirection; }
     float GetMoveSpeed() const { return m_moveSpeed; }
 
 private:

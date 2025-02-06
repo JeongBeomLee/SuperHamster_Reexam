@@ -5,8 +5,8 @@
 #include "Engine.h"
 #include "ConstantBuffer.h"
 #include "Light.h"
-#include "Engine.h"
 #include "Resources.h"
+#include "PhysicsBody.h"
 
 void Scene::Awake()
 {
@@ -197,6 +197,17 @@ void Scene::RemoveGameObject(shared_ptr<GameObject> gameObject)
 		auto findIt = std::find(_lights.begin(), _lights.end(), gameObject->GetLight());
 		if (findIt != _lights.end())
 			_lights.erase(findIt);
+	}
+	else if (gameObject->GetPhysicsBody() != nullptr)
+	{
+		auto actor = gameObject->GetPhysicsBody()->GetPhysicsObject()->GetActor();
+		if (actor) {
+			// PhysX의 scene에서 actor 제거
+			auto scene = actor->getScene();
+			if (scene) {
+				scene->removeActor(*actor);
+			}
+		}
 	}
 
 	auto findIt = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);

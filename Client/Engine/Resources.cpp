@@ -590,6 +590,108 @@ shared_ptr<Mesh> Resources::LoadTerrainMesh(int32 sizeX, int32 sizeZ)
 	return mesh;
 }
 
+shared_ptr<Mesh> Resources::LoadCapsuleMesh(float radius, float height)
+{
+	// 캐시된 메시가 있는지 확인
+	wstring key = L"Capsule_" + to_wstring(radius) + L"_" + to_wstring(height);
+	shared_ptr<Mesh> findMesh = Get<Mesh>(key);
+	if (findMesh)
+		return findMesh;
+
+	// 캡슐 메시 생성에 필요한 변수들
+	const int32 stackCount = 20;  // 세로 분할
+	const int32 sliceCount = 20;  // 가로 분할
+
+	vector<Vertex> vertices;
+	vector<uint32> indices;
+
+	// 1. 위쪽 반구 생성
+	for (int32 y = 0; y <= stackCount / 2; ++y)
+	{
+		float phi = XM_PI / 2.0f - y * XM_PI / stackCount;
+		float yPos = radius * sin(phi);
+		float r = radius * cos(phi);
+
+		for (int32 x = 0; x <= sliceCount; ++x)
+		{
+			float theta = x * XM_2PI / sliceCount;
+
+			Vertex vertex;
+			vertex.pos = Vec3(r * cos(theta), yPos + height / 2.0f, r * sin(theta));
+			vertex.uv = Vec2(static_cast<float>(x) / sliceCount, static_cast<float>(y) / stackCount);
+            Vec3 normal = vertex.pos - Vec3(0, height / 2.0f, 0);
+            normal.Normalize();
+            vertex.normal = normal;
+			vertex.tangent = Vec3(-sin(theta), 0.0f, cos(theta));
+
+			vertices.push_back(vertex);
+		}
+	}
+
+	// 2. 실린더 부분 생성
+	for (int32 y = 1; y < stackCount; ++y)
+	{
+		float yPos = height / 2.0f - y * height / stackCount;
+
+		for (int32 x = 0; x <= sliceCount; ++x)
+		{
+			float theta = x * XM_2PI / sliceCount;
+
+			Vertex vertex;
+			vertex.pos = Vec3(radius * cos(theta), yPos, radius * sin(theta));
+			vertex.uv = Vec2(static_cast<float>(x) / sliceCount, 0.5f + yPos / height);
+			vertex.normal = Vec3(cos(theta), 0.0f, sin(theta));
+			vertex.tangent = Vec3(-sin(theta), 0.0f, cos(theta));
+
+			vertices.push_back(vertex);
+		}
+	}
+
+	// 3. 아래쪽 반구 생성
+	for (int32 y = stackCount / 2; y <= stackCount; ++y)
+	{
+		float phi = XM_PI / 2.0f - y * XM_PI / stackCount;
+		float yPos = radius * sin(phi);
+		float r = radius * cos(phi);
+
+		for (int32 x = 0; x <= sliceCount; ++x)
+		{
+			float theta = x * XM_2PI / sliceCount;
+
+			Vertex vertex;
+			vertex.pos = Vec3(r * cos(theta), yPos - height / 2.0f, r * sin(theta));
+			vertex.uv = Vec2(static_cast<float>(x) / sliceCount, static_cast<float>(y) / stackCount);
+			Vec3 normal = vertex.pos - Vec3(0, height / 2.0f, 0);
+			normal.Normalize();
+			vertex.normal = normal;
+			vertex.tangent = Vec3(-sin(theta), 0.0f, cos(theta));
+
+			vertices.push_back(vertex);
+		}
+	}
+
+	// 인덱스 생성
+	for (int32 y = 0; y < stackCount; ++y)
+	{
+		for (int32 x = 0; x < sliceCount; ++x)
+		{
+			indices.push_back((y + 0) * (sliceCount + 1) + (x + 0));
+			indices.push_back((y + 0) * (sliceCount + 1) + (x + 1));
+			indices.push_back((y + 1) * (sliceCount + 1) + (x + 0));
+
+			indices.push_back((y + 0) * (sliceCount + 1) + (x + 1));
+			indices.push_back((y + 1) * (sliceCount + 1) + (x + 1));
+			indices.push_back((y + 1) * (sliceCount + 1) + (x + 0));
+		}
+	}
+
+	shared_ptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Create(vertices, indices);
+	Add(key, mesh);
+
+	return mesh;
+}
+
 shared_ptr<Texture> Resources::CreateTexture(const wstring& name, DXGI_FORMAT format, uint32 width, uint32 height,
 	const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags,
 	D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
@@ -919,6 +1021,21 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"LineDebugVisualization", shader);
 	}
 
+	// Laser
+	{
+		ShaderInfo info = 
+		{
+			SHADER_TYPE::FORWARD,
+			RASTERIZER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::LESS,
+			BLEND_TYPE::ALPHA_BLEND,
+			D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\laser.fx", info);
+		Add<Shader>(L"Laser", shader);
+	}
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1054,4 +1171,17 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>(L"LineDebugVisualization", material);
 	}
 
+	// Laser Material
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Laser");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetName(L"Laser");
+
+		material->SetVec4(0, Vec4(0.1f, 0.3f, 1.0f, 0.7f));  // 기본 색상
+		material->SetFloat(0, 0.0f);  // 시간값 (업데이트 필요)
+		material->SetFloat(1, 5.0f);  // 발광 강도
+
+		Add<Material>(L"Laser", material);
+	}
 }

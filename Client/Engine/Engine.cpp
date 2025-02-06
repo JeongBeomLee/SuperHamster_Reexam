@@ -10,8 +10,9 @@
 #include "InstancingManager.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "PlayerMove.h"
+#include "PlayerMovement.h"
 #include "PlayerManager.h"
+#include "ProjectileManager.h"
 
 Engine::Engine()
 {
@@ -63,6 +64,7 @@ void Engine::Update()
 	GET_SINGLE(PlayerManager)->Update();
 	PHYSICS_ENGINE->Update();
 	GET_SINGLE(SceneManager)->Update();
+	GET_SINGLE(ProjectileManager)->Update();	
 	GET_SINGLE(InstancingManager)->ClearBuffer();
 
 	Render();

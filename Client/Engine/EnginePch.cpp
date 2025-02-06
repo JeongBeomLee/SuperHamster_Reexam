@@ -38,3 +38,28 @@ float ScalarLerpAngle(float a, float b, float t)
 		delta -= XM_2PI;
 	return a + delta * t;
 }
+
+void QuaternionToEulerAngles(FXMVECTOR q, XMFLOAT3* pEuler)
+{
+	XMFLOAT4 quat;
+	XMStoreFloat4(&quat, q);
+
+	// 오일러 각 계산
+	float ysqr = quat.y * quat.y;
+
+	// roll (X축 회전)
+	float t0 = +2.0f * (quat.w * quat.x + quat.y * quat.z);
+	float t1 = +1.0f - 2.0f * (quat.x * quat.x + ysqr);
+	pEuler->x = std::atan2(t0, t1);
+
+	// pitch (Y축 회전)
+	float t2 = +2.0f * (quat.w * quat.y - quat.z * quat.x);
+	t2 = t2 > +1.0f ? +1.0f : t2;
+	t2 = t2 < -1.0f ? -1.0f : t2;
+	pEuler->y = std::asin(t2);
+
+	// yaww (Z축 회전)
+	float t3 = +2.0f * (quat.w * quat.z + quat.x * quat.y);
+	float t4 = +1.0f - 2.0f * (ysqr + quat.z * quat.z);
+	pEuler->z = std::atan2(t3, t4);
+}
