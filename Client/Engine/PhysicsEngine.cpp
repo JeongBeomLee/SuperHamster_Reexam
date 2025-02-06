@@ -519,7 +519,8 @@ PxFilterFlags PhysicsEngine::CustomFilterShader(
 		else {
 			pairFlags = PxPairFlag::eCONTACT_DEFAULT
 				| PxPairFlag::eNOTIFY_TOUCH_FOUND
-				| PxPairFlag::eNOTIFY_TOUCH_LOST;
+				| PxPairFlag::eNOTIFY_TOUCH_LOST
+				| PxPairFlag::eNOTIFY_CONTACT_POINTS;
 		}
 
 		return PxFilterFlag::eDEFAULT;

@@ -9,7 +9,7 @@ public:
     Projectile();
     virtual ~Projectile();
 
-    void Initialize(const Vec3& direction, float speed = 2000.0f);
+    void Initialize(const Vec3& position, const Vec3& direction, float speed = 2000.0f);
     virtual void Update() override;
     void DestroyProjectile();
 

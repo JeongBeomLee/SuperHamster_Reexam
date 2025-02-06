@@ -6,6 +6,8 @@
 #include "GameObject.h"
 #include "Timer.h"
 #include "MeshRenderer.h"
+#include "ParticleSystem.h"
+#include "Resources.h"
 
 Projectile::Projectile()
 {
@@ -15,7 +17,7 @@ Projectile::~Projectile()
 {
 }
 
-void Projectile::Initialize(const Vec3& direction, float speed)
+void Projectile::Initialize(const Vec3& position, const Vec3& direction, float speed)
 {
 	m_speed = speed;
 	m_direction = direction;

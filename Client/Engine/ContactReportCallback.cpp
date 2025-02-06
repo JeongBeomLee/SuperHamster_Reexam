@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "ContactReportCallback.h"
 #include "Logger.h"
-//#include "EventManager.h"
 #include "PhysicsTypes.h"
 #include "Scene.h"
 #include "SceneManager.h"
 #include "GameObject.h"
 #include "PhysicsBody.h"
+#include "ProjectileManager.h"
 
 void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
@@ -18,51 +18,48 @@ void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, con
             PxActor* actor0 = pairHeader.actors[0];
             PxActor* actor1 = pairHeader.actors[1];
 
-            // 충돌 시작
             Logger::Instance().Info("'{}' 와 '{}'가 충돌 발생.",
                 actor0->getName(),
-                actor1->getName());
+                actor1->getName()
+            );
 
             // 접촉점 정보 추출
             PxContactPairPoint contacts[1];
             PxU32 nbContacts = cp.extractContacts(contacts, 1);
 
-            // 충돌 이벤트 발행
-            /*if (nbContacts > 0) {
-                Event::CollisionEvent event(
-                    pairHeader.actors[0],
-                    pairHeader.actors[1],
-                    contacts[0].position,
-                    contacts[0].normal,
-                    contacts[0].impulse.magnitude()
+            if (nbContacts > 0) {
+                // 충돌 시작
+                Logger::Instance().Info("충돌 위치 ({}, {}, {})",
+                    contacts[0].position.x,
+                    contacts[0].position.y,
+                    contacts[0].position.z
                 );
 
-                EventManager::Instance().Publish(event);
-            }*/
+                // 충돌한 두 액터 중 하나가 Projectile 그룹인지 확인
+                auto object0 = static_cast<GameObject*>(actor0->userData);
+                auto object1 = static_cast<GameObject*>(actor1->userData);
+                bool isProjectile0 =
+                    static_cast<PxU32>(object0->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
+                bool isProjectile1 =
+                    static_cast<PxU32>(object1->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
 
-            // 충돌한 두 액터 중 하나가 Projectile 그룹인지 확인
-			auto object0 = static_cast<GameObject*>(actor0->userData);
-			auto object1 = static_cast<GameObject*>(actor1->userData);
-            bool isProjectile0 =
-                static_cast<PxU32>(object0->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
-            bool isProjectile1 =
-                static_cast<PxU32>(object1->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
-            
 
-            // 총알이 관련된 충돌인 경우
-            if (isProjectile0 || isProjectile1) {
-                // 충돌 지점 정보 추출
-                PxContactPairPoint contactPoints[1];
-                cp.extractContacts(contactPoints, 1);
+                // 총알이 관련된 충돌인 경우
+                if (isProjectile0 || isProjectile1) {
+                    // 총알 GameObject 찾기
+                    auto projectileObject = isProjectile0 ? object0 : object1;
+                    projectileObject->SetActive(false);
 
-                // 총알 GameObject 찾기
-				auto projectileObject = isProjectile0 ? object0 : object1;
-                projectileObject->SetActive(false);
+                    Logger::Instance().Info("충돌한 투사체 삭제. ID: {}", projectileObject->GetID());
 
-                Logger::Instance().Info("충돌한 투사체 삭제. ID: {}", projectileObject->GetID());
-
-                // TODO: 충돌 이펙트 생성
-                // 여기에 파티클 시스템을 사용한 충돌 이펙트 생성 코드 추가
+                    Vec3 collisionPos(contacts[0].position.x, contacts[0].position.y, contacts[0].position.z);
+                    GET_SINGLE(ProjectileManager)->PlayCollisionEffect(collisionPos);
+                }
+                else {
+                    Logger::Instance().Warning("'{}' 와 '{}'의 충돌에서 접촉점을 찾을 수 없습니다.",
+                        actor0->getName(),
+                        actor1->getName());
+                }
             }
         }
         else if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {

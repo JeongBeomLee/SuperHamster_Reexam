@@ -1036,6 +1036,27 @@ void Resources::CreateDefaultShader()
 		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\laser.fx", info);
 		Add<Shader>(L"Laser", shader);
 	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\muzzle_flash.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"MuzzleFlash", shader);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\shockwave.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"Shockwave", shader);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\collision_effect.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"CollisionEffect", shader);
+	}
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1183,5 +1204,40 @@ void Resources::CreateDefaultMaterial()
 		material->SetFloat(1, 5.0f);  // 발광 강도
 
 		Add<Material>(L"Laser", material);
+	}
+
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(
+			L"MuzzleFlashTex", L"..\\Resources\\Texture\\muzzle_flash.png");
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"MuzzleFlash"));
+		material->SetTexture(0, texture);
+
+		Add<Material>(L"MuzzleFlash", material);
+	}
+
+	{
+		// 텍스처 설정
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(
+			L"ShockwaveTex", L"..\\Resources\\Texture\\shockwave.png");
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"Shockwave"));
+		material->SetTexture(0, texture);
+
+		Add<Material>(L"Shockwave", material);
+	}
+
+	{
+		// 텍스처 설정
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(
+			L"CollisionEffectTex", L"..\\Resources\\Texture\\collision_effect.png");
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"CollisionEffect"));
+		material->SetTexture(0, texture);
+
+		Add<Material>(L"CollisionEffect", material);
 	}
 }
