@@ -297,7 +297,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		obj->AddComponent(meshRenderer);
-		scene->AddGameObject(obj);
+		//scene->AddGameObject(obj);
 	}
 #pragma endregion
 

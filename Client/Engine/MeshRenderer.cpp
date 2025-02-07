@@ -88,6 +88,10 @@ void MeshRenderer::RenderShadow()
 	_mesh->Render();
 }
 
+void MeshRenderer::RenderOutline()
+{
+}
+
 uint64 MeshRenderer::GetInstanceID()
 {
 	if (_mesh == nullptr || _materials.empty())

@@ -12,7 +12,7 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
     float diffuseRatio = 0.f;
     float specularRatio = 0.f;
     float distanceRatio = 1.f;
-    float bias = 0.5f;
+    float bias = 0.43f;
 
     // 원하는 toon 단계 수 (예: 3단계)
     const float toonLevels = 2.0f;
