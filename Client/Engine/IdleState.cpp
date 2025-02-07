@@ -2,6 +2,7 @@
 #include "IdleState.h"
 #include "Player.h"
 #include "Input.h"
+#include "Transform.h"
 
 void IdleState::Enter(Player* player)
 {
@@ -26,6 +27,13 @@ void IdleState::Update(Player* player, float deltaTime)
         player->SetState(PLAYER_STATE::ROLL);
         return;
     }
+
+    // 플레이어 위치 로그 출력
+	if (INPUT->GetButtonDown(KEY_TYPE::KEY_1)) {
+		auto transform = player->GetGameObject()->GetTransform();
+		auto position = transform->GetWorldPosition();
+		Logger::Instance().Debug("Player Position: ({}, {}, {})", position.x, position.y, position.z);
+	}
 }
 
 void IdleState::Exit(Player* player)

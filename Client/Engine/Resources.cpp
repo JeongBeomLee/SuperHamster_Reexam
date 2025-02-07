@@ -1194,14 +1194,26 @@ void Resources::CreateDefaultMaterial()
 
 	// Laser Material
 	{
+		// uniform float4 g_vec4_0; // 기본 레이저 색상
+		// uniform float4 g_vec4_1; // 보조(하이라이트) 레이저 색상
+		// uniform float2 g_vec2_0.x; // 블렌딩 속도
+		// uniform float  g_float_0; // 시간
+		// uniform float  g_float_1; // 발광 강도
+		// uniform float  g_float_2; // 왜곡(디스토션) 강도
+		// uniform float  g_float_3; // 왜곡 주파수
+
 		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Laser");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
 		material->SetName(L"Laser");
 
 		material->SetVec4(0, Vec4(0.1f, 0.3f, 1.0f, 0.7f));  // 기본 색상
+		material->SetVec4(1, Vec4(0.0f, 0.2f, 1.0f, 0.7f));  // 보조 색상
+		material->SetVec2(0, Vec2(2.0f, 0.0f));  // 블렌딩 속도
 		material->SetFloat(0, 0.0f);  // 시간값 (업데이트 필요)
 		material->SetFloat(1, 5.0f);  // 발광 강도
+		material->SetFloat(2, 0.1f);  // 왜곡 강도
+		material->SetFloat(3, 10.0f);  // 왜곡 주파수
 
 		Add<Material>(L"Laser", material);
 	}
