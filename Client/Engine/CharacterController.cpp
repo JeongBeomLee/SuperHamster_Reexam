@@ -29,7 +29,8 @@ void CharacterController::Initialize()
         150.0f,   // 높이
         CollisionGroup::Character,
         CollisionGroup::Default | CollisionGroup::Ground |
-        CollisionGroup::Obstacle | CollisionGroup::Character
+		CollisionGroup::Obstacle | CollisionGroup::Character | 
+		CollisionGroup::Enemy | CollisionGroup::Trigger
     );
 
     if (!physicsObject) {
@@ -39,6 +40,9 @@ void CharacterController::Initialize()
 
 	// TODO: 캐릭터 컨트롤러 ID 설정
     m_controller = PHYSICS_ENGINE->GetControllerManager()->getController(0);
+    m_controller->setUserData(GetGameObject().get());
+	m_controller->getActor()->userData = GetGameObject().get();
+
     Logger::Instance().Debug("캐릭터 컨트롤러 초기화됨");
 }
 
@@ -80,6 +84,16 @@ void CharacterController::Move(const Vec3& displacement, float deltaTime)
 
     // 지면 접촉 상태 업데이트
     m_isGrounded = (collisionFlags.isSet(PxControllerCollisionFlag::eCOLLISION_DOWN));
+}
+
+void CharacterController::Teleport(const Vec3& position)
+{
+	if (!m_controller) return;
+	m_controller->setPosition(PxExtendedVec3(
+		position.x,
+		position.y,
+		position.z
+	));
 }
 
 void CharacterController::ApplyGravity(float deltaTime)

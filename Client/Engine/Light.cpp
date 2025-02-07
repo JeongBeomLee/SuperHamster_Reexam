@@ -29,6 +29,15 @@ void Light::FinalUpdate()
 	_shadowCamera->GetTransform()->SetLocalRotation(GetTransform()->GetLocalRotation());
 	_shadowCamera->GetTransform()->SetLocalScale(GetTransform()->GetLocalScale());
 
+	// 라이트의 높이에 기반하여 직교 크기 조정
+	if (_shadowCamera->GetCamera()->GetProjectionType() == PROJECTION_TYPE::ORTHOGRAPHIC)
+	{
+		float lightHeight = GetTransform()->GetWorldPosition().y;
+		float orthographicSize = lightHeight * 2.0f; // 예: 필요에 따라 조정
+		_shadowCamera->GetCamera()->SetWidth(orthographicSize);
+		_shadowCamera->GetCamera()->SetHeight(orthographicSize);
+	}
+
 	_shadowCamera->FinalUpdate();
 }
 
@@ -86,11 +95,13 @@ void Light::SetLightType(LIGHT_TYPE type)
 		_volumeMesh = GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle");
 		_lightMaterial = GET_SINGLE(Resources)->Get<Material>(L"DirLight");
 
-		_shadowCamera->GetCamera()->SetScale(1.f);
+		_shadowCamera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		_shadowCamera->GetCamera()->SetNear(1.f);
 		_shadowCamera->GetCamera()->SetFar(10000.f);
-		_shadowCamera->GetCamera()->SetFOV(XM_PI / 2.f);
-		_shadowCamera->GetCamera()->SetWidth(8192);
-		_shadowCamera->GetCamera()->SetHeight(8192);
+		//_shadowCamera->GetCamera()->SetScale(1.f);
+		//_shadowCamera->GetCamera()->SetFOV(XM_PI / 2.f);
+		//_shadowCamera->GetCamera()->SetWidth(2048.f);
+		//_shadowCamera->GetCamera()->SetHeight(2048.f);
 
 		break;
 	case LIGHT_TYPE::POINT_LIGHT:

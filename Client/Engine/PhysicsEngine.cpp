@@ -258,9 +258,6 @@ std::shared_ptr<PhysicsObject> PhysicsEngine::CreateTriangleMesh(
 	physx::PxTransform pose = physx::PxTransform(position, rotation);
 	actor = m_physics->createRigidStatic(pose);
 
-	//actor = m_physics->createRigidStatic(PxTransform(position, rotX));
-	//actor->setName("TriangleMesh");
-
 	shape = PxRigidActorExt::createExclusiveShape(*actor,
 		PxTriangleMeshGeometry(triangleMesh), *m_defaultMaterial);
 

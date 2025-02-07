@@ -53,8 +53,9 @@ void ParticleSystem::FinalUpdate()
 
 void ParticleSystem::Render()
 {
-    if (!_isPlaying || !_material)
+    if (!_isPlaying || !_material) {
         return;
+    }
 
     GetTransform()->PushData();
     _material->PushGraphicsData();

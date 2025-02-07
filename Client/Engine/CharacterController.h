@@ -11,6 +11,7 @@ public:
 
     // 이동 관련 메서드
     void Move(const Vec3& displacement, float deltaTime);
+	void Teleport(const Vec3& position);
     void ApplyGravity(float deltaTime);
     void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
 

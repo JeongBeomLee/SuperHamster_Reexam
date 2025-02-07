@@ -232,6 +232,9 @@
     <ClCompile Include="ProjectileManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="TeleportSystem.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -422,6 +425,9 @@
     </ClInclude>
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TeleportSystem.h">
       <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>

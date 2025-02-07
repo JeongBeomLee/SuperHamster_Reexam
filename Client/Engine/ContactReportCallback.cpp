@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "PhysicsBody.h"
 #include "ProjectileManager.h"
+#include "TeleportSystem.h"
 
 void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
@@ -67,6 +68,39 @@ void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, con
             Logger::Instance().Info("'{}' 와 '{}'가 충돌 종료.",
                 pairHeader.actors[0]->getName(),
                 pairHeader.actors[1]->getName());
+        }
+    }
+}
+
+void ContactReportCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+{
+    for (PxU32 i = 0; i < count; i++) {
+        const PxTriggerPair& pair = pairs[i];
+
+        // 트리거 이벤트가 유효한지 확인
+        if (pair.triggerActor == nullptr || pair.otherActor == nullptr)
+            continue;
+
+        // 충돌 시작 이벤트만 처리
+        if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
+            // 트리거의 텔레포트 ID 확인
+            auto* teleportId = static_cast<TeleportZoneId*>(pair.triggerActor->userData);
+            if (!teleportId) {
+                Logger::Instance().Warning("트리거에 텔레포트 ID가 없음");
+                continue;
+            }
+
+            // 충돌한 액터가 플레이어인지 확인
+            auto* gameObject = static_cast<GameObject*>(pair.otherActor->userData);
+            if (!gameObject) {
+                Logger::Instance().Warning("충돌 객체 정보를 찾을 수 없음");
+                continue;
+            }
+
+            // CharacterController 컴포넌트 확인
+            if (gameObject->GetCharacterController()) {
+                GET_SINGLE(TeleportSystem)->TriggerTeleport(gameObject, *teleportId);
+            }
         }
     }
 }

@@ -5,26 +5,33 @@
 
 LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos)
 {
-    LightColor color = (LightColor)0.f;
+    LightColor color = (LightColor) 0.f;
 
-    float3 viewLightDir = (float3)0.f;
+    float3 viewLightDir = (float3) 0.f;
 
     float diffuseRatio = 0.f;
     float specularRatio = 0.f;
     float distanceRatio = 1.f;
+    float bias = 0.5f;
+
+    // 원하는 toon 단계 수 (예: 3단계)
+    const float toonLevels = 2.0f;
 
     if (g_light[lightIndex].lightType == 0)
     {
         // Directional Light
         viewLightDir = normalize(mul(float4(g_light[lightIndex].direction.xyz, 0.f), g_matView).xyz);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
+        float rawDiffuse = saturate(dot(-viewLightDir, viewNormal));
+        // diffuse를 toonLevels 단계로 양자화
+        diffuseRatio = saturate((floor(rawDiffuse * toonLevels) / toonLevels) + (toonLevels * bias));
     }
     else if (g_light[lightIndex].lightType == 1)
     {
         // Point Light
         float3 viewLightPos = mul(float4(g_light[lightIndex].position.xyz, 1.f), g_matView).xyz;
         viewLightDir = normalize(viewPos - viewLightPos);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
+        float rawDiffuse = saturate(dot(-viewLightDir, viewNormal));
+        diffuseRatio = saturate((floor(rawDiffuse * toonLevels) / toonLevels) + (toonLevels * bias));
 
         float dist = distance(viewPos, viewLightPos);
         if (g_light[lightIndex].range == 0.f)
@@ -37,7 +44,8 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
         // Spot Light
         float3 viewLightPos = mul(float4(g_light[lightIndex].position.xyz, 1.f), g_matView).xyz;
         viewLightDir = normalize(viewPos - viewLightPos);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
+        float rawDiffuse = saturate(dot(-viewLightDir, viewNormal));
+        diffuseRatio = saturate((floor(rawDiffuse * toonLevels) / toonLevels) + (toonLevels * bias));
 
         if (g_light[lightIndex].range == 0.f)
             distanceRatio = 0.f;
@@ -62,10 +70,11 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
         }
     }
 
-    float3 reflectionDir = normalize(viewLightDir + 2 * (saturate(dot(-viewLightDir, viewNormal)) * viewNormal));
-    float3 eyeDir = normalize(viewPos);
-    specularRatio = saturate(dot(-eyeDir, reflectionDir));
-    specularRatio = pow(specularRatio, 2);
+    // Specular 계산: 원래 부드럽게 계산하던 부분을 toon 스타일로 양자화
+    float3 halfVector = normalize(-viewLightDir + normalize(viewPos));
+    float rawSpecular = saturate(dot(viewNormal, halfVector));
+    rawSpecular = pow(rawSpecular, 16); // 하이라이트 정도
+    specularRatio = floor(rawSpecular * toonLevels) / toonLevels;
 
     color.diffuse = g_light[lightIndex].color.diffuse * diffuseRatio * distanceRatio;
     color.ambient = g_light[lightIndex].color.ambient * distanceRatio;
@@ -73,6 +82,7 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
 
     return color;
 }
+
 
 float Rand(float2 co)
 {

@@ -40,5 +40,4 @@ void PlayerCameraScript::LateUpdate()
 	Vec3 cameraDirection = GetTransform()->GetLook();
 	Vec3 cameraPos = playerPos - (cameraDirection * _Distance);
 	GetTransform()->SetLocalPosition(cameraPos);
-	//GetTransform()->LookAt(playerPos);
 }

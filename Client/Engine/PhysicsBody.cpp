@@ -32,9 +32,9 @@ bool PhysicsBody::CreateBody(PhysicsObjectType type,
     auto transform = GetTransform();
     auto position = transform->GetLocalPosition();
     transform->SetLocalScale(XMFLOAT3(
-        params.dimensions.x,
-        params.dimensions.y,
-        params.dimensions.z));
+        params.dimensions.x * 0.05f,
+        params.dimensions.y * 0.05f,
+        params.dimensions.z * 0.05f));
 
     m_physicsObject = PHYSICS_ENGINE->CreateBox(
         PxVec3(position.x, position.y, position.z),

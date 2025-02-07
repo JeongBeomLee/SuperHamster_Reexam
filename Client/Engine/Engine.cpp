@@ -13,6 +13,7 @@
 #include "PlayerMovement.h"
 #include "PlayerManager.h"
 #include "ProjectileManager.h"
+#include "TeleportSystem.h"
 
 Engine::Engine()
 {
@@ -63,6 +64,7 @@ void Engine::Update()
 	GET_SINGLE(Timer)->Update();
 	GET_SINGLE(PlayerManager)->Update();
 	PHYSICS_ENGINE->Update();
+	GET_SINGLE(TeleportSystem)->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(ProjectileManager)->Update();	
 	GET_SINGLE(InstancingManager)->ClearBuffer();

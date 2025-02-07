@@ -60,6 +60,7 @@ public:
 
 	void SetLightIndex(int8 index) { _lightIndex = index; }
 
+
 private:
 	LightInfo _lightInfo = {};
 
