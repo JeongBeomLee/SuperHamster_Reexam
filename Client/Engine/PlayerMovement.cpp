@@ -44,7 +44,7 @@ void PlayerMovement::UpdateMovement(float deltaTime)
         SmoothRotation(m_moveDirection, deltaTime);
 
         // CharacterController를 통한 실제 이동
-        m_characterController->Move(movementVector, deltaTime);
+        m_characterController->Move(movementVector * m_rollSpeed, deltaTime);
     }
 }
 

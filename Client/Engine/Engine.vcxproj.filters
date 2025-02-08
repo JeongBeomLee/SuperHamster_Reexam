@@ -240,6 +240,8 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Object\Projectile</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -437,6 +439,8 @@
     <ClInclude Include="Projectile.h">
       <Filter>Object\Projectile</Filter>
     </ClInclude>
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

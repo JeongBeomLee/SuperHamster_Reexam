@@ -19,6 +19,8 @@ public:
     const Vec3& GetMoveDirection() const { return m_moveDirection; }
 	const Vec3& GetCurrentDirection() const { return m_currentDirection; }
     float GetMoveSpeed() const { return m_moveSpeed; }
+    
+	void SetRollSpeed(float speed) { m_rollSpeed = speed; }
 
 private:
     void UpdateMovement(float deltaTime);
@@ -31,5 +33,6 @@ private:
 
     float m_moveSpeed = 500.0f;
     float m_rotationSpeed = 10.0f;
+    float m_rollSpeed = 1.0f;
     float m_movementSmoothing = 0.1f;
 };

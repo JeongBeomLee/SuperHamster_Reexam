@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "PhysicsTypes.h"
 #include "Engine.h"
+#include "SoundSystem.h"
 
 CharacterController::CharacterController() : Component(COMPONENT_TYPE::CHARACTER_CONTROLLER)
 {
@@ -140,9 +141,28 @@ void CharacterController::UpdateTransform()
 	const PxExtendedVec3& position = m_controller->getFootPosition();
 
     auto transform = GetTransform();
+
     transform->SetLocalPosition(XMFLOAT3(
         static_cast<float>(position.x),
         static_cast<float>(position.y + m_groundedOffset),
         static_cast<float>(position.z)
     ));
+
+	// 사운드 시스템의 리스너 위치 설정 (TODO: 서버 추가하면 내 캐릭터의 위치로만 설정하도록 수정)
+    Vec3 pos = transform->GetLocalPosition();
+
+    // forward와 up 벡터를 정규화
+    Vec3 forward = transform->GetForward();
+    Vec3 up = transform->GetUp();
+
+    forward.Normalize();
+    up.Normalize();
+
+    // forward와 up 벡터가 수직이 되도록 조정
+    Vec3 right = forward.Cross(up);
+	right.Normalize();
+    up = right.Cross(forward);
+	up.Normalize();
+
+    GET_SINGLE(SoundSystem)->Set3DListenerPosition(pos, forward, up);
 }

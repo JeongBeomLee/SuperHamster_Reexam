@@ -50,6 +50,9 @@ using namespace Microsoft::WRL;
 #include "PxPhysicsAPI.h"
 using namespace physx;
 
+#include "fmod.hpp"
+#include <fmod_errors.h>
+
 #include "Logger.h"
 
 // °¢Á¾ lib
@@ -62,6 +65,12 @@ using namespace physx;
 #pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
 #else
 #pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+#endif
+
+#ifdef _DEBUG
+#pragma comment(lib, "fmodL_vc.lib")
+#else
+#pragma comment(lib, "fmod_vc.lib")
 #endif
 
 #ifdef _DEBUG

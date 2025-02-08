@@ -6,6 +6,8 @@
 #include "Transform.h"
 #include "ProjectileManager.h"
 #include "PlayerMovement.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void FireState::Enter(Player* player)
 {
@@ -28,6 +30,13 @@ void FireState::Enter(Player* player)
 
     // 총알 생성 및 발사
     GET_SINGLE(ProjectileManager)->SpawnProjectile(muzzlePosition, fireDirection);
+
+	// 총알 발사 사운드 재생
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"LaserShot");
+    if (sound) {
+        sound->SetVolume(10.f);
+		GET_SINGLE(SoundSystem)->Play3D(sound, muzzlePosition);
+    }
 }
 
 void FireState::Update(Player* player, float deltaTime)

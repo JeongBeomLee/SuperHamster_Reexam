@@ -8,6 +8,8 @@
 #include "PhysicsBody.h"
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
@@ -55,6 +57,13 @@ void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, con
 
                     Vec3 collisionPos(contacts[0].position.x, contacts[0].position.y, contacts[0].position.z);
                     GET_SINGLE(ProjectileManager)->PlayCollisionEffect(collisionPos);
+
+                    // 총알 피격 사운드 재생
+                    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"LaserHit");
+                    if (sound) {
+                        sound->SetVolume(50.f);
+                        GET_SINGLE(SoundSystem)->Play3D(sound, collisionPos);
+                    }
                 }
                 else {
                     Logger::Instance().Warning("'{}' 와 '{}'의 충돌에서 접촉점을 찾을 수 없습니다.",

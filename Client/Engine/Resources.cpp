@@ -2,11 +2,14 @@
 #include "Resources.h"
 #include "Engine.h"
 #include "MeshData.h"
+#include "SoundSystem.h"
 
 void Resources::Init()
 {
 	CreateDefaultShader();
 	CreateDefaultMaterial();
+	GET_SINGLE(SoundSystem)->Init();
+	CreateDefaultSound();
 }
 
 shared_ptr<Mesh> Resources::LoadPointMesh()
@@ -1276,5 +1279,36 @@ void Resources::CreateDefaultMaterial()
 		material->SetName(L"FadeOut");
 
 		Add<Material>(L"FadeOut", material);
+	}
+}
+
+void Resources::CreateDefaultSound()
+{
+	// 기본 배경음악 로드
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"MainStageBGM", L"..\\Resources\\Sound\\Background\\main_stage_bgm.wav");
+		Add(L"MainStageBGM", sound);
+	}
+
+	// 레이저 샷
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"LaserShot", L"..\\Resources\\Sound\\FX\\laser_shot.mp3");
+		Add(L"LaserShot", sound);
+	}
+
+	// 레이저 히트
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"LaserHit", L"..\\Resources\\Sound\\FX\\laser_hit.mp3");
+		Add(L"LaserHit", sound);
+	}
+
+	// Footstep
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"Footsteps", L"..\\Resources\\Sound\\FX\\footsteps.mp3");
+		Add(L"Footsteps", sound);
 	}
 }

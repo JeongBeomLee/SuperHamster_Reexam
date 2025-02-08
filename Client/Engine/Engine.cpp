@@ -14,6 +14,7 @@
 #include "PlayerManager.h"
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"
+#include "SoundSystem.h"
 
 Engine::Engine()
 {
@@ -62,6 +63,7 @@ void Engine::Update()
 {
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
+	GET_SINGLE(SoundSystem)->Update();
 	GET_SINGLE(PlayerManager)->Update();
 	PHYSICS_ENGINE->Update();
 	GET_SINGLE(TeleportSystem)->Update();

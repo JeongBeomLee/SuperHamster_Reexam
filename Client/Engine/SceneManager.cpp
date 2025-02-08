@@ -21,6 +21,8 @@
 #include "PlayerManager.h"
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"
+#include "SoundSystem.h"
+
 
 void SceneManager::Update()
 {
@@ -44,6 +46,14 @@ void SceneManager::LoadScene(wstring sceneName)
 	_activeScene = LoadTestScene();
 	GET_SINGLE(ProjectileManager)->Initialize();
 	GET_SINGLE(TeleportSystem)->Initialize();
+
+	// Main BGM Àç»ı
+	auto sound = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM");
+	if (sound) {
+		sound->SetVolume(0.7f);
+		sound->SetLoop(true);
+		GET_SINGLE(SoundSystem)->Play(sound);
+	}
 
 	_activeScene->Awake();
 	_activeScene->Start();

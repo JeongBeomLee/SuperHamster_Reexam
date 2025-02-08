@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Sound.h"
 
 class Resources
 {
@@ -54,6 +55,7 @@ public:
 private:
 	void CreateDefaultShader();
 	void CreateDefaultMaterial();
+	void CreateDefaultSound();
 
 private:
 	using KeyObjMap = std::unordered_map<wstring/*key*/, shared_ptr<Object>>;
@@ -118,6 +120,8 @@ inline OBJECT_TYPE Resources::GetObjectType()
 		return OBJECT_TYPE::SHADER;
 	else if (std::is_same_v<T, Texture>)
 		return OBJECT_TYPE::TEXTURE;
+	else if (std::is_same_v<T, Sound>)
+		return OBJECT_TYPE::SOUND;
 	else if (std::is_convertible_v<T, Component>)
 		return OBJECT_TYPE::COMPONENT;
 	else
