@@ -1057,6 +1057,22 @@ void Resources::CreateDefaultShader()
 			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
 		Add<Shader>(L"CollisionEffect", shader);
 	}
+
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::FORWARD,
+			RASTERIZER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::LESS,
+			BLEND_TYPE::ALPHA_BLEND,
+			D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\fadeout.fx", info);
+		Add<Shader>(L"FadeOut", shader);
+	}
+
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1251,5 +1267,14 @@ void Resources::CreateDefaultMaterial()
 		material->SetTexture(0, texture);
 
 		Add<Material>(L"CollisionEffect", material);
+	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"FadeOut");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetName(L"FadeOut");
+
+		Add<Material>(L"FadeOut", material);
 	}
 }

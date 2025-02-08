@@ -491,5 +491,8 @@
     <FxCompile Include="..\Resources\Shader\collision_effect.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shader\fadeout.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

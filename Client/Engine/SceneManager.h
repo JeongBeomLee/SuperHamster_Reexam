@@ -27,6 +27,11 @@ public:
 
 private:
 	shared_ptr<Scene> LoadTestScene();
+	void CreateFadeOutObjects(
+		const Vec3& position,
+		float width, float height, float y,
+		float vOffset, float hOffset, float yOffset,
+		shared_ptr<Scene>& scene);
 
 private:
 	shared_ptr<Scene> _activeScene;

@@ -435,6 +435,33 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene->AddGameObject(debugObject);*/
 		}
 
+#pragma region FadeOutObject
+		vector<Vec3> stagePositions = {
+			Vec3(0.f,		  0.f, 0.f),
+			Vec3(7.865564f,   0.f, -1745.3679f),
+			Vec3(1944.9496f,  0.f, -1696.3253f),
+			Vec3(1955.0245f,  0.f, -6.5450735f),
+			Vec3(1944.4672f,  0.f, -3457.5078f),
+			Vec3(-1956.9929f, 0.f, -1798.4175f),
+			Vec3(-2049.9458f, 0.f, -106.035675f),
+			Vec3(-2003.9424f, 0.f, 1490.736f) };
+
+		for (const auto& position : stagePositions)
+		{
+			CreateFadeOutObjects(
+				position,
+				1500.f, 500.f, 570.f,
+				750.f, 750.f, 1.5f,
+				scene);
+		}
+
+		CreateFadeOutObjects(
+			Vec3(-8.31838f, 110.f, -3500.4863f),
+			1500.f, 500.f, 570.f,
+			1000.f, 750.f, 1.5f,
+			scene);
+#pragma endregion
+
 		//{
 		//	shared_ptr<GameObject> debugObject = make_shared<GameObject>();
 		//	debugObject->AddComponent(make_shared<Transform>());
@@ -456,4 +483,53 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 
 	return scene;
+}
+
+void SceneManager::CreateFadeOutObjects(
+	const Vec3& position, 
+	float width, float height, float y, 
+	float vOffset, float hOffset, float yOffset,
+	shared_ptr<Scene>& scene)
+{
+	// 각 객체의 위치와 회전 값을 저장
+	vector<Vec3> positions = {
+		Vec3(position.x,			y + yOffset * 0,	position.z + vOffset),
+		Vec3(position.x + hOffset,	y + yOffset * 1,	position.z),
+		Vec3(position.x - hOffset,	y + yOffset * 2,	position.z),
+		Vec3(position.x,			y + yOffset * 3,	position.z -vOffset)
+	};
+
+	vector<float> rotationYs = {
+		XMConvertToRadians(0.f),
+		XMConvertToRadians(90.f),
+		XMConvertToRadians(270.f),
+		XMConvertToRadians(180.f)
+	};
+
+	// 반복문을 사용하여 객체 생성
+	for (size_t i = 0; i < positions.size(); ++i)
+	{
+		shared_ptr<GameObject> fadeOutObject = make_shared<GameObject>();
+		fadeOutObject->AddComponent(make_shared<Transform>());
+		fadeOutObject->AddComponent(make_shared<MeshRenderer>());
+
+		auto meshRenderer = fadeOutObject->GetMeshRenderer();
+		meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadRectangleMesh());
+
+		auto material = GET_SINGLE(Resources)->Get<Material>(L"FadeOut")->Clone();
+		material->SetVec2(0, Vec2(0.f, 1.f));
+		meshRenderer->SetMaterial(material);
+
+		fadeOutObject->GetTransform()->SetLocalPosition(positions[i]);
+		fadeOutObject->GetTransform()->SetLocalScale(
+			Vec3(width,
+				height,
+				1.f));
+		fadeOutObject->GetTransform()->SetLocalRotation(
+			Vec3(XMConvertToRadians(90.f),
+				rotationYs[i],
+				0.f));
+
+		scene->AddGameObject(fadeOutObject);
+	}
 }

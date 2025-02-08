@@ -30,15 +30,14 @@ public:
 	virtual void LateUpdate() override;
 
 	void SetDistance(float distance)	{ _Distance = distance; }
-	//void SetHeight(float height)		{ _Height = height; }
 
 private:
     // 카메라 각도를 상수로 정의
     const float CAMERA_ROTATION_X = 70.f;
     const float CAMERA_ROTATION_Y = -180.f;
 	
-    float _Distance	= 1600.f;
-    float _lerpSpeed = 2.0f;             // 보간 속도
+    float _Distance	= 1600.f;`
+    float _lerpSpeed = 1.5f;             // 보간 속도
 
 private:
     // 카메라 모드

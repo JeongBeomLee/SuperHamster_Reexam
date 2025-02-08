@@ -78,13 +78,13 @@ void PlayerCameraScript::InitializeCameraAreas()
 {
 	_cameraAreas.push_back({
 		L"Stage1",
-		Vec3(-1.1135427f, 110.f, -7.5789433f),     // center
+		Vec3(0.0f, 110.f, 0.0f),     // center
 		Vec3(1200.f, 0.f, 1200.f),               // bounds
 		});
 
 	_cameraAreas.push_back({
 		L"Stage2",
-		Vec3(7.865564f, 110.f, -1745.3679f),     // center
+		Vec3(0.0f, 110.f, -1700.0f),     // center
 		Vec3(1200.f, 0.f, 1200.f),               // bounds
 		});
 
@@ -127,7 +127,7 @@ void PlayerCameraScript::InitializeCameraAreas()
 	_cameraAreas.push_back({
 		L"Stage9",
 		Vec3(-8.31838f, 110.f, -3500.4863f),     // center
-		Vec3(1200.f, 0.f, 1100.f),               // bounds
+		Vec3(1200.f, 0.f, 1200.f),               // bounds
 		});
 }
 
@@ -175,7 +175,7 @@ void PlayerCameraScript::UpdatePlayerCenteredCamera()
 void PlayerCameraScript::UpdateTransitioningCamera()
 {
 	// 시간에 따른 보간 진행
-	_transitionProgress += GET_SINGLE(Timer)->GetDeltaTime() / _transitionDuration;
+	_transitionProgress += GET_SINGLE(Timer)->GetDeltaTime() / (_transitionDuration / _lerpSpeed);
 	if (_transitionProgress >= 1.0f) {
 		_transitionProgress = 1.0f;
 
