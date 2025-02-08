@@ -444,10 +444,10 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			Vec3(1944.4672f,  0.f, -3457.5078f),
 			Vec3(-1956.9929f, 0.f, -1798.4175f),
 			Vec3(-2049.9458f, 0.f, -106.035675f),
-			Vec3(-2003.9424f, 0.f, 1490.736f) };
+			Vec3(-2003.9424f, 0.f, 1490.736f) 
+		};
 
-		for (const auto& position : stagePositions)
-		{
+		for (const auto& position : stagePositions) {
 			CreateFadeOutObjects(
 				position,
 				1500.f, 500.f, 570.f,
@@ -457,7 +457,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 		CreateFadeOutObjects(
 			Vec3(-8.31838f, 110.f, -3500.4863f),
-			1500.f, 500.f, 570.f,
+			1500.f, 500.f, 650.f,
 			1000.f, 750.f, 1.5f,
 			scene);
 #pragma endregion
@@ -512,6 +512,7 @@ void SceneManager::CreateFadeOutObjects(
 		shared_ptr<GameObject> fadeOutObject = make_shared<GameObject>();
 		fadeOutObject->AddComponent(make_shared<Transform>());
 		fadeOutObject->AddComponent(make_shared<MeshRenderer>());
+		fadeOutObject->SetCheckFrustum(false);
 
 		auto meshRenderer = fadeOutObject->GetMeshRenderer();
 		meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadRectangleMesh());

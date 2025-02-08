@@ -49,6 +49,9 @@
     <Filter Include="Physics\Callback">
       <UniqueIdentifier>{93fcc4ff-7b2f-4fc3-a2ac-3e3e519bd045}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Projectile">
+      <UniqueIdentifier>{0ae97fb7-b070-47e3-b7ae-55b96520fa07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -228,12 +231,14 @@
     <ClCompile Include="PlayerMovement.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="ProjectileManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="TeleportSystem.cpp">
       <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Object\Projectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -423,12 +428,14 @@
     <ClInclude Include="PlayerMovement.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="TeleportSystem.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Object\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

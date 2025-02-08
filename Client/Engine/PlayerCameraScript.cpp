@@ -154,6 +154,7 @@ void PlayerCameraScript::UpdateAreaBasedCamera()
 	// 카메라의 위치 설정
 	Vec3 cameraDirection = GetTransform()->GetLook();
 	Vec3 cameraPos = _currentArea->center - (cameraDirection * _Distance);
+
 	GetTransform()->SetLocalPosition(cameraPos);
 }
 
@@ -169,6 +170,7 @@ void PlayerCameraScript::UpdatePlayerCenteredCamera()
 	// 카메라의 위치 설정
 	Vec3 cameraDirection = GetTransform()->GetLook();
 	Vec3 cameraPos = playerPos - (cameraDirection * _Distance);
+
 	GetTransform()->SetLocalPosition(cameraPos);
 }
 

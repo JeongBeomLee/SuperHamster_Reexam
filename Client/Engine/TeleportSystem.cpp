@@ -241,19 +241,19 @@ std::shared_ptr<GameObject> TeleportSystem::CreateTeleportTrigger(const Vec3& po
 {
 	auto triggerObject = make_shared<GameObject>();
 
-	auto meshRenderer = make_shared<MeshRenderer>();
+	//auto meshRenderer = make_shared<MeshRenderer>();
 	auto transform = make_shared<Transform>();
 	auto physicsBody = make_shared<PhysicsBody>();
 
-	triggerObject->AddComponent(meshRenderer);
+	//triggerObject->AddComponent(meshRenderer);
 	triggerObject->AddComponent(transform);
 	triggerObject->AddComponent(physicsBody);
 
-	auto mesh = GET_SINGLE(Resources)->LoadCubeMesh(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
-	auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization")->Clone();
-	material->SetVec4(0, Vec4(1.f, 0.f, 0.f, 1.f));
-	meshRenderer->SetMesh(mesh);
-	meshRenderer->SetMaterial(material);
+	//auto mesh = GET_SINGLE(Resources)->LoadCubeMesh(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
+	//auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization")->Clone();
+	//material->SetVec4(0, Vec4(1.f, 0.f, 0.f, 1.f));
+	//meshRenderer->SetMesh(mesh);
+	//meshRenderer->SetMaterial(material);
 
 	auto newPosition = position;
 	newPosition.y += size.y;

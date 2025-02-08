@@ -18,6 +18,7 @@ void ProjectileManager::Initialize(uint32_t poolSize)
     // 풀 초기화
     for (uint32_t i = 0; i < m_poolSize; ++i) {
         auto projectile = CreateProjectileObject(Vec3::Zero, Vec3::Forward);
+		projectile->SetName(L"Projectile" + to_wstring(i + 1));
         projectile->SetActive(false);
         m_projectilePool.push(projectile);
     }
@@ -130,6 +131,8 @@ void ProjectileManager::InitializeParticleEffects()
     // muzzle falsh
     {
 		m_particleEffects.muzzleFlash = make_shared<GameObject>();
+		m_particleEffects.muzzleFlash->SetName(L"MuzzleFlash");
+		m_particleEffects.muzzleFlash->SetCheckFrustum(false);
         m_particleEffects.muzzleFlash->AddComponent(make_shared<Transform>());
         auto muzzleParticle = make_shared<ParticleSystem>();
         m_particleEffects.muzzleFlash->AddComponent(muzzleParticle);
@@ -141,6 +144,8 @@ void ProjectileManager::InitializeParticleEffects()
     {
         for (int i = 0; i < 3; ++i) {
 			m_particleEffects.shockwaves[i] = make_shared<GameObject>();
+			m_particleEffects.shockwaves[i]->SetName(L"Shockwave" + to_wstring(i + 1));
+			m_particleEffects.shockwaves[i]->SetCheckFrustum(false);
 			m_particleEffects.shockwaves[i]->AddComponent(make_shared<Transform>());
 			auto shockwaveParticle = make_shared<ParticleSystem>();
 			m_particleEffects.shockwaves[i]->AddComponent(shockwaveParticle);
@@ -152,9 +157,11 @@ void ProjectileManager::InitializeParticleEffects()
     // laserImpact
     {
 		m_particleEffects.collisionEffect = make_shared<GameObject>();
+        m_particleEffects.collisionEffect->SetName(L"CollisionEffect");
+		m_particleEffects.collisionEffect->SetCheckFrustum(false);
 		m_particleEffects.collisionEffect->AddComponent(make_shared<Transform>());
-		auto laserImpactParticle = make_shared<ParticleSystem>();
-		m_particleEffects.collisionEffect->AddComponent(laserImpactParticle);
+		auto collisonEffectParticle = make_shared<ParticleSystem>();
+		m_particleEffects.collisionEffect->AddComponent(collisonEffectParticle);
 		scene->AddGameObject(m_particleEffects.collisionEffect);
 		Logger::Instance().Info("레이저 충돌 파티클 시스템 생성");
     }
@@ -198,6 +205,7 @@ void ProjectileManager::PlayEffects(const Vec3& position, const Vec3& direction)
 {
     // MuzzleFlash 설정 및 재생
     auto muzzleObj = m_particleEffects.muzzleFlash;
+    muzzleObj->SetCheckFrustum(false);
     auto transform = muzzleObj->GetTransform();
     Vec3 muzzlePos = position + direction * 10.f;
     transform->SetLocalPosition(position);
@@ -227,6 +235,7 @@ void ProjectileManager::PlayEffects(const Vec3& position, const Vec3& direction)
     // Shockwave 설정 및 재생
     for (int i = 0; i < 3; ++i) {
 		auto shockObj = m_particleEffects.shockwaves[i];
+		shockObj->SetCheckFrustum(false);
 
         // 발사 방향을 바라보도록 회전
         Vec3 shockPos = (position + direction * 10.f) + (direction * 20.f * i);

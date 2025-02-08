@@ -78,17 +78,6 @@ private:
 	float _elapsedTime = 0.f;      // 경과 시간
 	bool _isPlaying = false;       // 재생 중인지 여부
 
-	struct ParticleSystemSet {
-		shared_ptr<GameObject> gameObject;
-		shared_ptr<ParticleSystem> particleSystem;
-		ParticleSystem::EffectDesc effectDesc;
-	};
-
-	// 머즐 플래시용 파티클 시스템
-	ParticleSystemSet m_muzzleFlash;
-	// 충격파용 파티클 시스템 (3개)
-	array<ParticleSystemSet, 3> m_shockwaves;
-
 	// 컴퓨트 셰이더 관련
 	/*shared_ptr<StructuredBuffer> _particleBuffer;
 	shared_ptr<StructuredBuffer> _computeSharedBuffer;

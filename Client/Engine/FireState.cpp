@@ -12,10 +12,6 @@ void FireState::Enter(Player* player)
 	player->PlayAnimation(PLAYER_STATE::FIRE);
 	m_hasCheckedAnimation = false;
 
-    // 총구 위치 계산 (오른손에 부착된 총의 위치)
-    auto playerObject = player->GetGameObject();
-    if (!playerObject) return;
-
     // 총 오브젝트 찾기
     auto scene = GET_SINGLE(SceneManager)->GetActiveScene();
     auto gunObject = scene->GetGameObjectByName(L"defaultGun");
