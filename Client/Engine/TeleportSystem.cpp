@@ -5,11 +5,16 @@
 #include "CharacterController.h"
 #include "Transform.h"
 #include "Resources.h"
-
 #include "MeshRenderer.h"
 #include "PhysicsBody.h"
 #include "Scene.h"
 #include "SceneManager.h"
+
+TeleportSystem::~TeleportSystem()
+{
+	m_teleportZones.clear();
+	m_cooldowns.clear();
+}
 
 void TeleportSystem::Initialize()
 {

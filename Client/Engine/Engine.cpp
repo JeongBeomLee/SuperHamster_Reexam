@@ -80,8 +80,7 @@ void Engine::ToggleFullscreen()
 	_window.windowed = !_window.windowed;
 	bool fullscreen = !_window.windowed;
 
-	if (fullscreen)
-	{
+	if (fullscreen) {
 		_window.width = GetSystemMetrics(SM_CXSCREEN);
 		_window.height = GetSystemMetrics(SM_CYSCREEN);
 
@@ -98,8 +97,7 @@ void Engine::ToggleFullscreen()
 		fullscreenMode.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		_swapChain->GetSwapChain()->ResizeTarget(&fullscreenMode);
 	}
-	else
-	{
+	else {
 		_window.width = 1280;
 		_window.height = 720;
 
@@ -240,9 +238,7 @@ void Engine::SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, co
 void Engine::Render()
 {
 	RenderBegin();
-
 	GET_SINGLE(SceneManager)->Render();
-
 	RenderEnd();
 }
 
@@ -369,5 +365,63 @@ void Engine::CreateRenderTargetGroups()
 
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<RenderTargetGroup>();
 		_rtGroups[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
+	}
+}
+
+void Engine::RegisterEventHandlers()
+{
+	auto collisionHandler = m_collisionHandlerIds.emplace_back(
+		EventManager::Instance().Subscribe<Event::CollisionEvent>(
+			Event::EventCallback<Event::CollisionEvent>(
+				[this](const Event::CollisionEvent& event) {
+					// 충돌 이벤트 처리
+					Logger::Instance().Debug("'{}'와 '{}'가 충돌 발생. 위치: ({}, {}, {}), 노말: ({}, {}, {}), 충격량: ({})",
+						event.actor1->getName(),
+						event.actor2->getName(),
+						event.position.x,
+						event.position.y,
+						event.position.z,
+						event.normal.x,
+						event.normal.y,
+						event.normal.z,
+						event.impulse);
+				})
+		)
+	);
+
+	auto inputHandler = m_inputHandlerIds.emplace_back(
+		EventManager::Instance().Subscribe<Event::InputEvent>(
+			Event::EventCallback<Event::InputEvent>(
+				[this](const Event::InputEvent& event) {
+					// 입력 이벤트 처리
+					switch (event.type) {
+					case Event::InputEvent::Type::KeyDown:
+						Logger::Instance().Debug("키 눌림: {}", event.code);
+						break;
+					case Event::InputEvent::Type::KeyUp:
+						Logger::Instance().Debug("키 뗌: {}", event.code);
+						break;
+					case Event::InputEvent::Type::MouseMove:
+						Logger::Instance().Debug("마우스 이동: ({}, {})", event.x, event.y);
+						break;
+					case Event::InputEvent::Type::MouseButtonDown:
+						Logger::Instance().Debug("마우스 버튼 눌림: {}", event.code);
+						break;
+					case Event::InputEvent::Type::MouseButtonUp:
+						Logger::Instance().Debug("마우스 버튼 뗌: {}", event.code);
+						break;
+					}
+				})
+		)
+	);
+}
+
+void Engine::UnregisterEventHandlers()
+{
+	for (auto id : m_collisionHandlerIds) {
+		EventManager::Instance().Unsubscribe<Event::CollisionEvent>(id);
+	}
+	for (auto id : m_inputHandlerIds) {
+		EventManager::Instance().Unsubscribe<Event::InputEvent>(id);
 	}
 }

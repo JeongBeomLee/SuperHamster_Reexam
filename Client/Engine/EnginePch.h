@@ -1,14 +1,12 @@
 #pragma once
-
 // std::byte 사용하지 않음
 #define _HAS_STD_BYTE 0
 
-// 각종 include
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+// Windows
 #include <windows.h>
 #pragma comment(lib, "ws2_32.lib")
 
+// STD
 #include <tchar.h>
 #include <memory>
 #include <string>
@@ -23,13 +21,11 @@
 #include <functional>
 #include <fstream>
 #include <format>
-using namespace std;
-
 #include <filesystem>
 namespace fs = std::filesystem;
+using namespace std;
 
-#include "d3dx12.h"
-#include "SimpleMath.h"
+// DirectX
 #include <d3d12.h>
 #include <wrl.h>
 #include <d3dcompiler.h>
@@ -37,23 +33,30 @@ namespace fs = std::filesystem;
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
+#include "d3dx12.h"
+#include "SimpleMath.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
+// DirectXTex
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
 
+// FBX SDK
 #include "FBX/fbxsdk.h"
-#include "../../Server/Server/Protocol.h"
 
+// 물리 엔진
 #include "PxPhysicsAPI.h"
 using namespace physx;
 
+// FMOD
 #include "fmod.hpp"
 #include <fmod_errors.h>
 
+// Tool
 #include "Logger.h"
+#include "EventManager.h"
 
 // 각종 lib
 #pragma comment(lib, "d3d12")
@@ -62,63 +65,63 @@ using namespace physx;
 #pragma comment(lib, "d3dcompiler")
 
 #ifdef _DEBUG
-#pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
+	#pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
 #else
-#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+	#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
 #endif
 
 #ifdef _DEBUG
-#pragma comment(lib, "fmodL_vc.lib")
+	#pragma comment(lib, "fmodL_vc.lib")
 #else
-#pragma comment(lib, "fmod_vc.lib")
+	#pragma comment(lib, "fmod_vc.lib")
 #endif
 
 #ifdef _DEBUG
-#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
-#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
-#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
+	#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
+	#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
+	#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
 #else
-#pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
-#pragma comment(lib, "FBX\\release\\libxml2-md.lib")
-#pragma comment(lib, "FBX\\release\\zlib-md.lib")
+	#pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
+	#pragma comment(lib, "FBX\\release\\libxml2-md.lib")
+	#pragma comment(lib, "FBX\\release\\zlib-md.lib")
 #endif
 
 #ifdef _DEBUG
-#pragma comment(lib, "PhysX_64.lib")
-#pragma comment(lib, "PhysXCommon_64.lib")
-#pragma comment(lib, "PhysXTask_static_64")
-#pragma comment(lib, "PhysXCooking_64.lib")
-#pragma comment(lib, "PhysXVehicle_static_64")
-#pragma comment(lib, "PhysXFoundation_64.lib")
-#pragma comment(lib, "PhysXVehicle2_static_64")
-#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
-#pragma comment(lib, "PhysXExtensions_static_64.lib")
-#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
+	#pragma comment(lib, "PhysX_64.lib")
+	#pragma comment(lib, "PhysXCommon_64.lib")
+	#pragma comment(lib, "PhysXTask_static_64")
+	#pragma comment(lib, "PhysXCooking_64.lib")
+	#pragma comment(lib, "PhysXVehicle_static_64")
+	#pragma comment(lib, "PhysXFoundation_64.lib")
+	#pragma comment(lib, "PhysXVehicle2_static_64")
+	#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
+	#pragma comment(lib, "PhysXExtensions_static_64.lib")
+	#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
 
-#pragma comment(lib, "PVDRuntime_64")
-#pragma comment(lib, "LowLevel_static_64")
-#pragma comment(lib, "SceneQuery_static_64")
-#pragma comment(lib, "LowLevelAABB_static_64")
-#pragma comment(lib, "LowLevelDynamics_static_64")
-#pragma comment(lib, "SimulationController_static_64")
+	#pragma comment(lib, "PVDRuntime_64")
+	#pragma comment(lib, "LowLevel_static_64")
+	#pragma comment(lib, "SceneQuery_static_64")
+	#pragma comment(lib, "LowLevelAABB_static_64")
+	#pragma comment(lib, "LowLevelDynamics_static_64")
+	#pragma comment(lib, "SimulationController_static_64")
 #else
-#pragma comment(lib, "PhysX_64.lib")
-#pragma comment(lib, "PhysXCommon_64.lib")
-#pragma comment(lib, "PhysXTask_static_64")
-#pragma comment(lib, "PhysXCooking_64.lib")
-#pragma comment(lib, "PhysXVehicle_static_64")
-#pragma comment(lib, "PhysXFoundation_64.lib")
-#pragma comment(lib, "PhysXVehicle2_static_64")
-#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
-#pragma comment(lib, "PhysXExtensions_static_64.lib")
-#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
+	#pragma comment(lib, "PhysX_64.lib")
+	#pragma comment(lib, "PhysXCommon_64.lib")
+	#pragma comment(lib, "PhysXTask_static_64")
+	#pragma comment(lib, "PhysXCooking_64.lib")
+	#pragma comment(lib, "PhysXVehicle_static_64")
+	#pragma comment(lib, "PhysXFoundation_64.lib")
+	#pragma comment(lib, "PhysXVehicle2_static_64")
+	#pragma comment(lib, "PhysXPvdSDK_static_64.lib")
+	#pragma comment(lib, "PhysXExtensions_static_64.lib")
+	#pragma comment(lib, "PhysXCharacterKinematic_static_64.lib")
 
-#pragma comment(lib, "PVDRuntime_64")
-#pragma comment(lib, "LowLevel_static_64")
-#pragma comment(lib, "SceneQuery_static_64")
-#pragma comment(lib, "LowLevelAABB_static_64")
-#pragma comment(lib, "LowLevelDynamics_static_64")
-#pragma comment(lib, "SimulationController_static_64")
+	#pragma comment(lib, "PVDRuntime_64")
+	#pragma comment(lib, "LowLevel_static_64")
+	#pragma comment(lib, "SceneQuery_static_64")
+	#pragma comment(lib, "LowLevelAABB_static_64")
+	#pragma comment(lib, "LowLevelDynamics_static_64")
+	#pragma comment(lib, "SimulationController_static_64")
 #endif
 
 // 각종 typedef

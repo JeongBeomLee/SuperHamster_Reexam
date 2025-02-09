@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Device.h"
 #include "CommandQueue.h"
 #include "SwapChain.h"
@@ -13,6 +12,8 @@
 #include "Timer.h"
 #include "MeshData.h"
 #include "PhysicsEngine.h"
+#include "Event.h"
+#include "EventTypes.h"
 
 class Engine
 {
@@ -33,10 +34,8 @@ public:
 	shared_ptr<RootSignature> GetRootSignature() { return _rootSignature; }
 	shared_ptr<GraphicsDescriptorHeap> GetGraphicsDescHeap() { return _graphicsDescHeap; }
 	shared_ptr<ComputeDescriptorHeap> GetComputeDescHeap() { return _computeDescHeap; }
-
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	shared_ptr<RenderTargetGroup> GetRTGroup(RENDER_TARGET_GROUP_TYPE type) { return _rtGroups[static_cast<uint8>(type)]; }
-
 	PhysicsEngine* GetPhysicsEngine() const { return _physicsEngine.get(); }
 
 	int GetMyPlayerId() const { return _myPlayerId; }
@@ -57,6 +56,10 @@ private:
 	void ShowFps();
 	void CreateConstantBuffer(CBV_REGISTER reg, uint32 bufferSize, uint32 count);
 	void CreateRenderTargetGroups();
+
+	// 이벤트 핸들러 등록, 등록 해제 함수
+	void RegisterEventHandlers();
+	void UnregisterEventHandlers();
 
 private:
 	// 그려질 화면 크기 관련
@@ -80,6 +83,10 @@ private:
 
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
+
+	// 이벤트 핸들러 ID 저장용 변수들
+	std::vector<Event::EventDispatcher<Event::CollisionEvent>::HandlerId> m_collisionHandlerIds;
+	std::vector<Event::EventDispatcher<Event::InputEvent>::HandlerId> m_inputHandlerIds;
 
 	int _myPlayerId = -1;
 };

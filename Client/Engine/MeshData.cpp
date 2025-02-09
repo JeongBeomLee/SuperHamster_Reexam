@@ -124,7 +124,7 @@ vector<shared_ptr<GameObject>> MeshData::Instantiate()
 
 			// 기본적으로 첫 번째 애니메이션 재생 시작
 			transformAnim->Play(0);
-			transformAnim->SetLoop(true);
+			//transformAnim->SetLoop(true);
 
 			// 디버그 로그
 			Logger::Instance().Debug("트랜스폼 애니메이션 추가됨: GameObject [{}]",

@@ -26,7 +26,7 @@ void CharacterController::Initialize()
 
     auto physicsObject = PHYSICS_ENGINE->CreateCapsuleController(
         PxVec3(position.x, position.y, position.z),
-        50.0f,   // 반지름
+        40.0f,   // 반지름
         150.0f,   // 높이
         CollisionGroup::Character,
         CollisionGroup::Default | CollisionGroup::Ground |

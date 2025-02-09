@@ -29,9 +29,16 @@ struct TeleportZone {
 
 class TeleportSystem
 {
-    DECLARE_SINGLE(TeleportSystem);
+private:
+	TeleportSystem() = default;
+    ~TeleportSystem();
 
 public:
+    static TeleportSystem* GetInstance() {
+        static TeleportSystem instance;
+        return &instance;
+    }
+
     void Initialize();
     void Update();
 
@@ -55,8 +62,8 @@ private:
     void StartCooldown(GameObject* player);
 
 private:
-    std::unordered_map<TeleportZoneId, TeleportZone> m_teleportZones;
-    //std::vector<std::shared_ptr<GameObject>> m_triggerObjects;
     const float TELEPORT_COOLDOWN = 1.0f;  // 1초의 쿨다운 시간
+    std::unordered_map<TeleportZoneId, TeleportZone> m_teleportZones;
     std::unordered_map<GameObject*, float> m_cooldowns;  // 플레이어별 쿨다운 관리
+    //std::vector<std::shared_ptr<GameObject>> m_triggerObjects;
 };

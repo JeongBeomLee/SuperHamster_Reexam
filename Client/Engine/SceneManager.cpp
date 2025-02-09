@@ -327,36 +327,10 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(light);
 	}
 #pragma endregion
-
-	{
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
-
-		shared_ptr<GameObject> gameObject1 = meshData->Instantiate()[0];
-		shared_ptr<GameObject> gameObject2 = meshData->Instantiate()[1];
-
-		{
-			gameObject1->SetCheckFrustum(false);
-			gameObject1->SetStatic(false);
-			gameObject1->GetTransformAnimator()->SetStartPos(Vec3(0.f, 150.f, 0.f));
-			gameObject1->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
-			gameObject1->GetTransformAnimator()->SetStartScale(Vec3(0.5f, 0.5f, 0.5f));
-			scene->AddGameObject(gameObject1);
-		}
-
-		{
-			gameObject2->SetCheckFrustum(false);
-			gameObject2->SetStatic(false);
-			gameObject2->GetTransformAnimator()->SetStartPos(Vec3(0.f, 145.f, -95.f));
-			gameObject2->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
-			gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
-			scene->AddGameObject(gameObject2);
-		}
-	}
 	
 #pragma region FBX
 	{
 		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
-		//GEngine->LoadMapMeshForPhysics(mapMeshData);
 		shared_ptr<GameObject> mapObject = mapMeshData->Instantiate()[0];
 
 		mapObject->SetName(L"Map");
@@ -430,6 +404,31 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
 		defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
 		scene->AddGameObject(defaultGunObject);
+
+		{
+			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
+
+			shared_ptr<GameObject> gameObject1 = meshData->Instantiate()[0];
+			shared_ptr<GameObject> gameObject2 = meshData->Instantiate()[1];
+
+			{
+				gameObject1->SetCheckFrustum(true);
+				gameObject1->SetStatic(false);
+				gameObject1->GetTransformAnimator()->SetStartPos(Vec3(0.f, 150.f, 0.f));
+				gameObject1->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+				gameObject1->GetTransformAnimator()->SetStartScale(Vec3(0.5f, 0.5f, 0.5f));
+				scene->AddGameObject(gameObject1);
+			}
+
+			{
+				gameObject2->SetCheckFrustum(true);
+				gameObject2->SetStatic(false);
+				gameObject2->GetTransformAnimator()->SetStartPos(Vec3(0.f, 145.f, -95.f));
+				gameObject2->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+				gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
+				scene->AddGameObject(gameObject2);
+			}*/
+		}
 
 		{
 			//shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");

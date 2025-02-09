@@ -189,6 +189,9 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EnginePch.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="EventTypes.h" />
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="FireState.h" />
     <ClInclude Include="Frustum.h" />
