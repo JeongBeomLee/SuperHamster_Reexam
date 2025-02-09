@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Animator.h"
 #include "GameObject.h"
+#include "TransformAnimator.h"
 
 Transform::Transform() : Component(COMPONENT_TYPE::TRANSFORM)
 {
@@ -51,6 +52,21 @@ void Transform::PushData()
 	transformParams.matViewInv = Camera::S_MatView.Invert();
 
 	CONST_BUFFER(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushGraphicsData(&transformParams, sizeof(transformParams));
+}
+
+void Transform::SetLocalPosition(const Vec3& position)
+{
+	_localPosition = position;
+}
+
+void Transform::SetLocalRotation(const Vec3& rotation)
+{
+	_localRotation = rotation;
+}
+
+void Transform::SetLocalScale(const Vec3& scale)
+{
+	_localScale = scale;
 }
 
 void Transform::LookAt(const Vec3& dir)

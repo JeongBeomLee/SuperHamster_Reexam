@@ -22,6 +22,10 @@ public:
     void SetLoop(bool loop) { _loop = loop; }
     bool IsLooping() const { return _loop; }
 
+	void SetStartPos(const Vec3& pos) { _startPos = pos; }
+	void SetStartScale(const Vec3& scale) { _startScale = scale; }
+	void SetStartRot(const Vec3& rot) { _startRot = rot; }
+
 private:
     void UpdateTransform();
 
@@ -35,4 +39,8 @@ private:
     bool _isPlaying = true;
     bool _animFinished = false;
     bool _loop = false;  // 반복 재생 여부
+
+	Vec3 _startPos = Vec3::Zero;
+	Vec3 _startScale = Vec3::Zero;
+	Vec3 _startRot = Vec3::Zero;
 };

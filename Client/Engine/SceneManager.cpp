@@ -22,6 +22,7 @@
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"
 #include "SoundSystem.h"
+#include "TransformAnimator.h"
 
 
 void SceneManager::Update()
@@ -330,16 +331,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
 
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-		int playerID = GEngine->GetOtherPlayerId();
-		for (auto& gameObject : gameObjects)
+		shared_ptr<GameObject> gameObject1 = meshData->Instantiate()[0];
+		shared_ptr<GameObject> gameObject2 = meshData->Instantiate()[1];
+
 		{
-			gameObject->SetCheckFrustum(false);
-			gameObject->SetStatic(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 500.f, 0.f));
-			gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-			gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
-			scene->AddGameObject(gameObject);
+			gameObject1->SetCheckFrustum(false);
+			gameObject1->SetStatic(false);
+			gameObject1->GetTransformAnimator()->SetStartPos(Vec3(0.f, 150.f, 0.f));
+			gameObject1->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+			gameObject1->GetTransformAnimator()->SetStartScale(Vec3(0.5f, 0.5f, 0.5f));
+			scene->AddGameObject(gameObject1);
+		}
+
+		{
+			gameObject2->SetCheckFrustum(false);
+			gameObject2->SetStatic(false);
+			gameObject2->GetTransformAnimator()->SetStartPos(Vec3(0.f, 145.f, -95.f));
+			gameObject2->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+			gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
+			scene->AddGameObject(gameObject2);
 		}
 	}
 	

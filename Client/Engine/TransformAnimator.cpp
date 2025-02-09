@@ -94,12 +94,10 @@ void TransformAnimator::UpdateTransform()
     Vec3 pos = Vec3::Lerp(frame.localTranslation, nextFrame.localTranslation, _frameRatio);
     Vec3 scale = Vec3::Lerp(frame.localScale, nextFrame.localScale, _frameRatio);
     Vec3 rot = Vec3::Lerp(frame.localRotation, nextFrame.localRotation, _frameRatio);
-    rot.x -= XM_PIDIV2;
-    rot.y += XM_PI;
 
-    //transform->SetLocalPosition(pos);
-    transform->SetLocalScale(scale);
-    transform->SetLocalRotation(rot);
+    transform->SetLocalPosition(_startPos + pos);
+    transform->SetLocalScale(_startScale * scale);
+    transform->SetLocalRotation(_startRot + rot);
 }
 
 void TransformAnimator::SetTransformAnimClip(const vector<shared_ptr<TransformAnimClipInfo>>* clips)

@@ -27,9 +27,9 @@ public:
 	Vec3 GetLook() { return _matWorld.Backward(); }
 	Vec3 GetForward() { return _matWorld.Forward(); }
 
-	void SetLocalPosition(const Vec3& position) { _localPosition = position; }
-	void SetLocalRotation(const Vec3& rotation) { _localRotation = rotation; }
-	void SetLocalScale(const Vec3& scale) { _localScale = scale; }
+	void SetLocalPosition(const Vec3& position);
+	void SetLocalRotation(const Vec3& rotation);
+	void SetLocalScale(const Vec3& scale);
 
 	void LookAt(const Vec3& dir);
 

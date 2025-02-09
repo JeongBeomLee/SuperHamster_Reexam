@@ -29,6 +29,7 @@ class GameObject;
 class Transform;
 class MeshRenderer;
 class Animator;
+class TransformAnimator;
 
 class Component : public Object
 {
@@ -51,6 +52,7 @@ public:
 	shared_ptr<Transform> GetTransform();
 	shared_ptr<MeshRenderer> GetMeshRenderer();
 	shared_ptr<Animator> GetAnimator();
+	shared_ptr<TransformAnimator> GetTransformAnimator();
 
 private:
 	friend class GameObject;

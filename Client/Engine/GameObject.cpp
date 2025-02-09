@@ -12,6 +12,7 @@
 #include "CharacterController.h"
 #include "PlayerMovement.h"
 #include "PhysicsBody.h"
+#include "TransformAnimator.h"
 
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
@@ -159,6 +160,12 @@ shared_ptr<PhysicsBody> GameObject::GetPhysicsBody()
 {
 	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PHYSICS_BODY);
 	return static_pointer_cast<PhysicsBody>(component);
+}
+
+shared_ptr<TransformAnimator> GameObject::GetTransformAnimator()
+{
+	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::TRANSFORM_ANIMATOR);
+	return static_pointer_cast<TransformAnimator>(component);
 }
 
 void GameObject::AddComponent(shared_ptr<Component> component)

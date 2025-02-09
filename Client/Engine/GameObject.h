@@ -14,6 +14,7 @@ class Animator;
 class CharacterController;
 class PlayerMovement;
 class PhysicsBody;
+class TransformAnimator;
 
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
@@ -40,6 +41,7 @@ public:
 	shared_ptr<CharacterController> GetCharacterController();
 	shared_ptr<PlayerMovement> GetPlayerMovement();
 	shared_ptr<PhysicsBody> GetPhysicsBody();
+	shared_ptr<TransformAnimator> GetTransformAnimator();
 
 	void AddComponent(shared_ptr<Component> component);
 
