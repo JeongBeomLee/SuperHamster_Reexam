@@ -3,12 +3,12 @@
 
 class EventManager {
 public:
-    static EventManager& Instance() {
+    static EventManager* GetInstance() {
         static EventManager instance;
-        return instance;
+        return &instance;
     }
 
-    // 이벤트 발행 (어떤 스레드에서든 호출 가능)
+    // 이벤트 발행
     template<typename EventType>
     void Publish(const EventType& event) {
         GetQueue<EventType>().Push(event);

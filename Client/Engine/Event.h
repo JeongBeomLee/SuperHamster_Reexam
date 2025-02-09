@@ -19,13 +19,6 @@ namespace Event
     private:
         std::chrono::system_clock::time_point m_timestamp;
     };
-
-    template<typename EventType>
-    class IEventHandler {
-    public:
-        virtual ~IEventHandler() = default;
-        virtual void Handle(const EventType& event) = 0;
-    };
     
     // 이벤트 콜백
     template<typename EventType>
@@ -42,6 +35,14 @@ namespace Event
 
     private:
         CallbackFn m_callback;
+    };
+
+    // 이벤트 핸들러(아직 사용안함)
+    template<typename EventType>
+    class IEventHandler {
+    public:
+        virtual ~IEventHandler() = default;
+        virtual void Handle(const EventType& event) = 0;
     };
 
     // 이벤트 큐
@@ -73,7 +74,7 @@ namespace Event
         std::queue<EventType> m_events;
     };
 
-	// 이벤트 디스패처
+	// 이벤트 디스패처 (행동을 수행)
     template<typename EventType>
     class EventDispatcher {
     public:

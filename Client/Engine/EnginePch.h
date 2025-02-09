@@ -40,11 +40,11 @@ using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
 // DirectXTex
-#include <DirectXTex/DirectXTex.h>
-#include <DirectXTex/DirectXTex.inl>
+#include "DirectXTex.h"
+#include "DirectXTex.inl"
 
 // FBX SDK
-#include "FBX/fbxsdk.h"
+#include "fbxsdk.h"
 
 // 물리 엔진
 #include "PxPhysicsAPI.h"
@@ -65,9 +65,9 @@ using namespace physx;
 #pragma comment(lib, "d3dcompiler")
 
 #ifdef _DEBUG
-	#pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
+	#pragma comment(lib, "DirectXTex_debug.lib")
 #else
-	#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+	#pragma comment(lib, "DirectXTex.lib")
 #endif
 
 #ifdef _DEBUG
@@ -77,13 +77,13 @@ using namespace physx;
 #endif
 
 #ifdef _DEBUG
-	#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
-	#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
+	#pragma comment(lib, "libfbxsdk-md.lib")
+	#pragma comment(lib, "libxml2-md.lib")
 	#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
 #else
-	#pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
-	#pragma comment(lib, "FBX\\release\\libxml2-md.lib")
-	#pragma comment(lib, "FBX\\release\\zlib-md.lib")
+	#pragma comment(lib, "libfbxsdk-md.lib")
+	#pragma comment(lib, "libxml2-md.lib")
+	#pragma comment(lib, "zlib-md.lib")
 #endif
 
 #ifdef _DEBUG

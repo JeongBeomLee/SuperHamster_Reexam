@@ -70,6 +70,7 @@ void Engine::Update()
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(ProjectileManager)->Update();	
 	GET_SINGLE(InstancingManager)->ClearBuffer();
+	GET_SINGLE(EventManager)->Update();
 
 	Render();
 	ShowFps();
@@ -371,7 +372,7 @@ void Engine::CreateRenderTargetGroups()
 void Engine::RegisterEventHandlers()
 {
 	auto collisionHandler = m_collisionHandlerIds.emplace_back(
-		EventManager::Instance().Subscribe<Event::CollisionEvent>(
+		GET_SINGLE(EventManager)->Subscribe<Event::CollisionEvent>(
 			Event::EventCallback<Event::CollisionEvent>(
 				[this](const Event::CollisionEvent& event) {
 					// 충돌 이벤트 처리
@@ -390,7 +391,7 @@ void Engine::RegisterEventHandlers()
 	);
 
 	auto inputHandler = m_inputHandlerIds.emplace_back(
-		EventManager::Instance().Subscribe<Event::InputEvent>(
+		GET_SINGLE(EventManager)->Subscribe<Event::InputEvent>(
 			Event::EventCallback<Event::InputEvent>(
 				[this](const Event::InputEvent& event) {
 					// 입력 이벤트 처리
@@ -419,9 +420,9 @@ void Engine::RegisterEventHandlers()
 void Engine::UnregisterEventHandlers()
 {
 	for (auto id : m_collisionHandlerIds) {
-		EventManager::Instance().Unsubscribe<Event::CollisionEvent>(id);
+		GET_SINGLE(EventManager)->Unsubscribe<Event::CollisionEvent>(id);
 	}
 	for (auto id : m_inputHandlerIds) {
-		EventManager::Instance().Unsubscribe<Event::InputEvent>(id);
+		GET_SINGLE(EventManager)->Unsubscribe<Event::InputEvent>(id);
 	}
 }
