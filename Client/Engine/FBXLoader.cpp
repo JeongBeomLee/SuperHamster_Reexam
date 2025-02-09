@@ -151,22 +151,22 @@ void FBXLoader::ParseNode(FbxNode* node)
 
 	if (attribute) {
 		switch (attribute->GetAttributeType()) {
-		case FbxNodeAttribute::eMesh: {
+			case FbxNodeAttribute::eMesh: {
 
-			FbxMesh* mesh = node->GetMesh();
+				FbxMesh* mesh = node->GetMesh();
 
-			// 새로운 MeshInfo 생성
-			_meshes.push_back(FbxMeshInfo());
-			FbxMeshInfo& meshInfo = _meshes.back();
-			meshInfo.name = s2ws(mesh->GetName());
+				// 새로운 MeshInfo 생성
+				_meshes.push_back(FbxMeshInfo());
+				FbxMeshInfo& meshInfo = _meshes.back();
+				meshInfo.name = s2ws(node->GetName());
 
-			// 트랜스폼 정보 로드
-			LoadTransform(node, &meshInfo);
+				// 트랜스폼 정보 로드
+				LoadTransform(node, &meshInfo);
 
-			// 메시 로드
-			LoadMesh(mesh, &meshInfo);
-			break;
-		}
+				// 메시 로드
+				LoadMesh(mesh, &meshInfo);
+				break;
+			}
 		}
 	}
 
@@ -263,6 +263,7 @@ void FBXLoader::LoadMesh(FbxMesh* mesh, FbxMeshInfo* meshInfo)
 
 	// Animation
 	LoadAnimationData(mesh, meshInfo);
+	LoadTransformAnimation(mesh->GetNode(), meshInfo);
 }
 
 void FBXLoader::LoadMaterial(FbxSurfaceMaterial* surfaceMaterial)
@@ -663,6 +664,143 @@ void FBXLoader::LoadKeyframe(int32_t animIndex, FbxNode* node, FbxCluster* clust
 
 		_animClips[animIndex]->keyFrames[boneIdx].push_back(keyFrameInfo);
 	}
+}
+
+FbxAMatrix FBXLoader::GetGeometryTransformation(FbxNode* node)
+{
+	// 기하학적 변환 정보를 가져옴 (기본 피벗 사용)
+	FbxVector4 translation = node->GetGeometricTranslation(FbxNode::eSourcePivot);
+	FbxVector4 rotation = node->GetGeometricRotation(FbxNode::eSourcePivot);
+	FbxVector4 scaling = node->GetGeometricScaling(FbxNode::eSourcePivot);
+
+	// FbxAMatrix 생성: translation, rotation, scaling을 이용하여 구성
+	FbxAMatrix geometryTransform;
+	geometryTransform.SetT(translation);
+	geometryTransform.SetR(rotation);
+	geometryTransform.SetS(scaling);
+
+	return geometryTransform;
+}
+
+void FBXLoader::LoadTransformAnimation(FbxNode* node, FbxMeshInfo* meshInfo)
+{
+	// 애니메이션 스택 정보 확인
+	const int32 animStackCount = _scene->GetSrcObjectCount<FbxAnimStack>();
+	if (animStackCount == 0)
+		return;
+
+	// 기본 트랜스폼 정보 저장 (DirectX 좌표계로 변환)
+	FbxAMatrix geometryTransform = GetGeometryTransformation(node);
+	FbxAMatrix conversionMatrix;
+	conversionMatrix.SetIdentity();
+	conversionMatrix[2][2] = -1;
+	geometryTransform = conversionMatrix * geometryTransform * conversionMatrix;
+
+	for (int32 i = 0; i < animStackCount; i++)
+	{
+		FbxAnimStack* animStack = _scene->GetSrcObject<FbxAnimStack>(i);
+		if (!animStack)
+			continue;
+
+		auto transformAnimClip = make_shared<TransformAnimClipInfo>();
+		transformAnimClip->name = s2ws(animStack->GetName());
+
+		// 시간 정보 설정
+		FbxTakeInfo* takeInfo = _scene->GetTakeInfo(animStack->GetName());
+		transformAnimClip->startTime = takeInfo->mLocalTimeSpan.GetStart();
+		transformAnimClip->endTime = takeInfo->mLocalTimeSpan.GetStop();
+		transformAnimClip->mode = _scene->GetGlobalSettings().GetTimeMode();
+
+		// 프레임 기간 계산
+		FbxTime frameTime;
+		frameTime.SetTime(0, 0, 0, 1, 0, transformAnimClip->mode);
+		double frameLength = frameTime.GetSecondDouble();
+		transformAnimClip->duration = static_cast<float>((transformAnimClip->endTime - transformAnimClip->startTime).GetSecondDouble());
+
+		// 애니메이션 평가기 설정
+		_scene->SetCurrentAnimationStack(animStack);
+		FbxAnimEvaluator* evaluator = _scene->GetAnimationEvaluator();
+
+		// 각 프레임의 트랜스폼 정보 추출
+		bool hasAnimation = false;
+		FbxLongLong start = transformAnimClip->startTime.GetFrameCount(transformAnimClip->mode);
+		FbxLongLong end = transformAnimClip->endTime.GetFrameCount(transformAnimClip->mode);
+
+		for (FbxLongLong frame = start; frame <= end; frame++)
+		{
+			TransformKeyFrameInfo keyFrame;
+			FbxTime currTime;
+			currTime.SetFrame(frame, transformAnimClip->mode);
+
+			ExtractTransformKeyFrame(node, currTime, keyFrame);
+
+			// 이전 키프레임과 비교하여 변화가 있는지 확인
+			if (!hasAnimation && !transformAnimClip->keyFrames.empty())
+			{
+				const auto& prevKeyFrame = transformAnimClip->keyFrames.back();
+				if (prevKeyFrame.localTranslation != keyFrame.localTranslation ||
+					prevKeyFrame.localRotation != keyFrame.localRotation ||
+					prevKeyFrame.localScale != keyFrame.localScale)
+				{
+					hasAnimation = true;
+				}
+			}
+
+			transformAnimClip->keyFrames.push_back(keyFrame);
+		}
+
+		if (hasAnimation)
+		{
+			meshInfo->hasTransformAnimation = true;
+			meshInfo->transformAnimClips.push_back(transformAnimClip);
+		}
+	}
+}
+
+void FBXLoader::ExtractTransformKeyFrame(FbxNode* node, FbxTime time, TransformKeyFrameInfo& keyFrame)
+{
+	FbxAnimEvaluator* evaluator = _scene->GetAnimationEvaluator();
+	FbxAMatrix matrix = evaluator->GetNodeGlobalTransform(node, time);
+
+	// DirectX 좌표계로 변환 (Z축 부호 반전)
+	FbxAMatrix conversionMatrix;
+	conversionMatrix.SetIdentity();
+	conversionMatrix[2][2] = -1;
+	matrix = conversionMatrix * matrix * conversionMatrix;
+
+	// 부모 노드가 있을 경우 로컬 트랜스폼 계산 (부모 변환에도 보정 적용)
+	if (node->GetParent())
+	{
+		FbxAMatrix parentMatrix = evaluator->GetNodeGlobalTransform(node->GetParent(), time);
+		parentMatrix = conversionMatrix * parentMatrix * conversionMatrix;
+		matrix = parentMatrix.Inverse() * matrix;
+	}
+
+	keyFrame.time = time;
+
+	// 위치 추출 (DirectX 좌표계)
+	FbxVector4 translation = matrix.GetT();
+	keyFrame.localTranslation = Vec3(
+		static_cast<float>(translation[0]),
+		static_cast<float>(translation[1]),
+		static_cast<float>(translation[2])
+	);
+
+	// 회전 추출 (오일러 각, 도->라디안 변환)
+	FbxVector4 rotation = matrix.GetR();
+	keyFrame.localRotation = Vec3(
+		static_cast<float>(rotation[0] * XM_PI / 180.0),
+		static_cast<float>(rotation[1] * XM_PI / 180.0),
+		static_cast<float>(rotation[2] * XM_PI / 180.0)
+	);
+
+	// 스케일 추출
+	FbxVector4 scale = matrix.GetS();
+	keyFrame.localScale = Vec3(
+		static_cast<float>(scale[0]),
+		static_cast<float>(scale[1]),
+		static_cast<float>(scale[2])
+	);
 }
 
 int32_t FBXLoader::FindBoneIndex(const string& name)

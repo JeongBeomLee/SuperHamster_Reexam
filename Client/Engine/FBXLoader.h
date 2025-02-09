@@ -42,6 +42,24 @@ struct BoneWeight
     }
 };
 
+struct TransformKeyFrameInfo
+{
+    FbxTime time;             // FBX SDK의 시간 단위 사용
+    Vec3 localTranslation;    // 로컬 위치
+    Vec3 localRotation;       // 로컬 회전 (라디안)
+    Vec3 localScale;          // 로컬 스케일
+};
+
+struct TransformAnimClipInfo
+{
+    wstring name;            // 애니메이션 클립 이름
+    FbxTime startTime;       // 시작 시간
+    FbxTime endTime;         // 종료 시간
+    FbxTime::EMode mode;     // FBX 시간 모드
+    vector<TransformKeyFrameInfo> keyFrames;  // 키프레임 데이터
+    float duration = 0.0f;   // 재생 시간 (초)
+};
+
 struct FbxMeshInfo
 {
     wstring name;
@@ -49,7 +67,9 @@ struct FbxMeshInfo
     vector<vector<uint32_t>> indices;
     vector<FbxMaterialInfo> materials;
     vector<BoneWeight> boneWeights; // Bone weights
-    bool hasAnimation;
+    bool hasAnimation = false;
+    bool hasTransformAnimation = false;  // 트랜스폼 애니메이션 존재 여부
+    vector<shared_ptr<TransformAnimClipInfo>> transformAnimClips;  // 트랜스폼 애니메이션 클립들
 
     // 트랜스폼 정보 추가
     Matrix transform;         // 로컬 변환 행렬
@@ -170,11 +190,14 @@ private:
     void LoadOffsetMatrix(FbxCluster* cluster, const FbxAMatrix& matNodeTransform, int32_t boneIdx);
     void LoadKeyframe(int32_t animIndex, FbxNode* node, FbxCluster* cluster, const FbxAMatrix& matNodeTransform, int32_t boneIdx);
 
+    FbxAMatrix GetGeometryTransformation(FbxNode* node);
+    void LoadTransformAnimation(FbxNode* node, FbxMeshInfo* meshInfo);
+    void ExtractTransformKeyFrame(FbxNode* node, FbxTime time, TransformKeyFrameInfo& keyFrame);
+
     int32_t FindBoneIndex(const string& name); // Changed parameter to const reference
     FbxAMatrix GetTransform(FbxNode* node);
 
     void FillBoneWeight(FbxMesh* mesh, FbxMeshInfo* meshInfo);
-    FbxAMatrix ConvertToDXMatrix(const FbxAMatrix& fbxMatrix);
 
 private:
     FbxManager* _manager = nullptr;

@@ -327,6 +327,21 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 
+	{
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
+
+		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+		int playerID = GEngine->GetOtherPlayerId();
+		for (auto& gameObject : gameObjects)
+		{
+			gameObject->SetCheckFrustum(false);
+			gameObject->SetStatic(false);
+			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 500.f, 0.f));
+			gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
+			scene->AddGameObject(gameObject);
+		}
+	}
 	
 #pragma region FBX
 	{

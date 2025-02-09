@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "MeshRenderer.h"
 #include "Animator.h"
+#include "TransformAnimator.h"
 
 MeshData::MeshData() : Object(OBJECT_TYPE::MESH_DATA)
 {
@@ -81,6 +82,7 @@ vector<shared_ptr<GameObject>> MeshData::Instantiate()
 	for (MeshRenderInfo& info : _meshRenders)
 	{
 		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->SetName(info.mesh->GetName());
 		gameObject->AddComponent(make_shared<Transform>());
 		gameObject->AddComponent(make_shared<MeshRenderer>());
 		gameObject->GetMeshRenderer()->SetMesh(info.mesh);
@@ -112,6 +114,21 @@ vector<shared_ptr<GameObject>> MeshData::Instantiate()
 			gameObject->AddComponent(animator);
 			animator->SetBones(info.mesh->GetBones());
 			animator->SetAnimClip(info.mesh->GetAnimClip());
+		}
+
+		if (info.mesh->GetFbxMeshInfo().hasTransformAnimation)
+		{
+			shared_ptr<TransformAnimator> transformAnim = make_shared<TransformAnimator>();
+			gameObject->AddComponent(transformAnim);
+			transformAnim->SetTransformAnimClip(&info.mesh->GetFbxMeshInfo().transformAnimClips);
+
+			// 기본적으로 첫 번째 애니메이션 재생 시작
+			transformAnim->Play(0);
+			transformAnim->SetLoop(true);
+
+			// 디버그 로그
+			Logger::Instance().Debug("트랜스폼 애니메이션 추가됨: GameObject [{}]",
+				ws2s(gameObject->GetName()));
 		}
 
 		v.push_back(gameObject);
