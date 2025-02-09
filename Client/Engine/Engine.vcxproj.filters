@@ -240,8 +240,12 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Object\Projectile</Filter>
     </ClCompile>
-    <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="SoundSystem.cpp" />
+    <ClCompile Include="Sound.cpp">
+      <Filter>Object\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -439,8 +443,12 @@
     <ClInclude Include="Projectile.h">
       <Filter>Object\Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="Sound.h">
+      <Filter>Object\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
