@@ -1288,6 +1288,8 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"MainStageBGM", L"..\\Resources\\Sound\\Background\\main_stage_bgm.wav");
+		sound->SetVolume(1.0f);
+		sound->SetLoop(true);
 		Add(L"MainStageBGM", sound);
 	}
 
@@ -1295,6 +1297,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"LaserShot", L"..\\Resources\\Sound\\FX\\laser_shot.mp3");
+		sound->SetVolume(10.f);
 		Add(L"LaserShot", sound);
 	}
 
@@ -1302,6 +1305,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"LaserHit", L"..\\Resources\\Sound\\FX\\laser_hit.mp3");
+		sound->SetVolume(50.f);
 		Add(L"LaserHit", sound);
 	}
 

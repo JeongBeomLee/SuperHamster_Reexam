@@ -15,14 +15,7 @@
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"
 #include "SoundSystem.h"
-
-Engine::Engine()
-{
-}
-
-Engine::~Engine()
-{
-}
+#include "EventManager.h"
 
 void Engine::Init(const WindowInfo& info)
 {
@@ -54,6 +47,8 @@ void Engine::Init(const WindowInfo& info)
 
 	CreateRenderTargetGroups();
 
+	RegisterEventHandlers();
+
 	GET_SINGLE(Input)->Init(info.hwnd);
 	GET_SINGLE(Timer)->Init();
 	GET_SINGLE(Resources)->Init();
@@ -61,15 +56,28 @@ void Engine::Init(const WindowInfo& info)
 
 void Engine::Update()
 {
+	// 1. 입력 및 시스템 업데이트
 	GET_SINGLE(Input)->Update();
 	GET_SINGLE(Timer)->Update();
+
+	// 2. 이벤트 매니저 선처리
+	GET_SINGLE(EventManager)->Update();
+
+	// 3. 게임 로직 업데이트
 	GET_SINGLE(SoundSystem)->Update();
 	GET_SINGLE(PlayerManager)->Update();
 	PHYSICS_ENGINE->Update();
+
+	// 4. 이벤트 매니저 중간 처리
+	GET_SINGLE(EventManager)->Update();
+
+	// 5. 나머지 시스템 업데이트
 	GET_SINGLE(TeleportSystem)->Update();
 	GET_SINGLE(SceneManager)->Update();
-	GET_SINGLE(ProjectileManager)->Update();	
+	GET_SINGLE(ProjectileManager)->Update();
 	GET_SINGLE(InstancingManager)->ClearBuffer();
+
+	// 6. 이벤트 매니저 후처리
 	GET_SINGLE(EventManager)->Update();
 
 	Render();
@@ -121,119 +129,6 @@ void Engine::ToggleFullscreen()
 	// 그려질 화면 크기를 설정
 	_viewport = { 0, 0, static_cast<FLOAT>(_window.width), static_cast<FLOAT>(_window.height), 0.0f, 1.0f };
 	_scissorRect = CD3DX12_RECT(0, 0, _window.width, _window.height);
-}
-
-void Engine::LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData)
-{
-	//vector<MeshRenderInfo> meshRenders = meshData->GetMeshRenders();
-	//physx::PxCookingParams params(_physics->getTolerancesScale());
-	//params.meshPreprocessParams = physx::PxMeshPreprocessingFlags(physx::PxMeshPreprocessingFlag::eWELD_VERTICES);
-	//params.midphaseDesc = physx::PxMeshMidPhase::eBVH34;
-	//params.convexMeshCookingType = physx::PxConvexMeshCookingType::eQUICKHULL;
-	//params.buildGPUData = true;
-	//params.meshWeldTolerance = 0.001f;
-	//
-	//for (MeshRenderInfo& info : meshRenders)
-	//{
-	//	shared_ptr<Mesh> mesh = info.mesh;
-	//	FbxMeshInfo fbxMeshInfo = mesh->GetFbxMeshInfo();
-
-	//	std::vector<Vertex> vertices = fbxMeshInfo.vertices;
-	//	std::vector<physx::PxVec3> pxVertices;
-	//	for(const Vertex& vertex : vertices)
-	//	{
-	//		pxVertices.emplace_back(vertex.pos.x, vertex.pos.y, vertex.pos.z);
-	//	}
-
-	//	std::vector<std::vector<uint32>> indices = fbxMeshInfo.indices;
-	//	std::vector<physx::PxU32> pxIndices;
-	//	for (const std::vector<uint32>& index : indices)
-	//	{
-	//		for (uint32 i : index)
-	//		{
-	//			pxIndices.emplace_back(i);
-	//		}
-	//	}
-
-	//	SaveMeshDataToBinary(pxVertices, pxIndices, "MeshData.bin"); // 저장하고 싶으면 주석 풀기
-
-	//	physx::PxTriangleMeshDesc meshDesc;
-	//	meshDesc.points.count = static_cast<physx::PxU32>(pxVertices.size());
-	//	meshDesc.points.stride = sizeof(physx::PxVec3);
-	//	meshDesc.points.data = pxVertices.data();
-
-	//	meshDesc.triangles.count = static_cast<physx::PxU32>(pxIndices.size() / 3);
-	//	meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
-	//	meshDesc.triangles.data = pxIndices.data();
-
-	//	// PxTriangleMeshDesc를 직렬화하기 위한 메모리 스트림 생성
-	//	physx::PxDefaultMemoryOutputStream writeBuffer;
-	//	physx::PxTriangleMeshCookingResult::Enum result;
-	//	bool status = PxCookTriangleMesh(params, meshDesc, writeBuffer, &result);
-	//	if (!status) {
-	//		std::cerr << "Failed to cook triangle mesh." << std::endl;
-	//	}
-
-	//	if (writeBuffer.getSize() == 0) {
-	//		std::cerr << "WriteBuffer is empty." << std::endl;
-	//	}
-
-	//	// 직렬화된 데이터를 PxInputStream으로 변환
-	//	physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-	//	physx::PxTriangleMesh* triangleMesh = _physics->createTriangleMesh(readBuffer);
-
-	//	physx::PxMeshScale meshScale(physx::PxVec3(1, 1, 1));
-	//	physx::PxTriangleMeshGeometry triangleMeshGeometry(triangleMesh, meshScale);
-	//	physx::PxRigidStatic* triangleMeshActor = _physics->createRigidStatic(physx::PxTransform(physx::PxVec3(0, 0, 0)));
-	//	physx::PxShape* triangleMeshShape = _physics->createShape(triangleMeshGeometry, *_physics->createMaterial(0.5f, 0.5f, 0.1f));
-
-	//	// x축 기준 -90도 회전
-	//	physx::PxQuat rotX = physx::PxQuat(-XM_PIDIV2, physx::PxVec3(1, 0, 0));
-	//	physx::PxTransform transform(physx::PxVec3(0, 0, 0), rotX);
-	//	if (!transform.isValid()) {
-	//		std::cerr << "Invalid PxTransform detected." << std::endl;
-	//		return;
-	//	}
-	//	triangleMeshActor->setGlobalPose(transform);
-
-	//	triangleMeshActor->attachShape(*triangleMeshShape);
-	//	_scene->addActor(*triangleMeshActor);
-
-	//	// 메모리 해제
-	//	triangleMeshShape->release();
-	//	triangleMesh->release();
-	//}
-
-	// 플레이어 컨트롤러 생성 (게임 시작하고 서버에서 위치를 받아야함.)
-	/*physx::PxCapsuleControllerDesc desc;
-	desc.height = 50.f;
-	desc.radius = 25.f;
-	desc.material = _physics->createMaterial(0.5f, 0.5f, 0.1f);
-	desc.position = physx::PxExtendedVec3(-460.224, 300, 60.2587);
-	_playerController = _controllerManager->createController(desc);*/
-
-	std::cout << "Game Map Loaded.\n";
-}
-
-void Engine::SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath)
-{
-	std::ofstream outFile(filePath, std::ios::binary);
-	if (!outFile.is_open()) {
-		std::cerr << "Failed to open file for writing: " << filePath << std::endl;
-		return;
-	}
-
-	// Save vertex count and vertices
-	physx::PxU32 vertexCount = static_cast<physx::PxU32>(vertices.size());
-	outFile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(physx::PxU32));
-	outFile.write(reinterpret_cast<const char*>(vertices.data()), vertexCount * sizeof(physx::PxVec3));
-
-	// Save index count and indices
-	physx::PxU32 indexCount = static_cast<physx::PxU32>(indices.size());
-	outFile.write(reinterpret_cast<const char*>(&indexCount), sizeof(physx::PxU32));
-	outFile.write(reinterpret_cast<const char*>(indices.data()), indexCount * sizeof(physx::PxU32));
-
-	outFile.close();
 }
 
 void Engine::Render()
@@ -371,58 +266,74 @@ void Engine::CreateRenderTargetGroups()
 
 void Engine::RegisterEventHandlers()
 {
-	auto collisionHandler = m_collisionHandlerIds.emplace_back(
-		GET_SINGLE(EventManager)->Subscribe<Event::CollisionEvent>(
-			Event::EventCallback<Event::CollisionEvent>(
-				[this](const Event::CollisionEvent& event) {
-					// 충돌 이벤트 처리
-					Logger::Instance().Debug("'{}'와 '{}'가 충돌 발생. 위치: ({}, {}, {}), 노말: ({}, {}, {}), 충격량: ({})",
-						event.actor1->getName(),
-						event.actor2->getName(),
-						event.position.x,
-						event.position.y,
-						event.position.z,
-						event.normal.x,
-						event.normal.y,
-						event.normal.z,
-						event.impulse);
-				})
-		)
+	// 이벤트 하나 추가할 때 마다 Engine, EventManager 수정 필요
+	GET_SINGLE(EventManager)->Subscribe<Event::CollisionEvent>(
+		Event::EventCallback<Event::CollisionEvent>(
+			[this](const Event::CollisionEvent& event) {
+				// 충돌 이벤트 처리
+				Logger::Instance().Debug("'{}'와 '{}'가 충돌 발생. 위치: ({}, {}, {}), 노말: ({}, {}, {}), 충격량: ({})",
+					event.actor1->getName(),
+					event.actor2->getName(),
+					event.position.x,
+					event.position.y,
+					event.position.z,
+					event.normal.x,
+					event.normal.y,
+					event.normal.z,
+					event.impulse);
+			})
 	);
 
-	auto inputHandler = m_inputHandlerIds.emplace_back(
-		GET_SINGLE(EventManager)->Subscribe<Event::InputEvent>(
-			Event::EventCallback<Event::InputEvent>(
-				[this](const Event::InputEvent& event) {
-					// 입력 이벤트 처리
-					switch (event.type) {
-					case Event::InputEvent::Type::KeyDown:
-						Logger::Instance().Debug("키 눌림: {}", event.code);
-						break;
-					case Event::InputEvent::Type::KeyUp:
-						Logger::Instance().Debug("키 뗌: {}", event.code);
-						break;
-					case Event::InputEvent::Type::MouseMove:
-						Logger::Instance().Debug("마우스 이동: ({}, {})", event.x, event.y);
-						break;
-					case Event::InputEvent::Type::MouseButtonDown:
-						Logger::Instance().Debug("마우스 버튼 눌림: {}", event.code);
-						break;
-					case Event::InputEvent::Type::MouseButtonUp:
-						Logger::Instance().Debug("마우스 버튼 뗌: {}", event.code);
-						break;
-					}
-				})
-		)
+	GET_SINGLE(EventManager)->Subscribe<Event::InputEvent>(
+		Event::EventCallback<Event::InputEvent>(
+			[this](const Event::InputEvent& event) {
+				// 입력 이벤트 처리
+				switch (event.type) {
+				case Event::InputEvent::Type::KeyDown:
+					Logger::Instance().Debug("키 눌림: {}", event.code);
+					break;
+				case Event::InputEvent::Type::KeyUp:
+					Logger::Instance().Debug("키 뗌: {}", event.code);
+					break;
+				case Event::InputEvent::Type::MouseMove:
+					Logger::Instance().Debug("마우스 이동: ({}, {})", event.x, event.y);
+					break;
+				case Event::InputEvent::Type::MouseButtonDown:
+					Logger::Instance().Debug("마우스 버튼 눌림: {}", event.code);
+					break;
+				case Event::InputEvent::Type::MouseButtonUp:
+					Logger::Instance().Debug("마우스 버튼 뗌: {}", event.code);
+					break;
+				}
+			})
 	);
-}
 
-void Engine::UnregisterEventHandlers()
-{
-	for (auto id : m_collisionHandlerIds) {
-		GET_SINGLE(EventManager)->Unsubscribe<Event::CollisionEvent>(id);
-	}
-	for (auto id : m_inputHandlerIds) {
-		GET_SINGLE(EventManager)->Unsubscribe<Event::InputEvent>(id);
-	}
+	// 투사체 충돌 이벤트 구독
+	GET_SINGLE(EventManager)->Subscribe<Event::ProjectileHitEvent>(
+		Event::EventCallback<Event::ProjectileHitEvent>(
+			[this](const Event::ProjectileHitEvent& event) {
+				// 충돌 이펙트 재생
+				GET_SINGLE(ProjectileManager)->PlayCollisionEffect(event.hitPosition);
+
+				// 충돌 사운드 재생
+				auto sound = GET_SINGLE(Resources)->Get<Sound>(L"LaserHit");
+				if (sound) {
+					GET_SINGLE(SoundSystem)->Play3D(sound, event.hitPosition);
+				}
+			})
+	);
+
+	// 상태 변경 이벤트 처리
+	//GET_SINGLE(EventManager)->Subscribe<StateChangeEvent>(
+	//	Event::EventCallback<StateChangeEvent>([this](const StateChangeEvent& event) {
+	//		// 상태에 따른 사운드 재생, 아니면 네트워킹 기능에서도 활용 가능
+	//		if (event.newState == PLAYER_STATE::ROLL) {
+	//			auto sound = GET_SINGLE(Resources)->Get<Sound>(L"RollSound");
+	//			if (sound) {
+	//				Vec3 position = event.player->GetTransform()->GetLocalPosition();
+	//				GET_SINGLE(SoundSystem)->Play3D(sound, position);
+	//			}
+	//		}
+	//		})
+	//);
 }

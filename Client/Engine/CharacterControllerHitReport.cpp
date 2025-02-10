@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CharacterControllerHitReport.h"
 #include "PhysicsTypes.h"
-//#include "EventManager.h"
 #include "Logger.h"
 
 void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)

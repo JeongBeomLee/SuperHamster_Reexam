@@ -2,6 +2,7 @@
 #include "Event.h"
 #include "PhysicsTypes.h"
 
+enum class PLAYER_STATE;
 namespace Event
 {
     // 물리 충돌 이벤트
@@ -42,5 +43,45 @@ namespace Event
         Type type;
         int code;
         float x, y;
+    };
+
+	// 플레이어 상태 변경 이벤트
+    struct PlayerStateChangeEvent : public Event::IEvent {
+        PlayerStateChangeEvent(PLAYER_STATE prevState, PLAYER_STATE newState, GameObject* player)
+            : prevState(prevState), newState(newState), player(player) {
+        }
+
+        PLAYER_STATE prevState;
+        PLAYER_STATE newState;
+        GameObject* player;
+    };
+
+    // 투사체 충돌 이벤트
+    struct ProjectileHitEvent : public Event::IEvent {
+		ProjectileHitEvent() = default;
+        ProjectileHitEvent(const Vec3& hitPosition, const Vec3& hitNormal,
+            GameObject* projectile, GameObject* target)
+            : hitPosition(hitPosition), hitNormal(hitNormal)
+            , projectile(projectile), target(target) {
+        }
+
+        Vec3 hitPosition;
+        Vec3 hitNormal;
+        GameObject* projectile;
+        GameObject* target;
+    };
+
+    struct TeleportEvent : public Event::IEvent {
+        enum class Phase { BEGIN, COMPLETE };
+
+		TeleportEvent() = default;
+        TeleportEvent(GameObject* player, const Vec3& fromPos, const Vec3& toPos, Phase phase)
+            : player(player), fromPosition(fromPos), toPosition(toPos), phase(phase) {
+        }
+
+        GameObject* player;
+        Vec3 fromPosition;
+        Vec3 toPosition;
+        Phase phase;
     };
 }

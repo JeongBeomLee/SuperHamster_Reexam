@@ -85,13 +85,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Output\Debug\</OutDir>
-    <IncludePath>$(SolutionDir)..\PhysX\include\;$(SolutionDir)..\FMOD\include\;$(SolutionDir)..\FBX\include\;$(SolutionDir)..\DirectXTex\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\PhysX\include\;$(SolutionDir)..\FMOD\include\;$(SolutionDir)..\FBX\include\;$(SolutionDir)..\DirectXTex\include\;$(SolutionDir)..\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\PhysX\bin\$(Configuration)\;$(SolutionDir)..\FMOD\bin\$(Configuration)\;$(SolutionDir)..\FBX\bin\$(Configuration)\;$(SolutionDir)..\DirectXTex\bin\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Output\Release\</OutDir>
-    <IncludePath>$(SolutionDir)..\PhysX\include\;$(SolutionDir)..\FMOD\include\;$(SolutionDir)..\FBX\include\;$(SolutionDir)..\DirectXTex\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\PhysX\include\;$(SolutionDir)..\FMOD\include\;$(SolutionDir)..\FBX\include\;$(SolutionDir)..\DirectXTex\include\;$(SolutionDir)..\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\PhysX\bin\$(Configuration)\;$(SolutionDir)..\FMOD\bin\$(Configuration)\;$(SolutionDir)..\FBX\bin\$(Configuration)\;$(SolutionDir)..\DirectXTex\bin\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

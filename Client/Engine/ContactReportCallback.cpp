@@ -10,6 +10,8 @@
 #include "TeleportSystem.h"
 #include "Resources.h"
 #include "SoundSystem.h"
+#include "EventTypes.h"
+#include "EventManager.h"
 
 void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs)
 {
@@ -42,28 +44,29 @@ void ContactReportCallback::onContact(const PxContactPairHeader& pairHeader, con
                 auto object0 = static_cast<GameObject*>(actor0->userData);
                 auto object1 = static_cast<GameObject*>(actor1->userData);
                 bool isProjectile0 =
-                    static_cast<PxU32>(object0->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
+                    static_cast<PxU32>(object0->GetPhysicsBody()->GetCollisionGroup()) & 
+                    static_cast<PxU32>(CollisionGroup::Projectile);
                 bool isProjectile1 =
-                    static_cast<PxU32>(object1->GetPhysicsBody()->GetCollisionGroup()) & static_cast<PxU32>(CollisionGroup::Projectile);
+                    static_cast<PxU32>(object1->GetPhysicsBody()->GetCollisionGroup()) & 
+                    static_cast<PxU32>(CollisionGroup::Projectile);
 
 
                 // 총알이 관련된 충돌인 경우
                 if (isProjectile0 || isProjectile1) {
                     // 총알 GameObject 찾기
                     auto projectileObject = isProjectile0 ? object0 : object1;
+					auto targetObject = isProjectile0 ? object1 : object0;
                     projectileObject->SetActive(false);
 
                     Logger::Instance().Info("충돌한 투사체 삭제. ID: {}", projectileObject->GetID());
 
                     Vec3 collisionPos(contacts[0].position.x, contacts[0].position.y, contacts[0].position.z);
-                    GET_SINGLE(ProjectileManager)->PlayCollisionEffect(collisionPos);
+					Vec3 collisionNormal(contacts[0].normal.x, contacts[0].normal.y, contacts[0].normal.z);
 
-                    // 총알 피격 사운드 재생
-                    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"LaserHit");
-                    if (sound) {
-                        sound->SetVolume(50.f);
-                        GET_SINGLE(SoundSystem)->Play3D(sound, collisionPos);
-                    }
+                    // 투사체 충돌 이벤트 발행
+					GET_SINGLE(EventManager)->Publish(
+                        Event::ProjectileHitEvent(
+							collisionPos, collisionNormal, projectileObject, targetObject));
                 }
                 else {
                     Logger::Instance().Warning("'{}' 와 '{}'의 충돌에서 접촉점을 찾을 수 없습니다.",

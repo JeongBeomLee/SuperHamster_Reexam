@@ -30,6 +30,7 @@ public:
     void Update() {
         ProcessEvents<Event::CollisionEvent>();
         ProcessEvents<Event::InputEvent>();
+		ProcessEvents<Event::ProjectileHitEvent>();
     }
 
 private:
@@ -63,11 +64,13 @@ private:
     // 모든 이벤트 타입에 대한 큐와 디스패처를 저장
     std::tuple<
         Event::EventQueue<Event::CollisionEvent>,
+        Event::EventQueue<Event::ProjectileHitEvent>,
         Event::EventQueue<Event::InputEvent>
     > m_queues;
 
     std::tuple<
         Event::EventDispatcher<Event::CollisionEvent>,
+        Event::EventDispatcher<Event::ProjectileHitEvent>,
         Event::EventDispatcher<Event::InputEvent>
     > m_dispatchers;
 };

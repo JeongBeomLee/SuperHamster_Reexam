@@ -34,7 +34,6 @@ void FireState::Enter(Player* player)
 	// 총알 발사 사운드 재생
     auto sound = GET_SINGLE(Resources)->Get<Sound>(L"LaserShot");
     if (sound) {
-        sound->SetVolume(10.f);
 		GET_SINGLE(SoundSystem)->Play3D(sound, muzzlePosition);
     }
 }

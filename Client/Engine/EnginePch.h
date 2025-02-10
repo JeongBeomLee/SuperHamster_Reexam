@@ -2,9 +2,9 @@
 // std::byte 사용하지 않음
 #define _HAS_STD_BYTE 0
 
-// Windows
-#include <windows.h>
-#pragma comment(lib, "ws2_32.lib")
+// boost
+#include "boost/asio.hpp"
+using boost::asio::ip::tcp;
 
 // STD
 #include <tchar.h>
@@ -38,54 +38,35 @@ using namespace std;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
-
-// DirectXTex
-#include "DirectXTex.h"
-#include "DirectXTex.inl"
-
-// FBX SDK
-#include "fbxsdk.h"
-
-// 물리 엔진
-#include "PxPhysicsAPI.h"
-using namespace physx;
-
-// FMOD
-#include "fmod.hpp"
-#include <fmod_errors.h>
-
-// Tool
-#include "Logger.h"
-#include "EventManager.h"
-
-// 각종 lib
 #pragma comment(lib, "d3d12")
 #pragma comment(lib, "dxgi")
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
 
+// DirectXTex
+#include "DirectXTex.h"
+#include "DirectXTex.inl"
 #ifdef _DEBUG
 	#pragma comment(lib, "DirectXTex_debug.lib")
 #else
 	#pragma comment(lib, "DirectXTex.lib")
 #endif
 
-#ifdef _DEBUG
-	#pragma comment(lib, "fmodL_vc.lib")
-#else
-	#pragma comment(lib, "fmod_vc.lib")
-#endif
-
+// FBX SDK
+#include "fbxsdk.h"
 #ifdef _DEBUG
 	#pragma comment(lib, "libfbxsdk-md.lib")
 	#pragma comment(lib, "libxml2-md.lib")
-	#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
+	#pragma comment(lib, "zlib-md.lib")
 #else
 	#pragma comment(lib, "libfbxsdk-md.lib")
 	#pragma comment(lib, "libxml2-md.lib")
 	#pragma comment(lib, "zlib-md.lib")
 #endif
 
+// 물리 엔진
+#include "PxPhysicsAPI.h"
+using namespace physx;
 #ifdef _DEBUG
 	#pragma comment(lib, "PhysX_64.lib")
 	#pragma comment(lib, "PhysXCommon_64.lib")
@@ -123,6 +104,18 @@ using namespace physx;
 	#pragma comment(lib, "LowLevelDynamics_static_64")
 	#pragma comment(lib, "SimulationController_static_64")
 #endif
+
+// FMOD
+#include "fmod.hpp"
+#include <fmod_errors.h>
+#ifdef _DEBUG
+	#pragma comment(lib, "fmodL_vc.lib")
+#else
+	#pragma comment(lib, "fmod_vc.lib")
+#endif
+
+// Tool
+#include "Logger.h"
 
 // 각종 typedef
 using int8		= __int8;

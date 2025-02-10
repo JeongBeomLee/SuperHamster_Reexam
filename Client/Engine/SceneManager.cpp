@@ -51,8 +51,6 @@ void SceneManager::LoadScene(wstring sceneName)
 	// Main BGM Àç»ý
 	auto sound = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM");
 	if (sound) {
-		sound->SetVolume(0.7f);
-		sound->SetLoop(true);
 		GET_SINGLE(SoundSystem)->Play(sound);
 	}
 

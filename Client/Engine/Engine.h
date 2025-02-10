@@ -18,8 +18,8 @@
 class Engine
 {
 public:
-	Engine();
-	~Engine();
+	Engine() {}
+	~Engine() {}
 
 	void Init(const WindowInfo& info);
 	void Update();
@@ -42,9 +42,6 @@ public:
 	int GetOtherPlayerId() const { return 1 - _myPlayerId; }
 	void SetMyPlayerId(int playerId) { _myPlayerId = playerId; }
 
-	void LoadMapMeshForPhysics(const shared_ptr<MeshData>& meshData);
-	void SaveMeshDataToBinary(const std::vector<physx::PxVec3>& vertices, const std::vector<physx::PxU32>& indices, const std::string& filePath);
-
 public:
 	void Render();
 	void RenderBegin();
@@ -59,7 +56,6 @@ private:
 
 	// 이벤트 핸들러 등록, 등록 해제 함수
 	void RegisterEventHandlers();
-	void UnregisterEventHandlers();
 
 private:
 	// 그려질 화면 크기 관련
@@ -83,10 +79,6 @@ private:
 
 	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 	array<shared_ptr<RenderTargetGroup>, RENDER_TARGET_GROUP_COUNT> _rtGroups;
-
-	// 이벤트 핸들러 ID 저장용 변수들
-	std::vector<Event::EventDispatcher<Event::CollisionEvent>::HandlerId> m_collisionHandlerIds;
-	std::vector<Event::EventDispatcher<Event::InputEvent>::HandlerId> m_inputHandlerIds;
 
 	int _myPlayerId = -1;
 };
