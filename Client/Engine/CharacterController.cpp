@@ -6,8 +6,10 @@
 #include "Engine.h"
 #include "SoundSystem.h"
 
+uint32_t CharacterController::s_controllerId = 0;
 CharacterController::CharacterController() : Component(COMPONENT_TYPE::CHARACTER_CONTROLLER)
 {
+    m_controllerId = s_controllerId++;
 }
 
 CharacterController::~CharacterController()
@@ -28,10 +30,8 @@ void CharacterController::Initialize()
         PxVec3(position.x, position.y, position.z),
         40.0f,   // 반지름
         150.0f,   // 높이
-        CollisionGroup::Player,
-        CollisionGroup::Default | CollisionGroup::Ground |
-		CollisionGroup::Obstacle | CollisionGroup::Player | 
-		CollisionGroup::Enemy | CollisionGroup::Trigger
+        m_group,
+        m_mask
     );
 
     if (!physicsObject) {
@@ -40,7 +40,7 @@ void CharacterController::Initialize()
     }
 
 	// TODO: 캐릭터 컨트롤러 ID 설정
-    m_controller = PHYSICS_ENGINE->GetControllerManager()->getController(0);
+    m_controller = PHYSICS_ENGINE->GetControllerManager()->getController(m_controllerId);
     m_controller->setUserData(GetGameObject().get());
 	m_controller->getActor()->userData = GetGameObject().get();
 

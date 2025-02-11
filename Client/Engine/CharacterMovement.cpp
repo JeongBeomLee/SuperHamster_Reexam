@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Timer.h"
 
-CharacterMovement::CharacterMovement() : Component(COMPONENT_TYPE::PLAYER_MOVEMENT)
+CharacterMovement::CharacterMovement() : Component(COMPONENT_TYPE::CHARACTER_MOVEMENT)
 {
 }
 
@@ -22,7 +22,10 @@ void CharacterMovement::Start()
 
 void CharacterMovement::Update()
 {
-    if (!m_characterController) return;
+    if (!m_characterController) {
+        Logger::Instance().Error("CharacterController가 없습니다.");
+        return;
+    }
 
     float deltaTime = DELTA_TIME;
     ProcessMovement(deltaTime);

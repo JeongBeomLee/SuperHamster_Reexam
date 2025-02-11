@@ -39,7 +39,7 @@ public:
 	shared_ptr<BaseCollider> GetCollider();
 	shared_ptr<Animator> GetAnimator();
 	shared_ptr<CharacterController> GetCharacterController();
-	shared_ptr<CharacterMovement> GetPlayerMovement();
+	shared_ptr<CharacterMovement> GetCharacterMovement();
 	shared_ptr<PhysicsBody> GetPhysicsBody();
 	shared_ptr<TransformAnimator> GetTransformAnimator();
 

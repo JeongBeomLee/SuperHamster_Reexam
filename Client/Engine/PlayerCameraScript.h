@@ -30,6 +30,8 @@ public:
 	virtual void LateUpdate() override;
 
 	void SetDistance(float distance)	{ _Distance = distance; }
+    const StageArea* GetStageArea(const wstring& areaName) const;
+    bool IsPlayerInArea(const wstring& areaName) const;
 
 private:
     // 카메라 각도를 상수로 정의

@@ -21,6 +21,11 @@ Player* PlayerManager::CreatePlayer(uint32_t playerId, bool isLocal, std::shared
     // CharacterController ÃÊ±âÈ­
     auto controller = gameObject->GetCharacterController();
     if (controller) {
+		controller->SetCollisionGroup(CollisionGroup::Player);
+        controller->SetCollisionMask(
+            CollisionGroup::Default | CollisionGroup::Ground |
+            CollisionGroup::Obstacle | CollisionGroup::Player |
+            CollisionGroup::Enemy | CollisionGroup::Trigger);
         controller->Initialize();
     }
 

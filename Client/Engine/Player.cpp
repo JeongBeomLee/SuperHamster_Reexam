@@ -53,7 +53,7 @@ std::shared_ptr<CharacterController> Player::GetCharacterController() const
 
 std::shared_ptr<CharacterMovement> Player::GetMovementComponent() const
 {
-	return m_gameObject->GetPlayerMovement();
+	return m_gameObject->GetCharacterMovement();
 }
 
 std::shared_ptr<Animator> Player::GetAnimator() const

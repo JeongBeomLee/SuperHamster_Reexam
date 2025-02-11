@@ -23,6 +23,7 @@
 #include "TeleportSystem.h"
 #include "SoundSystem.h"
 #include "TransformAnimator.h"
+#include "Cactus.h"
 
 
 void SceneManager::Update()
@@ -325,7 +326,22 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(light);
 	}
 #pragma endregion
-	
+
+	{
+		shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
+
+		shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+		cactusMonsterObj->SetName(L"CactusPA");
+		cactusMonsterObj->SetCheckFrustum(true);
+		cactusMonsterObj->SetStatic(false);
+		cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2218.504f, 113.49023f, -1718.1282f));
+		cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+		cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+		cactusMonsterObj->AddComponent(make_shared<Cactus>());
+		scene->AddGameObject(cactusMonsterObj);
+	}
+
 #pragma region FBX
 	{
 		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
@@ -426,23 +442,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
 				scene->AddGameObject(gameObject2);
 			}*/
-		}
-
-		{
-			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
-
-			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-			for (auto& gameObject : gameObjects)
-			{
-				gameObject->SetName(L"CactusPA");
-				gameObject->SetCheckFrustum(false);
-				gameObject->SetStatic(false);
-				gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 300.f, 0.f));
-				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
-				gameObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				scene->AddGameObject(gameObject);
-				gameObject->AddComponent(make_shared<TestAnimation>());
-			}
 		}
 
 		{

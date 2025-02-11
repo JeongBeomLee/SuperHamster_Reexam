@@ -8,6 +8,8 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "Engine.h"
+#include "Player.h"
+#include "PlayerManager.h"
 
 PlayerCameraScript::PlayerCameraScript()
 {
@@ -71,6 +73,36 @@ void PlayerCameraScript::LateUpdate()
 	}
 
 	UpdateCamera();
+}
+
+const StageArea* PlayerCameraScript::GetStageArea(const wstring& areaName) const
+{
+	for (const auto& area : _cameraAreas) {
+		if (area.areaName == areaName) {
+			return &area;
+		}
+	}
+	return nullptr;
+}
+
+bool PlayerCameraScript::IsPlayerInArea(const wstring& areaName) const
+{
+	const StageArea* area = GetStageArea(areaName);
+	if (!area) return false;
+
+	auto scene = GET_SINGLE(SceneManager)->GetActiveScene();
+	// 모든 플레이어에 대해 검사
+	const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
+	for (const auto& [playerId, player] : players) {
+		if (!player || !player->GetGameObject()) continue;
+
+		Vec3 playerPos = player->GetGameObject()->GetTransform()->GetLocalPosition();
+		if (area->Contains(playerPos)) {
+			return true;  // 한 명이라도 영역 안에 있으면 true 반환
+		}
+	}
+
+	return false;
 }
 
 void PlayerCameraScript::InitializeCameraAreas()

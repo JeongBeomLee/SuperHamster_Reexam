@@ -150,9 +150,9 @@ shared_ptr<CharacterController> GameObject::GetCharacterController()
 	return static_pointer_cast<CharacterController>(component);
 }
 
-shared_ptr<CharacterMovement> GameObject::GetPlayerMovement()
+shared_ptr<CharacterMovement> GameObject::GetCharacterMovement()
 {
-	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PLAYER_MOVEMENT);
+	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::CHARACTER_MOVEMENT);
 	return static_pointer_cast<CharacterMovement>(component);
 }
 

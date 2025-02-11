@@ -20,6 +20,7 @@ public:
 	const Vec3& GetCurrentDirection() const { return m_currentDirection; }
     float GetMoveSpeed() const { return m_moveSpeed; }
     
+	void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
 	void SetRollSpeed(float speed) { m_rollSpeed = speed; }
 
 private:

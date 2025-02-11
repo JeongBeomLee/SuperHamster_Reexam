@@ -23,7 +23,7 @@ void Animator::FinalUpdate()
 
 	const AnimClipInfo& animClip = _animClips->at(_clipIndex);
 	// 애니메이션 종료 체크
-    _animationFinished = (_updateTime >= animClip.duration);
+    _animationFinished = (_updateTime > animClip.duration);
     
     if (_animationFinished) {
         _updateTime = 0.f;

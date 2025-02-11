@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.h"
+#include "PhysicsTypes.h"
+
 class CharacterController : public Component
 {
 public:
@@ -13,7 +15,6 @@ public:
     void Move(const Vec3& displacement, float deltaTime);
 	void Teleport(const Vec3& position);
     void ApplyGravity(float deltaTime);
-    void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
 
     // 상태 확인
     bool IsMoving() const { return m_velocity.magnitude() > 0.001f; }
@@ -35,15 +36,25 @@ public:
     void SetSlopeLimit(float slopeLimit);
     void SetContactOffset(float offset);
 
+    // 충돌 그룹 설정
+    CollisionGroup GetCollisionGroup() const { return m_group; }
+    CollisionGroup GetCollisionMask() const { return m_mask; }
+    void SetCollisionGroup(CollisionGroup group) { m_group = group; }
+    void SetCollisionMask(CollisionGroup mask) { m_mask = mask; }
+
 private:
     void UpdateTransform();
 
 private:
     PxController* m_controller = nullptr;
     PxVec3 m_velocity = PxVec3(0.0f);
+    CollisionGroup m_group = CollisionGroup::Default;
+    CollisionGroup m_mask = CollisionGroup::Default;
+
+    static uint32_t s_controllerId;    // 정적 컨트롤러 ID
+    uint32_t m_controllerId;           // 이 컨트롤러의 ID
 
     // 이동 관련 속성
-    float m_moveSpeed = 500.0f;      // 이동 속도
     float m_maxVelocity = 1000.0f;   // 최대 속도
     float m_gravity = -981.0f;       // 중력 (기본값: -981.0f = -9.81 * 100)
     float m_groundedOffset = 10.0f;   // 지면 체크 오프셋
