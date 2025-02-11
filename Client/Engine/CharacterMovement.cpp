@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "PlayerMovement.h"
+#include "CharacterMovement.h"
 #include "Transform.h"
 #include "GameObject.h"
 #include "Timer.h"
 
-PlayerMovement::PlayerMovement() : Component(COMPONENT_TYPE::PLAYER_MOVEMENT)
+CharacterMovement::CharacterMovement() : Component(COMPONENT_TYPE::PLAYER_MOVEMENT)
 {
 }
 
-PlayerMovement::~PlayerMovement()
+CharacterMovement::~CharacterMovement()
 {
 }
 
-void PlayerMovement::Start()
+void CharacterMovement::Start()
 {
     m_characterController = GetGameObject()->GetCharacterController();
     if (!m_characterController) {
@@ -20,7 +20,7 @@ void PlayerMovement::Start()
     }
 }
 
-void PlayerMovement::Update()
+void CharacterMovement::Update()
 {
     if (!m_characterController) return;
 
@@ -28,14 +28,14 @@ void PlayerMovement::Update()
     ProcessMovement(deltaTime);
 }
 
-void PlayerMovement::ProcessMovement(float deltaTime)
+void CharacterMovement::ProcessMovement(float deltaTime)
 {
     if (m_moveDirection != Vec3::Zero) {
         UpdateMovement(deltaTime);
     }
 }
 
-void PlayerMovement::UpdateMovement(float deltaTime)
+void CharacterMovement::UpdateMovement(float deltaTime)
 {
     Vec3 movementVector = CalculateMovementVector(deltaTime);
 
@@ -48,7 +48,7 @@ void PlayerMovement::UpdateMovement(float deltaTime)
     }
 }
 
-Vec3 PlayerMovement::CalculateMovementVector(float deltaTime)
+Vec3 CharacterMovement::CalculateMovementVector(float deltaTime)
 {
     // 현재 방향을 목표 방향으로 부드럽게 보간
     m_currentDirection = XMVectorLerp(
@@ -61,7 +61,7 @@ Vec3 PlayerMovement::CalculateMovementVector(float deltaTime)
     return m_currentDirection * m_moveSpeed * deltaTime;
 }
 
-void PlayerMovement::SmoothRotation(const Vec3& targetDirection, float deltaTime)
+void CharacterMovement::SmoothRotation(const Vec3& targetDirection, float deltaTime)
 {
     if (targetDirection == Vec3::Zero) return;
 
@@ -82,7 +82,7 @@ void PlayerMovement::SmoothRotation(const Vec3& targetDirection, float deltaTime
     GetTransform()->SetLocalRotation(Vec3(currentRotation.x, newYaw, currentRotation.z));
 }
 
-void PlayerMovement::SetMoveDirection(const Vec3& direction)
+void CharacterMovement::SetMoveDirection(const Vec3& direction)
 {
     m_moveDirection = direction;
     if (m_moveDirection != Vec3::Zero) {
@@ -90,7 +90,7 @@ void PlayerMovement::SetMoveDirection(const Vec3& direction)
     }
 }
 
-void PlayerMovement::StopMovement()
+void CharacterMovement::StopMovement()
 {
     m_moveDirection = Vec3::Zero;
     //m_currentDirection = Vec3::Zero;

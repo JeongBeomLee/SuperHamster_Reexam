@@ -10,7 +10,7 @@ enum class PhysicsShapeType {
 
 enum class CollisionGroup : PxU32 {
     Default = (1 << 0),     // 기본 그룹
-    Character = (1 << 1),   // 플레이어
+    Player = (1 << 1),   // 플레이어
     Enemy = (1 << 2),       // 적
     Projectile = (1 << 3),  // 발사체
     Ground = (1 << 4),      // 지형

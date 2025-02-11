@@ -5,7 +5,7 @@
 #include "SceneManager.h"
 #include "Transform.h"
 #include "ProjectileManager.h"
-#include "PlayerMovement.h"
+#include "CharacterMovement.h"
 #include "Resources.h"
 #include "SoundSystem.h"
 

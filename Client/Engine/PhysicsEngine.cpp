@@ -281,7 +281,7 @@ std::shared_ptr<PhysicsObject> PhysicsEngine::CreateGroundPlane()
 	auto group = CollisionGroup::Ground;
 	auto mask = 
 		CollisionGroup::Default | 
-		CollisionGroup::Character | 
+		CollisionGroup::Player | 
 		CollisionGroup::Enemy | 
 		CollisionGroup::Projectile | 
 		CollisionGroup::Trigger | 

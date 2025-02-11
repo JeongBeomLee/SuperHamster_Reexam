@@ -31,15 +31,6 @@
     <Filter Include="Object\Player">
       <UniqueIdentifier>{216f0edc-9b1a-4c2b-8e89-2340a48905a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object\StateMachine">
-      <UniqueIdentifier>{c2090732-3dbc-49e0-bc00-b5ecee83c166}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object\StateMachine\PlayerState">
-      <UniqueIdentifier>{2df349cc-d353-4673-86c3-851cff027aed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object\StateMachine\PlayerState\States">
-      <UniqueIdentifier>{4c38097d-7de9-4ae2-ad53-e6dc32387bd8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Event">
       <UniqueIdentifier>{3fbbfb21-7c0e-4398-b520-2ef7a790faad}</UniqueIdentifier>
     </Filter>
@@ -51,6 +42,27 @@
     </Filter>
     <Filter Include="Object\Projectile">
       <UniqueIdentifier>{0ae97fb7-b070-47e3-b7ae-55b96520fa07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\AI">
+      <UniqueIdentifier>{cece72ab-747b-4809-8de3-c649bb3c38c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player\StateMachine">
+      <UniqueIdentifier>{c2090732-3dbc-49e0-bc00-b5ecee83c166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player\StateMachine\PlayerState">
+      <UniqueIdentifier>{2df349cc-d353-4673-86c3-851cff027aed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player\StateMachine\PlayerState\States">
+      <UniqueIdentifier>{4c38097d-7de9-4ae2-ad53-e6dc32387bd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\AI\StateMachine">
+      <UniqueIdentifier>{f1058dab-48a7-4677-827e-0e66ddb0b288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\AI\StateMachine\AIState">
+      <UniqueIdentifier>{cc1d5d0d-ccba-4383-af3d-cfeb9d698b66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\AI\StateMachine\AIState\States">
+      <UniqueIdentifier>{9375481a-6067-46c4-a7b4-2170406d2170}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -181,34 +193,34 @@
       <Filter>Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="PlayerStateMachine.cpp">
-      <Filter>Object\StateMachine</Filter>
+      <Filter>Object\Player\StateMachine</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
-      <Filter>Object\StateMachine\PlayerState</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState</Filter>
     </ClCompile>
     <ClCompile Include="IdleState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="RunState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="PlayerManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
     <ClCompile Include="AimState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="FireState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="GetUpState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="HitState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="RollState.cpp">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>Utils</Filter>
@@ -228,7 +240,7 @@
     <ClCompile Include="CharacterController.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMovement.cpp">
+    <ClCompile Include="CharacterMovement.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
     <ClCompile Include="ProjectileManager.cpp">
@@ -381,34 +393,34 @@
       <Filter>Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerStateMachine.h">
-      <Filter>Object\StateMachine</Filter>
+      <Filter>Object\Player\StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
-      <Filter>Object\StateMachine\PlayerState</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="IdleState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="RunState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="PlayerManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="AimState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="FireState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="GetUpState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="HitState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="RollState.h">
-      <Filter>Object\StateMachine\PlayerState\States</Filter>
+      <Filter>Object\Player\StateMachine\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Utils</Filter>
@@ -434,7 +446,7 @@
     <ClInclude Include="CharacterController.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerMovement.h">
+    <ClInclude Include="CharacterMovement.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
     <ClInclude Include="ProjectileManager.h">

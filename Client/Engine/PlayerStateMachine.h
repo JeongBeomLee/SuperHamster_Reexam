@@ -20,6 +20,7 @@ enum class PLAYER_STATE
 };
 
 class Player;
+class PlayerState;
 class PlayerStateMachine
 {
 public:
@@ -32,7 +33,7 @@ public:
 
 private:
     PLAYER_STATE _currentState = PLAYER_STATE::IDLE;
-    std::unordered_map<PLAYER_STATE, std::unique_ptr<class PlayerState>> _states;
+    std::unordered_map<PLAYER_STATE, std::unique_ptr<PlayerState>> _states;
     Player* _owner = nullptr;
 
 public:

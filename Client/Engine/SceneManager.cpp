@@ -365,7 +365,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			physicsBody->SetCollisionGroup(CollisionGroup::Ground);
 			physicsBody->SetCollisionMask(
 				CollisionGroup::Default |
-				CollisionGroup::Character |
+				CollisionGroup::Player |
 				CollisionGroup::Enemy |
 				CollisionGroup::Projectile |
 				CollisionGroup::Obstacle
@@ -426,6 +426,23 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
 				scene->AddGameObject(gameObject2);
 			}*/
+		}
+
+		{
+			shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"CactusPA");
+				gameObject->SetCheckFrustum(false);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 300.f, 0.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+				scene->AddGameObject(gameObject);
+				gameObject->AddComponent(make_shared<TestAnimation>());
+			}
 		}
 
 		{

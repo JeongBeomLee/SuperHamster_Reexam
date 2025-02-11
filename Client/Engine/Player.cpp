@@ -51,7 +51,7 @@ std::shared_ptr<CharacterController> Player::GetCharacterController() const
     return m_gameObject->GetCharacterController();
 }
 
-std::shared_ptr<PlayerMovement> Player::GetMovementComponent() const
+std::shared_ptr<CharacterMovement> Player::GetMovementComponent() const
 {
 	return m_gameObject->GetPlayerMovement();
 }
@@ -76,7 +76,7 @@ void Player::CreateComponents()
     m_gameObject->AddComponent(controller);
 
     // Movement 컴포넌트 추가
-    auto movement = make_shared<PlayerMovement>();
+    auto movement = make_shared<CharacterMovement>();
     m_gameObject->AddComponent(movement);
 }
 

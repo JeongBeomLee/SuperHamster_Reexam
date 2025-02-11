@@ -1,6 +1,8 @@
 #pragma once
 #include "Event.h"
 #include "PhysicsTypes.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 enum class PLAYER_STATE;
 namespace Event
@@ -71,6 +73,7 @@ namespace Event
         GameObject* target;
     };
 
+    // 텔레포트 이벤트
     struct TeleportEvent : public Event::IEvent {
         enum class Phase { BEGIN, COMPLETE };
 

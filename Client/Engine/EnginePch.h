@@ -14,6 +14,7 @@ using boost::asio::ip::tcp;
 #include <array>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <iostream>
 #include <thread>
 #include <mutex>

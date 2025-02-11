@@ -2,11 +2,11 @@
 #include "Component.h"
 #include "CharacterController.h"
 
-class PlayerMovement : public Component
+class CharacterMovement : public Component
 {
 public:
-    PlayerMovement();
-    virtual ~PlayerMovement();
+    CharacterMovement();
+    virtual ~CharacterMovement();
 
     virtual void Start() override;
     virtual void Update() override;
@@ -33,6 +33,6 @@ private:
 
     float m_moveSpeed = 500.0f;
     float m_rotationSpeed = 10.0f;
-    float m_rollSpeed = 1.0f;
+    float m_rollSpeed = 1.0f;   // 구르기 기능이 있는 캐릭터만 사용
     float m_movementSmoothing = 0.1f;
 };

@@ -7,10 +7,10 @@ enum class CameraMode {
     TRANSITIONING    // 전환 중
 };
 
-struct CameraArea {
+struct StageArea {
     wstring areaName;    // 영역 이름 (Stage1, Stage2, ...)
     Vec3 center;         // 영역 중심점
-    Vec3 bounds;         // 영역 크기 (가로, 세로, 높이)
+    Vec3 bounds;         // 영역 크기 (가로, 세로, 높이는 0)
 
     bool Contains(const Vec3& point) const {
         Vec3 minBounds = center - (bounds * 0.5f);
@@ -44,11 +44,11 @@ private:
     CameraMode _currentMode = CameraMode::PLAYER_CENTERED;
 
     // 현재 영역 정보
-    vector<CameraArea> _cameraAreas;
-    const CameraArea* _currentArea = nullptr;
+    vector<StageArea> _cameraAreas;
+    const StageArea* _currentArea = nullptr;
 
     // 이전 영역 정보 및 전환 관련 변수
-    const CameraArea* _previousArea = nullptr;
+    const StageArea* _previousArea = nullptr;
     float _transitionProgress = 0.0f;
     float _transitionDuration = 1.0f; // 전환 시간 (초)
     Vec3 _transitionStartPos;

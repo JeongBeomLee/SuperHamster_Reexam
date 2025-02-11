@@ -12,7 +12,7 @@ class Terrain;
 class BaseCollider;
 class Animator;
 class CharacterController;
-class PlayerMovement;
+class CharacterMovement;
 class PhysicsBody;
 class TransformAnimator;
 
@@ -39,7 +39,7 @@ public:
 	shared_ptr<BaseCollider> GetCollider();
 	shared_ptr<Animator> GetAnimator();
 	shared_ptr<CharacterController> GetCharacterController();
-	shared_ptr<PlayerMovement> GetPlayerMovement();
+	shared_ptr<CharacterMovement> GetPlayerMovement();
 	shared_ptr<PhysicsBody> GetPhysicsBody();
 	shared_ptr<TransformAnimator> GetTransformAnimator();
 

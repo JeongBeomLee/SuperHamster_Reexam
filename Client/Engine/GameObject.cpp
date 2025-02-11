@@ -10,7 +10,7 @@
 #include "BaseCollider.h"
 #include "Animator.h"
 #include "CharacterController.h"
-#include "PlayerMovement.h"
+#include "CharacterMovement.h"
 #include "PhysicsBody.h"
 #include "TransformAnimator.h"
 
@@ -150,10 +150,10 @@ shared_ptr<CharacterController> GameObject::GetCharacterController()
 	return static_pointer_cast<CharacterController>(component);
 }
 
-shared_ptr<PlayerMovement> GameObject::GetPlayerMovement()
+shared_ptr<CharacterMovement> GameObject::GetPlayerMovement()
 {
 	shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::PLAYER_MOVEMENT);
-	return static_pointer_cast<PlayerMovement>(component);
+	return static_pointer_cast<CharacterMovement>(component);
 }
 
 shared_ptr<PhysicsBody> GameObject::GetPhysicsBody()

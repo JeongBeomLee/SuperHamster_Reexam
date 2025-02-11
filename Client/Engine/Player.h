@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "CharacterController.h"
 #include "PlayerStateMachine.h"
-#include "PlayerMovement.h"
+#include "CharacterMovement.h"
 #include "Animator.h"
 
 class Player {
@@ -20,7 +20,7 @@ public:
     // 컴포넌트 접근
     std::shared_ptr<GameObject> GetGameObject() const { return m_gameObject; }
     std::shared_ptr<CharacterController> GetCharacterController() const;
-    std::shared_ptr<PlayerMovement> GetMovementComponent() const;
+    std::shared_ptr<CharacterMovement> GetMovementComponent() const;
     std::shared_ptr<Animator> GetAnimator() const;
 
     // 플레이어 정보

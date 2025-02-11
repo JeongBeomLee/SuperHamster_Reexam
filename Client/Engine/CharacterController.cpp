@@ -28,9 +28,9 @@ void CharacterController::Initialize()
         PxVec3(position.x, position.y, position.z),
         40.0f,   // 반지름
         150.0f,   // 높이
-        CollisionGroup::Character,
+        CollisionGroup::Player,
         CollisionGroup::Default | CollisionGroup::Ground |
-		CollisionGroup::Obstacle | CollisionGroup::Character | 
+		CollisionGroup::Obstacle | CollisionGroup::Player | 
 		CollisionGroup::Enemy | CollisionGroup::Trigger
     );
 
@@ -73,7 +73,7 @@ void CharacterController::Move(const Vec3& displacement, float deltaTime)
     // 캐릭터 이동 필터 설정
     PxControllerFilters filters;
     PxFilterData filterData;
-    filterData.word0 = static_cast<PxU32>(CollisionGroup::Character);
+    filterData.word0 = static_cast<PxU32>(CollisionGroup::Player);
     filterData.word1 = static_cast<PxU32>(CollisionGroup::Default |
         CollisionGroup::Ground |
         CollisionGroup::Obstacle);

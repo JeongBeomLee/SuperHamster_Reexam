@@ -10,7 +10,7 @@
 #include "InstancingManager.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "PlayerMovement.h"
+#include "CharacterMovement.h"
 #include "PlayerManager.h"
 #include "ProjectileManager.h"
 #include "TeleportSystem.h"

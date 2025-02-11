@@ -218,7 +218,7 @@
     <ClInclude Include="PhysicsTypes.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
-    <ClInclude Include="PlayerMovement.h" />
+    <ClInclude Include="CharacterMovement.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PlayerStateMachine.h" />
     <ClInclude Include="Projectile.h" />
@@ -290,7 +290,7 @@
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
-    <ClCompile Include="PlayerMovement.cpp" />
+    <ClCompile Include="CharacterMovement.cpp" />
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
     <ClCompile Include="Projectile.cpp" />

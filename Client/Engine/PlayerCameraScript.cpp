@@ -6,7 +6,6 @@
 #include "Input.h"
 #include "Timer.h"
 #include "SceneManager.h"
-#include "Camera.h"
 #include "Scene.h"
 #include "Engine.h"
 
@@ -36,7 +35,7 @@ void PlayerCameraScript::LateUpdate()
 	GetTransform()->SetLocalRotation(cameraRotation);
 
 	// 이전 영역 저장
-	const CameraArea* previousArea = _currentArea;
+	const StageArea* previousArea = _currentArea;
 
 	// 현재 영역 체크
 	bool foundArea = false;

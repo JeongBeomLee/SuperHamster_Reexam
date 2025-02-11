@@ -269,7 +269,7 @@ std::shared_ptr<GameObject> TeleportSystem::CreateTeleportTrigger(const Vec3& po
 	physicsBody->SetCollisionGroup(CollisionGroup::Trigger);
 	physicsBody->SetCollisionMask(
 		CollisionGroup::Default |
-		CollisionGroup::Character
+		CollisionGroup::Player
 	);
 
 	physicsBody->CreateBody(
