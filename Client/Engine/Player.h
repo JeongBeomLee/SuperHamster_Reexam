@@ -4,18 +4,21 @@
 #include "PlayerStateMachine.h"
 #include "CharacterMovement.h"
 #include "Animator.h"
+#include "EventTypes.h"
 
 class Player {
 public:
-    Player(uint32_t playerId, bool isLocal, std::shared_ptr<GameObject> gameObject);
+    Player(uint32_t playerId, std::shared_ptr<GameObject> gameObject);
     ~Player();
 
     //void Initialize();
     void Update(float deltaTime);
 
     // 상태 관리
-    void SetState(PLAYER_STATE newState);
     PLAYER_STATE GetCurrentState() const;
+	bool GetInvincible() const { return m_isInvincible; }
+    void SetState(PLAYER_STATE newState);
+	void SetInvincible(bool invincible) { m_isInvincible = invincible; }
 
     // 컴포넌트 접근
     std::shared_ptr<GameObject> GetGameObject() const { return m_gameObject; }
@@ -25,17 +28,21 @@ public:
 
     // 플레이어 정보
     uint32_t GetPlayerId() const { return m_playerId; }
-    bool IsLocal() const { return m_isLocal; }
-
     void PlayAnimation(PLAYER_STATE state);
+
+private:
+    void OnHit(const Event::PlayerHitEvent& event);
 
 private:
     void CreateComponents();
     void InitializeStateMachine();
+    void RegisterEventHandlers();
 
 private:
     uint32_t m_playerId;
-    bool m_isLocal;
+    size_t m_hitEventId;
+    bool m_isInvincible = false;
+	float m_health = 100.0f;
 
     std::shared_ptr<GameObject> m_gameObject;
     PlayerStateMachine m_stateMachine;

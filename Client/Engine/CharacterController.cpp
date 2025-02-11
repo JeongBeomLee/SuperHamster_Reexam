@@ -28,8 +28,8 @@ void CharacterController::Initialize()
 
     auto physicsObject = PHYSICS_ENGINE->CreateCapsuleController(
         PxVec3(position.x, position.y, position.z),
-        40.0f,   // 반지름
-        150.0f,   // 높이
+        m_radius,   // 반지름
+        m_height,   // 높이
         m_group,
         m_mask
     );

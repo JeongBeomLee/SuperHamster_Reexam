@@ -5,9 +5,9 @@
 #include "Scene.h"
 #include "SceneManager.h"
 
-Player* PlayerManager::CreatePlayer(uint32_t playerId, bool isLocal, std::shared_ptr<GameObject> gameObject)
+Player* PlayerManager::CreatePlayer(uint32_t playerId, std::shared_ptr<GameObject> gameObject)
 {
-    auto player = std::make_unique<Player>(playerId, isLocal, gameObject);
+    auto player = std::make_unique<Player>(playerId, gameObject);
 
     gameObject->SetName(L"Player" + to_wstring(playerId));
 	Logger::Instance().Info("플레이어 생성됨. ID: {}", playerId);
@@ -26,6 +26,8 @@ Player* PlayerManager::CreatePlayer(uint32_t playerId, bool isLocal, std::shared
             CollisionGroup::Default | CollisionGroup::Ground |
             CollisionGroup::Obstacle | CollisionGroup::Player |
             CollisionGroup::Enemy | CollisionGroup::Trigger);
+		controller->SetRadius(40.f);
+		controller->SetHeight(150.f);
         controller->Initialize();
     }
 
@@ -38,18 +40,6 @@ Player* PlayerManager::GetPlayer(uint32_t playerId)
 {
     auto it = _players.find(playerId);
     return it != _players.end() ? it->second.get() : nullptr;
-}
-
-Player* PlayerManager::GetLocalPlayer()
-{
-    for (auto& pair : _players)
-    {
-        if (pair.second->IsLocal())
-        {
-            return pair.second.get();
-        }
-    }
-    return nullptr;
 }
 
 void PlayerManager::Update()

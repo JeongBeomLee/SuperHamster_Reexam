@@ -2,11 +2,13 @@
 #include "MonoBehaviour.h"
 #include "CactusStateMachine.h"
 #include "Player.h"
+#include "AttackInfo.h"
 
 class Cactus : public MonoBehaviour 
 {
 public:
 	Cactus();
+    ~Cactus() override;
 	void Awake() override;
     void Start() override;
     void Update() override;
@@ -27,13 +29,27 @@ public:
     bool IsTargetInDetectionRange();
     float GetDistanceToTarget();
 
+    void PerformHandAttack();
+    void PerformHeadAttack();
+
+    void OnHit(const Event::ProjectileHitEvent& event);
+    bool IsAlive() const { return m_health > 0.0f; }
+
 private:
     void CreateComponents();
     void InitializeStateMachine();
+    void CheckAttackCollision(const AttackInfo& attackInfo);
 
 private:
-    CactusStateMachine m_stateMachine;
-    Player* m_target = nullptr;
+    static constexpr float HAND_ATTACK_RADIUS = 150.0f;
+    static constexpr float HEAD_ATTACK_RADIUS = 200.0f;
+    static constexpr float HAND_ATTACK_DAMAGE = 10.0f;
+    static constexpr float HEAD_ATTACK_DAMAGE = 15.0f;
     static constexpr float ATTACK_RANGE = 150.0f;     // 공격 가능 거리
     static constexpr float DETECTION_RANGE = 500.0f;  // 감지 거리
+    float m_health = 100.0f;
+
+    CactusStateMachine m_stateMachine;
+    Player* m_target = nullptr;
+	size_t m_handHitEventId;
 };

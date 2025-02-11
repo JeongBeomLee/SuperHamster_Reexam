@@ -4,7 +4,6 @@
 #include "Transform.h"
 #include "Animator.h"
 #include "Engine.h"
-
 #include "IdleState.h"
 #include "RunState.h"
 #include "AimState.h"
@@ -12,16 +11,20 @@
 #include "GetUpState.h"
 #include "RollState.h"
 #include "HitState.h"
+#include "EventManager.h"
 
-Player::Player(uint32_t playerId, bool isLocal, std::shared_ptr<GameObject> gameObject) : m_playerId(playerId), m_isLocal(isLocal)
+Player::Player(uint32_t playerId, std::shared_ptr<GameObject> gameObject) 
+    : m_playerId(playerId)
 {
     m_gameObject = gameObject;
     CreateComponents();
     InitializeStateMachine();
+	RegisterEventHandlers();
 }
 
 Player::~Player()
 {
+	GET_SINGLE(EventManager)->Unsubscribe<Event::PlayerHitEvent>(m_hitEventId);
 }
 
 void Player::Update(float deltaTime)
@@ -69,6 +72,21 @@ void Player::PlayAnimation(const PLAYER_STATE state)
     }
 }
 
+void Player::OnHit(const Event::PlayerHitEvent& event)
+{
+    // 피격 시 무적 상태가 아니라면 데미지 처리
+    if (!m_isInvincible) {
+        // 데미지 처리
+        m_health -= event.damage;
+
+        // 피격 상태로 전환
+        SetState(PLAYER_STATE::HIT);
+
+        Logger::Instance().Debug("플레이어가 {}의 데미지를 받음. 남은 체력: {}",
+            event.damage, m_health);
+    }
+}
+
 void Player::CreateComponents()
 {
     // CharacterController 추가
@@ -92,4 +110,16 @@ void Player::InitializeStateMachine()
     m_stateMachine.SetOwner(this);
 
 	m_stateMachine.ChangeState(PLAYER_STATE::IDLE);
+}
+
+void Player::RegisterEventHandlers()
+{
+    m_hitEventId = GET_SINGLE(EventManager)->Subscribe<Event::PlayerHitEvent>(
+        Event::EventCallback<Event::PlayerHitEvent>(
+            [this](const Event::PlayerHitEvent& event) {
+                if (event.player == this) {
+                    OnHit(event);
+                }
+            })
+    );
 }

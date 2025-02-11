@@ -166,7 +166,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->AddComponent(make_shared<PlayerCameraScript>());
 		camera->GetCamera()->SetFar(5000.f);
 		camera->GetCamera()->SetMainCamera(true);
-		//camera->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
 		camera->GetTransform()->SetLocalPosition(Vec3(-358.388f, 633.076f, 1065.6f));
 		camera->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(20.f), XMConvertToRadians(-180.f), XMConvertToRadians(0.f)));
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
@@ -334,7 +333,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		cactusMonsterObj->SetName(L"CactusPA");
 		cactusMonsterObj->SetCheckFrustum(true);
 		cactusMonsterObj->SetStatic(false);
-		cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2218.504f, 113.49023f, -1718.1282f));
+		cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2218.504f, 133.49023f, -1718.1282f));
 		cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
 		cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 
@@ -403,7 +402,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
 		shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
 		int playerID = GEngine->GetMyPlayerId();
-		GET_SINGLE(PlayerManager)->CreatePlayer(playerID, true, playerObj);
+		GET_SINGLE(PlayerManager)->CreatePlayer(playerID, playerObj);
 		scene->AddGameObject(playerObj);
 
 		// รั บฮย๘

@@ -4,6 +4,7 @@
 
 void CactusStateMachine::Update(float deltaTime) 
 {
+	if (_owner->GetGameObject()->IsActive() == false) return;
     if (_states.count(_currentState) > 0) {
         _states[_currentState]->Update(_owner, deltaTime);
     }

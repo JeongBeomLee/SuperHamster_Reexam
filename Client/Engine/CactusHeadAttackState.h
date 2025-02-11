@@ -8,5 +8,6 @@ class CactusHeadAttackState : public CactusState
     void Exit(Cactus* cactus) override;
 private:
     bool m_hasCheckedAnimation = false;
+	bool m_hasPerformedAttack = false;
 };
 

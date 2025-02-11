@@ -17,6 +17,7 @@ void RollState::Enter(Player* player)
         m_rollDirection = -player->GetGameObject()->GetTransform()->GetLook();
     }
 
+    player->SetInvincible(true);
     m_rollTimer = 0.0f;
 }
 
@@ -37,5 +38,6 @@ void RollState::Update(Player* player, float deltaTime)
 void RollState::Exit(Player* player)
 {
 	// 돌진 종료 시 필요한 로직
+	player->SetInvincible(false);
     player->GetMovementComponent()->SetRollSpeed(1.0f);
 }

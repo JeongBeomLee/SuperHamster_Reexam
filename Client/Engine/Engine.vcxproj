@@ -177,11 +177,14 @@
   <ItemGroup>
     <ClInclude Include="AimState.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="AttackInfo.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="Cactus.h" />
     <ClInclude Include="CactusAwakeState.h" />
+    <ClInclude Include="CactusDeadState.h" />
     <ClInclude Include="CactusHandAttackState.h" />
     <ClInclude Include="CactusHeadAttackState.h" />
+    <ClInclude Include="CactusHitState.h" />
     <ClInclude Include="CactusIdleState.h" />
     <ClInclude Include="CactusRunState.h" />
     <ClInclude Include="CactusSleepState.h" />
@@ -262,8 +265,10 @@
     <ClCompile Include="BaseCollider.cpp" />
     <ClCompile Include="Cactus.cpp" />
     <ClCompile Include="CactusAwakeState.cpp" />
+    <ClCompile Include="CactusDeadState.cpp" />
     <ClCompile Include="CactusHandAttackState.cpp" />
     <ClCompile Include="CactusHeadAttackState.cpp" />
+    <ClCompile Include="CactusHitState.cpp" />
     <ClCompile Include="CactusIdleState.cpp" />
     <ClCompile Include="CactusRunState.cpp" />
     <ClCompile Include="CactusSleepState.cpp" />

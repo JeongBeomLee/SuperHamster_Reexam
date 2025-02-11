@@ -35,6 +35,8 @@ public:
     void SetStepOffset(float offset);
     void SetSlopeLimit(float slopeLimit);
     void SetContactOffset(float offset);
+	void SetRadius(float radius) { m_radius = radius; }
+	void SetHeight(float height) { m_height = height; }
 
     // 충돌 그룹 설정
     CollisionGroup GetCollisionGroup() const { return m_group; }
@@ -54,10 +56,11 @@ private:
     static uint32_t s_controllerId;    // 정적 컨트롤러 ID
     uint32_t m_controllerId;           // 이 컨트롤러의 ID
 
-    // 이동 관련 속성
     float m_maxVelocity = 1000.0f;   // 최대 속도
     float m_gravity = -981.0f;       // 중력 (기본값: -981.0f = -9.81 * 100)
     float m_groundedOffset = 10.0f;   // 지면 체크 오프셋
     bool m_isGrounded = false;       // 지면 접촉 상태
+	float m_radius = 40.0f;			// 캐릭터 캡슐 반지름
+	float m_height = 150.0f;            // 캐릭터 캡슐 높이
 };
 

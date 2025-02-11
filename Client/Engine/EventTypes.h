@@ -3,8 +3,10 @@
 #include "PhysicsTypes.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "AttackInfo.h"
 
 enum class PLAYER_STATE;
+class Player;
 namespace Event
 {
     // 물리 충돌 이벤트
@@ -86,5 +88,18 @@ namespace Event
         Vec3 fromPosition;
         Vec3 toPosition;
         Phase phase;
+    };
+
+    // 플레이어 히트 이벤트
+    struct PlayerHitEvent : public Event::IEvent {
+        PlayerHitEvent() = default;
+        PlayerHitEvent(Player* player, GameObject* attacker, 
+            float damage, const Vec3& hitCenter)
+			: player(player), attackInfo(attackInfo), damage(damage), hitCenter(hitCenter) {
+        }
+		Player* player;
+        AttackInfo* attackInfo;
+		float damage;
+		Vec3 hitCenter;
     };
 }

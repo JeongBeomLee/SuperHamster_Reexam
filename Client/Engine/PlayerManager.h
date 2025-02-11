@@ -6,9 +6,8 @@ class PlayerManager
 public:
     DECLARE_SINGLE(PlayerManager)
 
-    Player* CreatePlayer(uint32_t playerId, bool isLocal, std::shared_ptr<GameObject> gameObject);
+    Player* CreatePlayer(uint32_t playerId, std::shared_ptr<GameObject> gameObject);
     Player* GetPlayer(uint32_t playerId);
-    Player* GetLocalPlayer();
 	const std::unordered_map<uint32_t, std::unique_ptr<Player>>& GetPlayers() const { return _players; }
 
     void Update();

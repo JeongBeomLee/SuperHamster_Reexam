@@ -33,7 +33,7 @@ void CactusRunState::Update(Cactus* cactus, float deltaTime)
 
     // 공격 범위에 들어왔는지 체크
     if (cactus->IsTargetInAttackRange()) {
-		Logger::Instance().Debug("RUN: 공격 범위에 들어옴. 공격");
+        Logger::Instance().Debug("RUN: 공격 범위에 들어옴. 공격");
         cactus->SetState(rand() % 2 == 0 ? CACTUS_STATE::HAND_ATTACK : CACTUS_STATE::HEAD_ATTACK);
         return;
     }

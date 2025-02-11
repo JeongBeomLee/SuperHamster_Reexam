@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "Resources.h"
 #include "PhysicsBody.h"
+#include "CharacterController.h"
 
 void Scene::Awake()
 {
@@ -201,6 +202,18 @@ void Scene::RemoveGameObject(shared_ptr<GameObject> gameObject)
 	else if (gameObject->GetPhysicsBody() != nullptr)
 	{
 		auto actor = gameObject->GetPhysicsBody()->GetPhysicsObject()->GetActor();
+		if (actor) {
+			// PhysX의 scene에서 actor 제거
+			auto scene = actor->getScene();
+			if (scene) {
+				scene->removeActor(*actor);
+			}
+		}
+	}
+	else if (gameObject->GetCharacterController() != nullptr)
+	{
+		auto controller = gameObject->GetCharacterController()->GetController();
+		auto actor = controller->getActor();
 		if (actor) {
 			// PhysX의 scene에서 actor 제거
 			auto scene = actor->getScene();

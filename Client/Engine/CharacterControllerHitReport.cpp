@@ -2,24 +2,57 @@
 #include "CharacterControllerHitReport.h"
 #include "PhysicsTypes.h"
 #include "Logger.h"
+#include "GameObject.h"
+#include "Projectile.h"
+#include "Cactus.h"
+#include "EventManager.h"
 
 void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
-    // 일반 물리 객체와의 충돌
-    /*Event::CollisionEvent event(
-        hit.controller->getActor(),
-        hit.shape->getActor(),
-        PxVec3(static_cast<float>(hit.worldPos.x),
+    GameObject* controllerObject = static_cast<GameObject*>(hit.controller->getActor()->userData);
+    GameObject* shapeObject = static_cast<GameObject*>(hit.actor->userData);
+
+    if (!controllerObject || !shapeObject) return;
+
+    // 투사체와 선인장의 충돌 검사
+    auto projectile = shapeObject->GetMonoBehaviour<Projectile>();
+    auto cactus = controllerObject->GetMonoBehaviour<Cactus>();
+
+    if (!projectile && !cactus) {
+        // 순서를 바꿔서 다시 확인
+        projectile = controllerObject->GetMonoBehaviour<Projectile>();
+        cactus = shapeObject->GetMonoBehaviour<Cactus>();
+    }
+
+    if (projectile && cactus) {
+        // 충돌 위치 정보 변환
+        Vec3 hitPosition(
+            static_cast<float>(hit.worldPos.x),
             static_cast<float>(hit.worldPos.y),
-            static_cast<float>(hit.worldPos.z)),
-        hit.worldNormal,
-        hit.length
-    );
+            static_cast<float>(hit.worldPos.z)
+        );
 
-    EventManager::Instance().Publish(event);*/
+        Vec3 hitNormal(
+            static_cast<float>(hit.worldNormal.x),
+            static_cast<float>(hit.worldNormal.y),
+            static_cast<float>(hit.worldNormal.z)
+        );
 
-    Logger::Instance().Debug("캐릭터가 물리 객체와 충돌. 충돌 위치: ({}, {}, {})",
-        hit.worldPos.x, hit.worldPos.y, hit.worldPos.z);
+        // 충돌 이벤트 발생
+        Event::ProjectileHitEvent event(
+            hitPosition,
+            hitNormal,
+            projectile->GetGameObject().get(),
+            cactus->GetGameObject().get()
+        );
+
+        GET_SINGLE(EventManager)->Publish(event);
+        Logger::Instance().Debug("선인장과 투사체 충돌 발생. 위치: ({}, {}, {})",
+            hitPosition.x, hitPosition.y, hitPosition.z);
+
+        // 투사체 제거
+        projectile->GetGameObject()->SetActive(false);
+    }
 }
 
 void CharacterControllerHitReport::onControllerHit(const PxControllersHit& hit)

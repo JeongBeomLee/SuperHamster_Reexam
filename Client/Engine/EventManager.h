@@ -30,7 +30,9 @@ public:
     void Update() {
         ProcessEvents<Event::CollisionEvent>();
         ProcessEvents<Event::InputEvent>();
+
 		ProcessEvents<Event::ProjectileHitEvent>();
+		ProcessEvents<Event::PlayerHitEvent>();
     }
 
 private:
@@ -65,12 +67,14 @@ private:
     std::tuple<
         Event::EventQueue<Event::CollisionEvent>,
         Event::EventQueue<Event::ProjectileHitEvent>,
-        Event::EventQueue<Event::InputEvent>
+        Event::EventQueue<Event::InputEvent>,
+        Event::EventQueue<Event::PlayerHitEvent>
     > m_queues;
 
     std::tuple<
         Event::EventDispatcher<Event::CollisionEvent>,
         Event::EventDispatcher<Event::ProjectileHitEvent>,
-        Event::EventDispatcher<Event::InputEvent>
+        Event::EventDispatcher<Event::InputEvent>,
+		Event::EventDispatcher<Event::PlayerHitEvent>
     > m_dispatchers;
 };

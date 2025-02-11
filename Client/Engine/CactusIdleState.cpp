@@ -24,7 +24,7 @@ void CactusIdleState::Update(Cactus* cactus, float deltaTime)
 
     // 타겟이 공격 범위 안에 있으면 공격
     if (cactus->IsTargetInAttackRange()) {
-		Logger::Instance().Debug("선인장 공격 범위 안에 있음. 공격으로 전환");
+        Logger::Instance().Debug("IDLE: 공격 범위에 들어옴. 공격");
         cactus->SetState(rand() % 2 == 0 ? CACTUS_STATE::HAND_ATTACK : CACTUS_STATE::HEAD_ATTACK);
         return;
     }

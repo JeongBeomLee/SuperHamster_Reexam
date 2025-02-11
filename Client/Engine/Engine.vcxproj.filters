@@ -264,15 +264,39 @@
     <ClCompile Include="TransformAnimator.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
-    <ClCompile Include="CactusState.cpp" />
-    <ClCompile Include="CactusStateMachine.cpp" />
-    <ClCompile Include="Cactus.cpp" />
-    <ClCompile Include="CactusSleepState.cpp" />
-    <ClCompile Include="CactusAwakeState.cpp" />
-    <ClCompile Include="CactusIdleState.cpp" />
-    <ClCompile Include="CactusRunState.cpp" />
-    <ClCompile Include="CactusHandAttackState.cpp" />
-    <ClCompile Include="CactusHeadAttackState.cpp" />
+    <ClCompile Include="Cactus.cpp">
+      <Filter>Object\Monster\Cactus</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusStateMachine.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusAwakeState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusDeadState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusHandAttackState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusHeadAttackState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusHitState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusIdleState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusRunState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="CactusSleepState.cpp">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -488,15 +512,42 @@
     <ClInclude Include="EventManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="CactusState.h" />
-    <ClInclude Include="CactusStateMachine.h" />
-    <ClInclude Include="Cactus.h" />
-    <ClInclude Include="CactusSleepState.h" />
-    <ClInclude Include="CactusAwakeState.h" />
-    <ClInclude Include="CactusIdleState.h" />
-    <ClInclude Include="CactusRunState.h" />
-    <ClInclude Include="CactusHandAttackState.h" />
-    <ClInclude Include="CactusHeadAttackState.h" />
+    <ClInclude Include="AttackInfo.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Cactus.h">
+      <Filter>Object\Monster\Cactus</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusStateMachine.h">
+      <Filter>Object\Monster\Cactus\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusSleepState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusAwakeState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusDeadState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusHandAttackState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusHeadAttackState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusHitState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusIdleState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CactusRunState.h">
+      <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
