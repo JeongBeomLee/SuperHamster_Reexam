@@ -45,8 +45,7 @@ Player* PlayerManager::GetPlayer(uint32_t playerId)
 void PlayerManager::Update()
 {
     float deltaTime = DELTA_TIME;
-    for (auto& pair : _players)
-    {
+    for (auto& pair : _players) {
         pair.second->Update(deltaTime);
     }
 }

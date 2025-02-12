@@ -389,21 +389,24 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
 		shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
 		int playerID = GEngine->GetMyPlayerId();
-		GET_SINGLE(PlayerManager)->CreatePlayer(playerID, playerObj);
+		Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(playerID, playerObj);
+		GET_SINGLE(SoundSystem)->SetPlayer(player);
 		scene->AddGameObject(playerObj);
 
 		// √— ∫Œ¬¯
-		shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
-		shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
-		shared_ptr<GameObject> player = playerObj;
-		defaultGunObject->SetName(L"defaultGun");
-		defaultGunObject->SetCheckFrustum(false);
-		defaultGunObject->SetStatic(false);
-		defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
-		defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-		defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
-		defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
-		scene->AddGameObject(defaultGunObject);
+		{
+			shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+			shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+			shared_ptr<GameObject> player = playerObj;
+			defaultGunObject->SetName(L"defaultGun");
+			defaultGunObject->SetCheckFrustum(false);
+			defaultGunObject->SetStatic(false);
+			defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+			defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+			defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+			defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
+			scene->AddGameObject(defaultGunObject);
+		}
 
 		// º±¿Œ¿Â 1
 		{

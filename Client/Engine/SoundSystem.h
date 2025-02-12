@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 
 class Sound;
 class SoundSystem
@@ -7,6 +8,7 @@ class SoundSystem
 
 public:
     void Init();
+	void Update3DListenerPosition();
     void Update();
     void CreateSound(const wstring& path, FMOD::Sound** sound);
 
@@ -21,6 +23,7 @@ public:
 
     // FMOD 시스템 접근자 (Sound 클래스에서 사용)
     FMOD::System* GetSystem() { return _system; }
+	void SetPlayer(Player* player) { _player = player; }
 
 private:
     void CheckError(FMOD_RESULT result);
@@ -28,4 +31,5 @@ private:
 private:
     FMOD::System* _system = nullptr;
     FMOD_RESULT _lastResult;
+	Player* _player = nullptr;
 };

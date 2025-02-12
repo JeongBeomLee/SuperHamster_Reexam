@@ -20,10 +20,34 @@ void SoundSystem::Init()
     _system->set3DSettings(1.0f, 1.0f, 1.0f);
 }
 
+void SoundSystem::Update3DListenerPosition()
+{
+    auto transform = _player->GetGameObject()->GetTransform();
+    // 사운드 시스템의 리스너 위치 설정 (TODO: 서버 추가하면 내 캐릭터의 위치로만 설정하도록 수정)
+    Vec3 pos = transform->GetLocalPosition();
+
+    // forward와 up 벡터를 정규화
+    Vec3 forward = transform->GetForward();
+    Vec3 up = transform->GetUp();
+
+    forward.Normalize();
+    up.Normalize();
+
+    // forward와 up 벡터가 수직이 되도록 조정
+    Vec3 right = forward.Cross(up);
+    right.Normalize();
+    up = right.Cross(forward);
+    up.Normalize();
+
+    Set3DListenerPosition(pos, forward, up);
+}
+
 void SoundSystem::Update()
 {
-    if (_system)
+    if (_system) {
+        Update3DListenerPosition();
         _system->update();
+    }
 }
 
 void SoundSystem::Play(shared_ptr<Sound> sound)
@@ -113,6 +137,6 @@ void SoundSystem::CheckError(FMOD_RESULT result)
 {
     if (result != FMOD_OK)
     {
-        //Logger::Instance().Error("FMOD Error: {}", FMOD_ErrorString(result));
+        Logger::Instance().Error("FMOD Error: {}", FMOD_ErrorString(result));
     }
 }
