@@ -70,6 +70,18 @@
     <Filter Include="Object\Monster\Rabbit">
       <UniqueIdentifier>{1c1a26b7-5c5d-4524-9329-7b845eb3647e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Monster\ChestMonster">
+      <UniqueIdentifier>{22f8b072-39a9-48f6-a8a5-b98c7685af60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\ChestMonster\StateMachine">
+      <UniqueIdentifier>{664db617-42b2-4246-a8ad-3db9129f753e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\ChestMonster\StateMachine\ChestMonsterState">
+      <UniqueIdentifier>{4042e677-fc5a-4bcd-a256-3c39b5766d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States">
+      <UniqueIdentifier>{999468f6-b60f-476c-8b4d-94e0ef2285a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -300,6 +312,17 @@
     <ClCompile Include="CactusSleepState.cpp">
       <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
     </ClCompile>
+    <ClCompile Include="ChestMonster.cpp" />
+    <ClCompile Include="ChestMonsterStateMachine.cpp" />
+    <ClCompile Include="ChestMonsterState.cpp" />
+    <ClCompile Include="ChestMonsterSleepState.cpp" />
+    <ClCompile Include="ChestMonsterAwakeState.cpp" />
+    <ClCompile Include="ChestMonsterIdleState.cpp" />
+    <ClCompile Include="ChestMonsterRunState.cpp" />
+    <ClCompile Include="ChestMonsterShortAttackState.cpp" />
+    <ClCompile Include="ChestMonsterLongAttackState.cpp" />
+    <ClCompile Include="ChestMonsterHitState.cpp" />
+    <ClCompile Include="ChestMonsterDeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -551,6 +574,17 @@
     <ClInclude Include="CactusRunState.h">
       <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
     </ClInclude>
+    <ClInclude Include="ChestMonster.h" />
+    <ClInclude Include="ChestMonsterStateMachine.h" />
+    <ClInclude Include="ChestMonsterState.h" />
+    <ClInclude Include="ChestMonsterSleepState.h" />
+    <ClInclude Include="ChestMonsterAwakeState.h" />
+    <ClInclude Include="ChestMonsterIdleState.h" />
+    <ClInclude Include="ChestMonsterRunState.h" />
+    <ClInclude Include="ChestMonsterShortAttackState.h" />
+    <ClInclude Include="ChestMonsterLongAttackState.h" />
+    <ClInclude Include="ChestMonsterHitState.h" />
+    <ClInclude Include="ChestMonsterDeadState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

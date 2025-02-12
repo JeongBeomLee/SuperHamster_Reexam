@@ -5,9 +5,7 @@ class CactusHitState : public CactusState
 {
 public:
     void Enter(Cactus* cactus) override;
-
     void Update(Cactus* cactus, float deltaTime) override;
-
     void Exit(Cactus* cactus) override;
 
 private:

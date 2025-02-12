@@ -14,6 +14,7 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
     if (!controllerObject || !shapeObject) return;
 
+#pragma region cactus and projectile
     // 투사체와 선인장의 충돌 검사
     auto projectile = shapeObject->GetMonoBehaviour<Projectile>();
     auto cactus = controllerObject->GetMonoBehaviour<Cactus>();
@@ -53,6 +54,7 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
         // 투사체 제거
         projectile->GetGameObject()->SetActive(false);
     }
+#pragma endregion
 }
 
 void CharacterControllerHitReport::onControllerHit(const PxControllersHit& hit)

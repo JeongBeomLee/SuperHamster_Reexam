@@ -24,6 +24,7 @@
 #include "SoundSystem.h"
 #include "TransformAnimator.h"
 #include "Cactus.h"
+#include "ChestMonster.h"
 
 
 void SceneManager::Update()
@@ -450,6 +451,23 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			cactusMonsterObj->AddComponent(make_shared<Cactus>());
 			scene->AddGameObject(cactusMonsterObj);
 		}
+
+		// นฬนอ1
+		{
+			shared_ptr<MeshData> chestMonsterMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\ChestMonsterPBRDefault.fbx");
+
+			shared_ptr<GameObject> chestMonsterObj = chestMonsterMeshData->Instantiate()[0];
+			chestMonsterObj->SetName(L"ChestMonster1");
+			chestMonsterObj->SetCheckFrustum(true);
+			chestMonsterObj->SetStatic(false);
+			chestMonsterObj->GetTransform()->SetLocalPosition(Vec3(2358.19f, 310.00018f, -3162.0906f));
+			chestMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			chestMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			chestMonsterObj->AddComponent(make_shared<ChestMonster>());
+			scene->AddGameObject(chestMonsterObj);
+		}
+
 
 		{
 			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
