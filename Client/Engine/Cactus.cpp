@@ -121,7 +121,7 @@ void Cactus::CreateComponents()
         CollisionGroup::Enemy | 
         CollisionGroup::Projectile
     );
-    controller->SetRadius(40.f);
+    controller->SetRadius(60.f);
 	controller->SetHeight(190.f);
     controller->Initialize();
 

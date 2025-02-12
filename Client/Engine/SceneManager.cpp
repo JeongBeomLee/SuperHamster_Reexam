@@ -326,21 +326,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 
-	{
-		shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
-
-		shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
-		cactusMonsterObj->SetName(L"CactusPA");
-		cactusMonsterObj->SetCheckFrustum(true);
-		cactusMonsterObj->SetStatic(false);
-		cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2218.504f, 133.49023f, -1718.1282f));
-		cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
-		cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-
-		cactusMonsterObj->AddComponent(make_shared<Cactus>());
-		scene->AddGameObject(cactusMonsterObj);
-	}
-
 #pragma region FBX
 	{
 		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
@@ -418,6 +403,54 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
 		scene->AddGameObject(defaultGunObject);
 
+		// 선인장 1
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"Cactus1");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2218.504f, 233.49023f, -1718.1282f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<Cactus>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
+		// 선인장 2
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"Cactus2");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(1943.4121f, 233.42471f, -1457.759f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<Cactus>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
+		// 선인장 3
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\CactusPA.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"Cactus3");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(1750.2568f, 233.58658f, -1916.5537f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<Cactus>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
 		{
 			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
 
@@ -430,6 +463,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject1->GetTransformAnimator()->SetStartPos(Vec3(0.f, 150.f, 0.f));
 				gameObject1->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
 				gameObject1->GetTransformAnimator()->SetStartScale(Vec3(0.5f, 0.5f, 0.5f));
+				gameObject1->GetTransformAnimator()->Stop();
 				scene->AddGameObject(gameObject1);
 			}
 
@@ -439,6 +473,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 				gameObject2->GetTransformAnimator()->SetStartPos(Vec3(0.f, 145.f, -95.f));
 				gameObject2->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
 				gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
+				gameObject2->GetTransformAnimator()->Stop();
 				scene->AddGameObject(gameObject2);
 			}*/
 		}

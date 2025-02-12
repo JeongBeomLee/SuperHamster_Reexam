@@ -67,6 +67,9 @@
     <Filter Include="Object\Monster\Cactus\StateMachine\CactusState\States">
       <UniqueIdentifier>{689788b8-30a1-41b7-a95b-5f8e07066c5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Monster\Rabbit">
+      <UniqueIdentifier>{1c1a26b7-5c5d-4524-9329-7b845eb3647e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

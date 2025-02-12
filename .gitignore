@@ -32,13 +32,6 @@
 *.app
 
 *.vs
-*.jpg
-*.dds
-*.tga
-*.png
-*.psd
-*.fbx
-*.fbm
 *.cso
 *.pdb
 *.idb

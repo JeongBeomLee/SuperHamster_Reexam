@@ -46,7 +46,7 @@ private:
     static constexpr float HAND_ATTACK_DAMAGE = 10.0f;
     static constexpr float HEAD_ATTACK_DAMAGE = 15.0f;
     static constexpr float ATTACK_RANGE = 150.0f;     // 공격 가능 거리
-    static constexpr float DETECTION_RANGE = 500.0f;  // 감지 거리
+    static constexpr float DETECTION_RANGE = 600.0f;  // 감지 거리
     float m_health = 100.0f;
 
     CactusStateMachine m_stateMachine;
