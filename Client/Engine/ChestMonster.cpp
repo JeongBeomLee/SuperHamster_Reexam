@@ -121,7 +121,7 @@ void ChestMonster::CreateComponents()
         CollisionGroup::Enemy |
         CollisionGroup::Projectile
     );
-    controller->SetRadius(60.f);
+    controller->SetRadius(90.f);
     controller->SetHeight(190.f);
     controller->Initialize();
 

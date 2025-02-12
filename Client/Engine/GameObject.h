@@ -44,6 +44,7 @@ public:
 	shared_ptr<TransformAnimator> GetTransformAnimator();
 
 	void AddComponent(shared_ptr<Component> component);
+	void RemoveComponent(shared_ptr<Component> component);
 
 	template<typename T>
 	shared_ptr<T> GetMonoBehaviour() {

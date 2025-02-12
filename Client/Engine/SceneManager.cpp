@@ -25,6 +25,7 @@
 #include "TransformAnimator.h"
 #include "Cactus.h"
 #include "ChestMonster.h"
+#include "BunnyRat.h"
 
 
 void SceneManager::Update()
@@ -468,6 +469,154 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene->AddGameObject(chestMonsterObj);
 		}
 
+		// ¹Ì¹Í2
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\ChestMonsterPBRDefault.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"ChestMonster2");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(1564.7744f, 310.00012f, -3147.0874f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<ChestMonster>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
+		// ¹Ì¹Í3
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\ChestMonsterPBRDefault.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"ChestMonster3");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(1552.766f, 310.000114f, -3737.4443f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<ChestMonster>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
+		// ¹Ì¹Í4
+		{
+			shared_ptr<MeshData> cactusMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\ChestMonsterPBRDefault.fbx");
+
+			shared_ptr<GameObject> cactusMonsterObj = cactusMeshData->Instantiate()[0];
+			cactusMonsterObj->SetName(L"ChestMonster4");
+			cactusMonsterObj->SetCheckFrustum(true);
+			cactusMonsterObj->SetStatic(false);
+			cactusMonsterObj->GetTransform()->SetLocalPosition(Vec3(2344.235f, 310.000175f, -3749.5261f));
+			cactusMonsterObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			cactusMonsterObj->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+			cactusMonsterObj->AddComponent(make_shared<ChestMonster>());
+			scene->AddGameObject(cactusMonsterObj);
+		}
+
+		// Åä³¢Áã 1
+		{
+			shared_ptr<MeshData> bunnyRatMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Bunny Rat Monster-Blue.fbx");
+
+			shared_ptr<GameObject> bunnyRatObj = bunnyRatMeshData->Instantiate()[0];
+			auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}
+
+			bunnyRatObj->SetName(L"BunnyRat1");
+			bunnyRatObj->SetCheckFrustum(true);
+			bunnyRatObj->SetStatic(false);
+			bunnyRatObj->GetTransform()->SetLocalPosition(Vec3(2152.0576f, 322.97729f, 283.64536f));
+			bunnyRatObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			bunnyRatObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			bunnyRatObj->AddComponent(make_shared<BunnyRat>());
+			scene->AddGameObject(bunnyRatObj);
+		}
+
+		// Åä³¢Áã 2
+		{
+			shared_ptr<MeshData> bunnyRatMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Bunny Rat Monster-Blue.fbx");
+
+			shared_ptr<GameObject> bunnyRatObj = bunnyRatMeshData->Instantiate()[0];
+			auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}
+
+			bunnyRatObj->SetName(L"BunnyRat2");
+			bunnyRatObj->SetCheckFrustum(true);
+			bunnyRatObj->SetStatic(false);
+			bunnyRatObj->GetTransform()->SetLocalPosition(Vec3(1732.5071f, 329.4406f, 263.0665f));
+			bunnyRatObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			bunnyRatObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			bunnyRatObj->AddComponent(make_shared<BunnyRat>());
+			scene->AddGameObject(bunnyRatObj);
+		}
+
+		// Åä³¢Áã 3
+		{
+			shared_ptr<MeshData> bunnyRatMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Bunny Rat Monster-Blue.fbx");
+
+			shared_ptr<GameObject> bunnyRatObj = bunnyRatMeshData->Instantiate()[0];
+			auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}
+
+			bunnyRatObj->SetName(L"BunnyRat3");
+			bunnyRatObj->SetCheckFrustum(true);
+			bunnyRatObj->SetStatic(false);
+			bunnyRatObj->GetTransform()->SetLocalPosition(Vec3(1584.6089f, 330.32803f, -64.49085f));
+			bunnyRatObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			bunnyRatObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			bunnyRatObj->AddComponent(make_shared<BunnyRat>());
+			scene->AddGameObject(bunnyRatObj);
+		}
+
+		// Åä³¢Áã 4
+		{
+			shared_ptr<MeshData> bunnyRatMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Bunny Rat Monster-Blue.fbx");
+
+			shared_ptr<GameObject> bunnyRatObj = bunnyRatMeshData->Instantiate()[0];
+			auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}
+
+			bunnyRatObj->SetName(L"BunnyRat4");
+			bunnyRatObj->SetCheckFrustum(true);
+			bunnyRatObj->SetStatic(false);
+			bunnyRatObj->GetTransform()->SetLocalPosition(Vec3(2341.3164f, 322.479034f, -81.876396f));
+			bunnyRatObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			bunnyRatObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			bunnyRatObj->AddComponent(make_shared<BunnyRat>());
+			scene->AddGameObject(bunnyRatObj);
+		}
+
+		{
+			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\BossMonsterAnimations.fbx");
+
+			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+			for (auto& gameObject : gameObjects)
+			{
+				gameObject->SetName(L"Boss");
+				gameObject->SetCheckFrustum(true);
+				gameObject->SetStatic(false);
+				gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 0.f));
+				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+				gameObject->GetTransform()->SetLocalScale(Vec3(25.f, 25.f, 25.f));
+				scene->AddGameObject(gameObject);
+				gameObject->AddComponent(make_shared<TestAnimation>());
+			}*/
+		}
 
 		{
 			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");

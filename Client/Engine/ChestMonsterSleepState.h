@@ -17,4 +17,3 @@ private:
     float m_wakeUpDelay = 0.0f;
     bool m_isPlayerDetected = false;
 };
-

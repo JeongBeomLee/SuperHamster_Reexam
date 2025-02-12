@@ -29,9 +29,6 @@ public:
 	vector<MeshRenderInfo>& GetMeshRenders() { return _meshRenders; }
 
 private:
-	shared_ptr<Mesh>				_mesh;
-
-	vector<shared_ptr<Material>>	_materials;
 	vector<MeshRenderInfo> _meshRenders;
 
 	map<pair<uint64, uint64>, int> _meshMaterialCount;

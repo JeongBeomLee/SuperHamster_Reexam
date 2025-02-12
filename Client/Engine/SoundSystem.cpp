@@ -9,7 +9,7 @@ void SoundSystem::Init()
     CheckError(_lastResult);
 
     // 64개의 가상 채널 초기화
-    _lastResult = _system->init(64, 
+    _lastResult = _system->init(128, 
         FMOD_INIT_NORMAL | 
         FMOD_INIT_CHANNEL_DISTANCEFILTER |
         FMOD_INIT_VOL0_BECOMES_VIRTUAL, 
@@ -113,6 +113,6 @@ void SoundSystem::CheckError(FMOD_RESULT result)
 {
     if (result != FMOD_OK)
     {
-        Logger::Instance().Error("FMOD Error: {}", FMOD_ErrorString(result));
+        //Logger::Instance().Error("FMOD Error: {}", FMOD_ErrorString(result));
     }
 }

@@ -67,9 +67,6 @@
     <Filter Include="Object\Monster\Cactus\StateMachine\CactusState\States">
       <UniqueIdentifier>{689788b8-30a1-41b7-a95b-5f8e07066c5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object\Monster\Rabbit">
-      <UniqueIdentifier>{1c1a26b7-5c5d-4524-9329-7b845eb3647e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Object\Monster\ChestMonster">
       <UniqueIdentifier>{22f8b072-39a9-48f6-a8a5-b98c7685af60}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,18 @@
     </Filter>
     <Filter Include="Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States">
       <UniqueIdentifier>{999468f6-b60f-476c-8b4d-94e0ef2285a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\BunnyRat">
+      <UniqueIdentifier>{1c1a26b7-5c5d-4524-9329-7b845eb3647e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\BunnyRat\StateMachine">
+      <UniqueIdentifier>{8011bd9d-3f76-4a65-9b0b-c030c3e3e403}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\BunnyRat\StateMachine\BunnyRatState">
+      <UniqueIdentifier>{30cdb432-8082-48ba-ae39-60159380a396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\BunnyRat\StateMachine\BunnyRatState\States">
+      <UniqueIdentifier>{51b78a26-d6cc-4b5b-a456-59c8c62d29ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -312,17 +321,63 @@
     <ClCompile Include="CactusSleepState.cpp">
       <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
     </ClCompile>
-    <ClCompile Include="ChestMonster.cpp" />
-    <ClCompile Include="ChestMonsterStateMachine.cpp" />
-    <ClCompile Include="ChestMonsterState.cpp" />
-    <ClCompile Include="ChestMonsterSleepState.cpp" />
-    <ClCompile Include="ChestMonsterAwakeState.cpp" />
-    <ClCompile Include="ChestMonsterIdleState.cpp" />
-    <ClCompile Include="ChestMonsterRunState.cpp" />
-    <ClCompile Include="ChestMonsterShortAttackState.cpp" />
-    <ClCompile Include="ChestMonsterLongAttackState.cpp" />
-    <ClCompile Include="ChestMonsterHitState.cpp" />
-    <ClCompile Include="ChestMonsterDeadState.cpp" />
+    <ClCompile Include="ChestMonster.cpp">
+      <Filter>Object\Monster\ChestMonster</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterStateMachine.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterAwakeState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterDeadState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterHitState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterIdleState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterLongAttackState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterRunState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterShortAttackState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="ChestMonsterSleepState.cpp">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRat.cpp">
+      <Filter>Object\Monster\BunnyRat</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatStateMachine.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatAttackState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatDeadState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatHitState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatIdleState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="BunnyRatRunState.cpp">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -574,17 +629,63 @@
     <ClInclude Include="CactusRunState.h">
       <Filter>Object\Monster\Cactus\StateMachine\CactusState\States</Filter>
     </ClInclude>
-    <ClInclude Include="ChestMonster.h" />
-    <ClInclude Include="ChestMonsterStateMachine.h" />
-    <ClInclude Include="ChestMonsterState.h" />
-    <ClInclude Include="ChestMonsterSleepState.h" />
-    <ClInclude Include="ChestMonsterAwakeState.h" />
-    <ClInclude Include="ChestMonsterIdleState.h" />
-    <ClInclude Include="ChestMonsterRunState.h" />
-    <ClInclude Include="ChestMonsterShortAttackState.h" />
-    <ClInclude Include="ChestMonsterLongAttackState.h" />
-    <ClInclude Include="ChestMonsterHitState.h" />
-    <ClInclude Include="ChestMonsterDeadState.h" />
+    <ClInclude Include="ChestMonster.h">
+      <Filter>Object\Monster\ChestMonster</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterStateMachine.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterAwakeState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterDeadState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterHitState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterIdleState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterLongAttackState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterRunState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterShortAttackState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="ChestMonsterSleepState.h">
+      <Filter>Object\Monster\ChestMonster\StateMachine\ChestMonsterState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRat.h">
+      <Filter>Object\Monster\BunnyRat</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatStateMachine.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatRunState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatAttackState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatDeadState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatHitState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="BunnyRatIdleState.h">
+      <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
