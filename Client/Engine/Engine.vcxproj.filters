@@ -91,6 +91,18 @@
     <Filter Include="Object\Monster\BunnyRat\StateMachine\BunnyRatState\States">
       <UniqueIdentifier>{51b78a26-d6cc-4b5b-a456-59c8c62d29ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Monster\Ghost">
+      <UniqueIdentifier>{6d2775b9-5ce5-4719-85d0-c275a293fe7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Ghost\StateMachine">
+      <UniqueIdentifier>{796a949c-c2b7-48cb-a3b1-17ed958f43ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Ghost\StateMachine\GhostState">
+      <UniqueIdentifier>{4cb5eb79-bb09-4a56-9989-05ac27b8808c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Ghost\StateMachine\GhostState\States">
+      <UniqueIdentifier>{9ce7ea06-819f-4cd9-bdbe-4b83f26178f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -378,6 +390,13 @@
     <ClCompile Include="BunnyRatRunState.cpp">
       <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
     </ClCompile>
+    <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="GhostStateMachine.cpp" />
+    <ClCompile Include="GhostState.cpp" />
+    <ClCompile Include="GhostIdleState.cpp" />
+    <ClCompile Include="GhostAttackState.cpp" />
+    <ClCompile Include="GhostHitState.cpp" />
+    <ClCompile Include="GhostDeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -686,6 +705,13 @@
     <ClInclude Include="BunnyRatIdleState.h">
       <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
     </ClInclude>
+    <ClInclude Include="Ghost.h" />
+    <ClInclude Include="GhostStateMachine.h" />
+    <ClInclude Include="GhostState.h" />
+    <ClInclude Include="GhostIdleState.h" />
+    <ClInclude Include="GhostAttackState.h" />
+    <ClInclude Include="GhostHitState.h" />
+    <ClInclude Include="GhostDeadState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

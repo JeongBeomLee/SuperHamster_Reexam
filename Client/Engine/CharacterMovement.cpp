@@ -49,6 +49,10 @@ void CharacterMovement::UpdateMovement(float deltaTime)
         // CharacterController를 통한 실제 이동
         m_characterController->Move(movementVector * m_rollSpeed, deltaTime);
     }
+    else {
+        // 제로 변위 이동
+		m_characterController->Move(Vec3::Zero, deltaTime);
+    }
 }
 
 Vec3 CharacterMovement::CalculateMovementVector(float deltaTime)

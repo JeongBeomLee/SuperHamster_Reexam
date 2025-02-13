@@ -26,6 +26,7 @@
 #include "Cactus.h"
 #include "ChestMonster.h"
 #include "BunnyRat.h"
+#include "Ghost.h"
 
 
 void SceneManager::Update()
@@ -602,6 +603,48 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 			bunnyRatObj->AddComponent(make_shared<BunnyRat>());
 			scene->AddGameObject(bunnyRatObj);
+		}
+
+		// 유령1
+		{
+			shared_ptr<MeshData> ghostMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Ghost_animation.fbx");
+
+			shared_ptr<GameObject> ghostObj = ghostMeshData->Instantiate()[0];
+			/*auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}*/
+
+			ghostObj->SetName(L"Ghost1");
+			ghostObj->SetCheckFrustum(true);
+			ghostObj->SetStatic(false);
+			ghostObj->GetTransform()->SetLocalPosition(Vec3(-1652.3177f, 359.999866f, 1738.5172f));
+			ghostObj->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+			ghostObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			ghostObj->AddComponent(make_shared<Ghost>());
+			scene->AddGameObject(ghostObj);
+		}
+
+		// 유령2
+		{
+			shared_ptr<MeshData> ghostMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Ghost_animation.fbx");
+
+			shared_ptr<GameObject> ghostObj = ghostMeshData->Instantiate()[0];
+			/*auto transformAnimator = bunnyRatObj->GetTransformAnimator();
+			if (transformAnimator) {
+				bunnyRatObj->RemoveComponent(transformAnimator);
+			}*/
+
+			ghostObj->SetName(L"Ghost2");
+			ghostObj->SetCheckFrustum(true);
+			ghostObj->SetStatic(false);
+			ghostObj->GetTransform()->SetLocalPosition(Vec3(-2256.46f, 359.99983f, 1741.7324f));
+			ghostObj->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, XM_PI, 0.f));
+			ghostObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			ghostObj->AddComponent(make_shared<Ghost>());
+			scene->AddGameObject(ghostObj);
 		}
 
 		{

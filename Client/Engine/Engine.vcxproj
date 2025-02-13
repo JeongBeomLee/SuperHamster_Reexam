@@ -228,6 +228,13 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GetUpState.h" />
+    <ClInclude Include="Ghost.h" />
+    <ClInclude Include="GhostAttackState.h" />
+    <ClInclude Include="GhostDeadState.h" />
+    <ClInclude Include="GhostHitState.h" />
+    <ClInclude Include="GhostIdleState.h" />
+    <ClInclude Include="GhostState.h" />
+    <ClInclude Include="GhostStateMachine.h" />
     <ClInclude Include="HitState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="Input.h" />
@@ -327,6 +334,13 @@
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GetUpState.cpp" />
+    <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="GhostAttackState.cpp" />
+    <ClCompile Include="GhostDeadState.cpp" />
+    <ClCompile Include="GhostHitState.cpp" />
+    <ClCompile Include="GhostIdleState.cpp" />
+    <ClCompile Include="GhostState.cpp" />
+    <ClCompile Include="GhostStateMachine.cpp" />
     <ClCompile Include="HitState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="Input.cpp" />
