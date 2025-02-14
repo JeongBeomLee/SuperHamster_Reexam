@@ -54,7 +54,7 @@ shared_ptr<GameObject> ProjectileManager::SpawnProjectile(const Vec3& position, 
     if (physicsBody) {
         PhysicsBody::CapsuleParams params;
         params.radius = 40.f;
-        params.halfHeight = 100.f;
+        params.halfHeight = 50.f;
 
         // 충돌 그룹 설정
         physicsBody->SetCollisionGroup(CollisionGroup::Projectile);

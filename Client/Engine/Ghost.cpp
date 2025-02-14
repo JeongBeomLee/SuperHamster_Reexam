@@ -14,7 +14,6 @@
 #include "PlayerManager.h"
 #include "EventManager.h"
 #include "ProjectileManager.h"
-#include "TransformAnimator.h"
 
 Ghost::Ghost()
 {

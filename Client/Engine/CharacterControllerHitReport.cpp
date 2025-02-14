@@ -7,6 +7,7 @@
 #include "Cactus.h"
 #include "ChestMonster.h"
 #include "BunnyRat.h"
+#include "Boss.h"
 #include "EventManager.h"
 
 void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
@@ -140,6 +141,50 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
             GET_SINGLE(EventManager)->Publish(event);
             Logger::Instance().Debug("미믹과 투사체 충돌 발생. 위치: ({}, {}, {})",
+                hitPosition.x, hitPosition.y, hitPosition.z);
+
+            // 투사체 제거
+            projectile->GetGameObject()->SetActive(false);
+        }
+    }
+#pragma endregion
+
+#pragma region Boss and projectile
+    {
+        // 투사체와 미믹의 충돌 검사
+        auto projectile = shapeObject->GetMonoBehaviour<Projectile>();
+        auto boss = controllerObject->GetMonoBehaviour<Boss>();
+
+        if (!projectile && !boss) {
+            // 순서를 바꿔서 다시 확인
+            projectile = controllerObject->GetMonoBehaviour<Projectile>();
+            boss = shapeObject->GetMonoBehaviour<Boss>();
+        }
+
+        if (projectile && boss) {
+            // 충돌 위치 정보 변환
+            Vec3 hitPosition(
+                static_cast<float>(hit.worldPos.x),
+                static_cast<float>(hit.worldPos.y),
+                static_cast<float>(hit.worldPos.z)
+            );
+
+            Vec3 hitNormal(
+                static_cast<float>(hit.worldNormal.x),
+                static_cast<float>(hit.worldNormal.y),
+                static_cast<float>(hit.worldNormal.z)
+            );
+
+            // 충돌 이벤트 발생
+            Event::ProjectileHitEvent event(
+                hitPosition,
+                hitNormal,
+                projectile->GetGameObject().get(),
+                boss->GetGameObject().get()
+            );
+
+            GET_SINGLE(EventManager)->Publish(event);
+            Logger::Instance().Debug("보스와 투사체 충돌 발생. 위치: ({}, {}, {})",
                 hitPosition.x, hitPosition.y, hitPosition.z);
 
             // 투사체 제거

@@ -27,6 +27,7 @@
 #include "ChestMonster.h"
 #include "BunnyRat.h"
 #include "Ghost.h"
+#include "Boss.h"
 
 
 void SceneManager::Update()
@@ -648,20 +649,20 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 
 		{
-			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\BossMonsterAnimations.fbx");
+			shared_ptr<MeshData> ghostMeshData = 
+				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
-			vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-			for (auto& gameObject : gameObjects)
-			{
-				gameObject->SetName(L"Boss");
-				gameObject->SetCheckFrustum(true);
-				gameObject->SetStatic(false);
-				gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 0.f));
-				gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
-				gameObject->GetTransform()->SetLocalScale(Vec3(25.f, 25.f, 25.f));
-				scene->AddGameObject(gameObject);
-				gameObject->AddComponent(make_shared<TestAnimation>());
-			}*/
+			shared_ptr<GameObject> bossObj = ghostMeshData->Instantiate()[0];
+
+			bossObj->SetName(L"Boss");
+			bossObj->SetCheckFrustum(true);
+			bossObj->SetStatic(false);
+			bossObj->GetTransform()->SetLocalPosition(Vec3(-5.0f, 335.0f, -4000.0f));
+			bossObj->GetTransform()->SetLocalRotation(Vec3(0.f, XM_PI, 0.f));
+			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+
+			bossObj->AddComponent(make_shared<Boss>());
+			scene->AddGameObject(bossObj);
 		}
 
 		{

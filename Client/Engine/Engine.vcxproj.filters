@@ -390,13 +390,43 @@
     <ClCompile Include="BunnyRatRunState.cpp">
       <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
     </ClCompile>
-    <ClCompile Include="Ghost.cpp" />
-    <ClCompile Include="GhostStateMachine.cpp" />
-    <ClCompile Include="GhostState.cpp" />
-    <ClCompile Include="GhostIdleState.cpp" />
-    <ClCompile Include="GhostAttackState.cpp" />
-    <ClCompile Include="GhostHitState.cpp" />
-    <ClCompile Include="GhostDeadState.cpp" />
+    <ClCompile Include="Ghost.cpp">
+      <Filter>Object\Monster\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostStateMachine.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostState.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostAttackState.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostDeadState.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostHitState.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostIdleState.cpp">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossStateMachine.cpp" />
+    <ClCompile Include="BossState.cpp" />
+    <ClCompile Include="BossSleepState.cpp" />
+    <ClCompile Include="BossAwakeState.cpp" />
+    <ClCompile Include="BossIdleState.cpp" />
+    <ClCompile Include="BossRoarReadyState.cpp" />
+    <ClCompile Include="BossRoarState.cpp" />
+    <ClCompile Include="BossRunState.cpp" />
+    <ClCompile Include="BossRightHandAttackState.cpp" />
+    <ClCompile Include="BossLeftHandAttackState.cpp" />
+    <ClCompile Include="BossChargeState.cpp" />
+    <ClCompile Include="BossDownSmashAttackState.cpp" />
+    <ClCompile Include="BossBreathReadyState.cpp" />
+    <ClCompile Include="BossBreathState.cpp" />
+    <ClCompile Include="BossDeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -705,13 +735,43 @@
     <ClInclude Include="BunnyRatIdleState.h">
       <Filter>Object\Monster\BunnyRat\StateMachine\BunnyRatState\States</Filter>
     </ClInclude>
-    <ClInclude Include="Ghost.h" />
-    <ClInclude Include="GhostStateMachine.h" />
-    <ClInclude Include="GhostState.h" />
-    <ClInclude Include="GhostIdleState.h" />
-    <ClInclude Include="GhostAttackState.h" />
-    <ClInclude Include="GhostHitState.h" />
-    <ClInclude Include="GhostDeadState.h" />
+    <ClInclude Include="Ghost.h">
+      <Filter>Object\Monster\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostStateMachine.h">
+      <Filter>Object\Monster\Ghost\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostState.h">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostIdleState.h">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostAttackState.h">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostDeadState.h">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostHitState.h">
+      <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossStateMachine.h" />
+    <ClInclude Include="BossState.h" />
+    <ClInclude Include="BossSleepState.h" />
+    <ClInclude Include="BossAwakeState.h" />
+    <ClInclude Include="BossIdleState.h" />
+    <ClInclude Include="BossRoarReadyState.h" />
+    <ClInclude Include="BossRoarState.h" />
+    <ClInclude Include="BossRunState.h" />
+    <ClInclude Include="BossRightHandAttackState.h" />
+    <ClInclude Include="BossLeftHandAttackState.h" />
+    <ClInclude Include="BossChargeState.h" />
+    <ClInclude Include="BossDownSmashAttackState.h" />
+    <ClInclude Include="BossBreathReadyState.h" />
+    <ClInclude Include="BossBreathState.h" />
+    <ClInclude Include="BossDeadState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

@@ -35,6 +35,10 @@ void CharacterMovement::ProcessMovement(float deltaTime)
 {
     if (m_moveDirection != Vec3::Zero) {
         UpdateMovement(deltaTime);
+	}
+    else {
+        // 제로 변위 이동
+        m_characterController->Move(Vec3::Zero, deltaTime);
     }
 }
 
@@ -48,10 +52,7 @@ void CharacterMovement::UpdateMovement(float deltaTime)
 
         // CharacterController를 통한 실제 이동
         m_characterController->Move(movementVector * m_rollSpeed, deltaTime);
-    }
-    else {
-        // 제로 변위 이동
-		m_characterController->Move(Vec3::Zero, deltaTime);
+        return;
     }
 }
 
