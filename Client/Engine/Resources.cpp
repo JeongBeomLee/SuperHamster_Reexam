@@ -1389,7 +1389,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossStageBGM", L"..\\Resources\\Sound\\Background\\boss_stage_bgm.wav");
-		sound->SetVolume(1.0f);
+		sound->SetVolume(0.1f);
 		sound->SetLoop(true);
 		Add(L"BossStageBGM", sound);
 	}

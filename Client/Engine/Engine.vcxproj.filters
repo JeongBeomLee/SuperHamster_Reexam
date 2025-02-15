@@ -121,6 +121,12 @@
     <Filter Include="Object\Key">
       <UniqueIdentifier>{48f9ee67-768e-453f-ba32-e36568f74d17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Flame">
+      <UniqueIdentifier>{7165e317-d355-4766-b05b-502fda5ff3c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Lava">
+      <UniqueIdentifier>{b13bc1f2-fc13-4c51-b877-2c7cabd8404d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -483,8 +489,12 @@
     <ClCompile Include="KeyObject.cpp">
       <Filter>Object\Key</Filter>
     </ClCompile>
-    <ClCompile Include="Lava.cpp" />
-    <ClCompile Include="Flame.cpp" />
+    <ClCompile Include="Flame.cpp">
+      <Filter>Object\Flame</Filter>
+    </ClCompile>
+    <ClCompile Include="Lava.cpp">
+      <Filter>Object\Lava</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -868,8 +878,12 @@
     <ClInclude Include="KeyObject.h">
       <Filter>Object\Key</Filter>
     </ClInclude>
-    <ClInclude Include="Lava.h" />
-    <ClInclude Include="Flame.h" />
+    <ClInclude Include="Flame.h">
+      <Filter>Object\Flame</Filter>
+    </ClInclude>
+    <ClInclude Include="Lava.h">
+      <Filter>Object\Lava</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

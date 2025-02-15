@@ -44,7 +44,6 @@ void SceneManager::Update()
 	_activeScene->FinalUpdate();
 }
 
-// TEMP
 void SceneManager::Render()
 {
 	if (_activeScene)
@@ -222,69 +221,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		skybox->AddComponent(meshRenderer);
 		scene->AddGameObject(skybox);
 	}
-#pragma endregion
-
-#pragma region Object
-	/*{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->SetName(L"OBJ");
-		obj->AddComponent(make_shared<Transform>());
-		obj->AddComponent(make_shared<SphereCollider>());
-		obj->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		obj->GetTransform()->SetLocalPosition(Vec3(0, 0.f, 500.f));
-		obj->SetStatic(false);
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadSphereMesh();
-			meshRenderer->SetMesh(sphereMesh);
-		}
-		{
-			shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"GameObject");
-			meshRenderer->SetMaterial(material->Clone());
-		}
-		dynamic_pointer_cast<SphereCollider>(obj->GetCollider())->SetRadius(0.5f);
-		dynamic_pointer_cast<SphereCollider>(obj->GetCollider())->SetCenter(Vec3(0.f, 0.f, 0.f));
-		obj->AddComponent(meshRenderer);
-		scene->AddGameObject(obj);
-	}*/
-	//for (int32 i = 0; i < 50; i++)
-	//{
-	//	shared_ptr<GameObject> obj = make_shared<GameObject>();
-	//	obj->AddComponent(make_shared<Transform>());
-	//	obj->GetTransform()->SetLocalScale(Vec3(25.f, 25.f, 25.f));
-	//	obj->GetTransform()->SetLocalPosition(Vec3(-300.f + i * 10.f, 0.f, 500.f));
-	//	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-	//	{
-	//		shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadSphereMesh();
-	//		meshRenderer->SetMesh(sphereMesh);
-	//	}
-	//	{
-	//		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"GameObject");
-	//		material->SetInt(0, 1);
-	//		meshRenderer->SetMaterial(material);
-	//		//material->SetInt(0, 0);
-	//		//meshRenderer->SetMaterial(material->Clone());
-	//	}
-	//	obj->AddComponent(meshRenderer);
-	//	scene->AddGameObject(obj);
-	//}
-#pragma endregion
-
-#pragma region Terrain
-	/*{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->AddComponent(make_shared<Transform>());
-		obj->AddComponent(make_shared<Terrain>());
-		obj->AddComponent(make_shared<MeshRenderer>());
-
-		obj->GetTransform()->SetLocalScale(Vec3(50.f, 250.f, 50.f));
-		obj->GetTransform()->SetLocalPosition(Vec3(-100.f, -200.f, 300.f));
-		obj->SetStatic(true);
-		obj->GetTerrain()->Init(64, 64);
-		obj->SetCheckFrustum(false);
-
-		scene->AddGameObject(obj);
-	}*/
 #pragma endregion
 
 #pragma region UI_Test
@@ -619,10 +555,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			shared_ptr<MeshData> ghostMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Ghost_animation.fbx");
 
 			shared_ptr<GameObject> ghostObj = ghostMeshData->Instantiate()[0];
-			/*auto transformAnimator = bunnyRatObj->GetTransformAnimator();
-			if (transformAnimator) {
-				bunnyRatObj->RemoveComponent(transformAnimator);
-			}*/
 
 			ghostObj->SetName(L"Ghost1");
 			ghostObj->SetCheckFrustum(true);
@@ -638,12 +570,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		// 유령2
 		{
 			shared_ptr<MeshData> ghostMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Ghost_animation.fbx");
-
 			shared_ptr<GameObject> ghostObj = ghostMeshData->Instantiate()[0];
-			/*auto transformAnimator = bunnyRatObj->GetTransformAnimator();
-			if (transformAnimator) {
-				bunnyRatObj->RemoveComponent(transformAnimator);
-			}*/
 
 			ghostObj->SetName(L"Ghost2");
 			ghostObj->SetCheckFrustum(true);
@@ -658,7 +585,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 		// 보스
 		{
-			/*shared_ptr<MeshData> bossMeshData = 
+			shared_ptr<MeshData> bossMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
 			shared_ptr<GameObject> bossObj = bossMeshData->Instantiate()[0];
@@ -671,7 +598,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 			bossObj->AddComponent(make_shared<Boss>());
-			scene->AddGameObject(bossObj);*/
+			scene->AddGameObject(bossObj);
 		}
 
 		// Stone
@@ -759,44 +686,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene->AddGameObject(flameObject);
 		}
 
-		{
-			//shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Hamster.fbx");
-
-			//vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-			//int playerID = GEngine->GetOtherPlayerId();
-			//for (auto& gameObject : gameObjects)
-			//{
-			//	gameObject->SetName(L"Player" + to_wstring(playerID));
-			//	gameObject->SetCheckFrustum(false);
-			//	gameObject->SetStatic(false);
-			//	gameObject->GetTransform()->SetLocalPosition(Vec3(-260.224, 0, 60.2587));
-			//	gameObject->GetTransform()->SetLocalRotation(Vec3(-XM_PIDIV2, 0.f, 0.f));
-			//	gameObject->GetTransform()->SetLocalScale(Vec3(250.f, 250.f, 250.f));
-			//	scene->AddGameObject(gameObject);
-			//	//gameObject->AddComponent(make_shared<TestAnimation>());
-			//	gameObject->AddComponent(make_shared<PlayerMove>(playerID));
-
-			//	GET_SINGLE(PlayerManager)->CreatePlayer(playerID, false, gameObject);
-			//}
-		}
-
-		{
-			/*shared_ptr<GameObject> debugObject = make_shared<GameObject>();
-			debugObject->AddComponent(make_shared<Transform>());
-			debugObject->AddComponent(make_shared<MeshRenderer>());
-
-			auto meshRenderer = debugObject->GetMeshRenderer();
-			meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadCapsuleMesh(10.f, 500.f));
-
-			auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization");
-			material->SetVec4(0, Vec4(0.f, 1.f, 1.f, 1.f));
-			meshRenderer->SetMaterial(material);
-
-			debugObject->GetTransform()->SetLocalPosition(Vec3(-60.224f, 200.f, 60.2587f));
-			debugObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			
-			scene->AddGameObject(debugObject);*/
-		}
 
 #pragma region FadeOutObject
 		vector<Vec3> stagePositions = {
@@ -825,23 +714,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene);
 #pragma endregion
 
-		//{
-		//	shared_ptr<GameObject> debugObject = make_shared<GameObject>();
-		//	debugObject->AddComponent(make_shared<Transform>());
-		//	debugObject->AddComponent(make_shared<MeshRenderer>());
-
-		//	auto meshRenderer = debugObject->GetMeshRenderer();
-		//	meshRenderer->SetMesh(GET_SINGLE(Resources)->LoadLineMesh());
-
-		//	auto material = GET_SINGLE(Resources)->Get<Material>(L"LineDebugVisualization");
-		//	material->SetVec4(0, Vec4(0.f, 1.f, 0.f, 1.f));
-		//	meshRenderer->SetMaterial(material);
-
-		//	debugObject->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 300.f));
-		//	debugObject->GetTransform()->SetLocalScale(Vec3(10.f, 10.f, 10.f));
-		//	
-		//	scene->AddGameObject(debugObject);
-		//}
 	}
 #pragma endregion
 

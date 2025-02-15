@@ -30,6 +30,7 @@ void BossRoarState::Update(Boss* boss, float deltaTime)
             // 첫 포효 후 Phase 1으로 전환
             boss->TransitionToNextPhase();
             m_phaseTransitionProcessed = true;
+
             Logger::Instance().Debug("보스 Phase 1 시작");
         }
         else if (boss->IsPhaseTransitionRequired()) {
@@ -51,4 +52,12 @@ void BossRoarState::Update(Boss* boss, float deltaTime)
 
 void BossRoarState::Exit(Boss* boss)
 {
+    if (boss->GetCurrentPhase() == BOSS_PHASE::PHASE1) {
+        auto mainBGM = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM");
+        auto bossBGM = GET_SINGLE(Resources)->Get<Sound>(L"BossStageBGM");
+        if (mainBGM && bossBGM) {
+            GET_SINGLE(SoundSystem)->Stop(mainBGM);
+            GET_SINGLE(SoundSystem)->Play(bossBGM);
+        }
+    }
 }
