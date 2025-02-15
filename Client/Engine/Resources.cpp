@@ -1076,6 +1076,13 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"FadeOut", shader);
 	}
 
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\breath_effect.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"BreathEffect", shader);
+	}
+
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1268,7 +1275,6 @@ void Resources::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(Get<Shader>(L"CollisionEffect"));
 		material->SetTexture(0, texture);
-
 		Add<Material>(L"CollisionEffect", material);
 	}
 
@@ -1279,6 +1285,20 @@ void Resources::CreateDefaultMaterial()
 		material->SetName(L"FadeOut");
 
 		Add<Material>(L"FadeOut", material);
+	}
+
+	{
+		auto noiseTexture = GET_SINGLE(Resources)->Load<Texture>(
+			L"NoiseTexture", L"..\\Resources\\Texture\\noise2.png");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"BreathEffect"));
+		material->SetVec4(1, Vec4(1.0f, 0.65f, 0.0f, 1.0f));
+		material->SetVec4(2, Vec4(1.0f, 1.0f, 0.88f, 1.0f));
+		// turbulence intensity, swirl speed, flicker intensity
+		material->SetVec4(3, Vec4(1.0f, 0.5f, 1.2f, 0.0f));
+		material->SetTexture(0, noiseTexture);
+
+		Add<Material>(L"BreathEffect", material);
 	}
 }
 

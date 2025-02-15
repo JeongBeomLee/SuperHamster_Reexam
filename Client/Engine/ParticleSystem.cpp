@@ -11,6 +11,11 @@ ParticleSystem::ParticleSystem() : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 	_mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 }
 
+ParticleSystem::ParticleSystem(float width, float height) : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
+{
+    _mesh = GET_SINGLE(Resources)->LoadSphereMesh(50, 50, 1.f);
+}
+
 ParticleSystem::~ParticleSystem()
 {
 }

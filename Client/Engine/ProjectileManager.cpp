@@ -208,7 +208,7 @@ void ProjectileManager::PlayEffects(const Vec3& position, const Vec3& direction)
     muzzleObj->SetCheckFrustum(false);
     auto transform = muzzleObj->GetTransform();
     Vec3 muzzlePos = position + direction * 10.f;
-    transform->SetLocalPosition(position);
+    transform->SetLocalPosition(muzzlePos);
 
     // 발사 방향으로 회전
     Vec3 defaultForward = Vec3(0.f, 0.f, 1.f);

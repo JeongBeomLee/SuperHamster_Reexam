@@ -332,7 +332,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 #pragma region FBX
 	{
-		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map.fbx");
+		shared_ptr<MeshData> mapMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Map2.fbx");
 		shared_ptr<GameObject> mapObject = mapMeshData->Instantiate()[0];
 
 		mapObject->SetName(L"Map");

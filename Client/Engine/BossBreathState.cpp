@@ -3,6 +3,8 @@
 #include "Boss.h"
 #include "PlayerManager.h"
 #include "EventManager.h"
+#include "ParticleSystem.h"
+#include "Resources.h"
 
 void BossBreathState::Enter(Boss* boss) {
     boss->PlayAnimation(BOSS_STATE::BREATH);
@@ -27,18 +29,33 @@ void BossBreathState::Update(Boss* boss, float deltaTime) {
         if (m_attackTimer >= ATTACK_INTERVAL) {
             m_attackTimer = 0.0f;
 
-            const auto& positions = boss->GetBreathAttackPositions();
-            if (m_currentAttackIndex < positions.size()) {
-                PerformBreathAttack(boss, positions[m_currentAttackIndex], false);
+            const auto& breathAreas = boss->GetBreathAreas();
+            if (m_currentAttackIndex < breathAreas.size()) {
+                const auto& area = breathAreas[m_currentAttackIndex];
+                // 현재 영역의 중심점 이펙트 재생
+                int baseIndex = m_currentAttackIndex * 4;
+                // 주변 4개 지점의 이펙트 재생
+                for (size_t i = 0; i < area.positions.size(); ++i) {
+                    boss->PlayBreathEffect(area.positions[i], baseIndex + i);
+                }
+
+                PerformBreathAttack(boss, area.center, false);
                 m_currentAttackIndex++;
             }
             else if (m_stateTimer >= PREPARE_TIME + FINAL_ATTACK_DELAY) {
                 // 모든 영역에 대한 최종 공격
-                for (const auto& pos : positions) {
-                    PerformBreathAttack(boss, pos, true);
+                for (size_t areaIdx = 0; areaIdx < breathAreas.size(); ++areaIdx) {
+                    const auto& area = breathAreas[areaIdx];
+
+                    // 각 영역의 중심점과 주변 이펙트 모두 재생
+                    int baseIndex = areaIdx * 4;
+                    for (size_t i = 0; i < area.positions.size(); ++i) {
+                        boss->PlayBreathEffect(area.positions[i], baseIndex + i);
+                    }
+
+                    PerformBreathAttack(boss, area.center, true);
                 }
                 m_hasFinalAttack = true;
-                Logger::Instance().Debug("브레스 최종 공격 실행");
             }
         }
     }

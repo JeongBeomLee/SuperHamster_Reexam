@@ -23,6 +23,8 @@
 #include "PlayerManager.h"
 #include "EventManager.h"
 #include "ProjectileManager.h"
+#include "ParticleSystem.h"
+#include "Resources.h"
 
 Boss::Boss()
 {
@@ -38,6 +40,7 @@ void Boss::Awake()
 	InitializeStateMachine();
 	InitializeBreathPositions();
 	CreateComponents();
+	InitializeParticleEffects();
 }
 
 void Boss::Start()
@@ -177,6 +180,25 @@ void Boss::OnHit(const Event::ProjectileHitEvent& event)
 	}
 }
 
+void Boss::PlayBreathEffect(const Vec3& position, int index)
+{
+	if (index >= m_breathEffect.size()) return;
+
+	auto particleSystem = m_breathEffect[index];
+	if (!particleSystem) return;
+
+	ParticleSystem::EffectDesc breathDesc;
+	breathDesc.type = ParticleSystem::EffectType::BREATH;
+	breathDesc.duration = 0.5f;
+	breathDesc.startScale = 10.f;
+	breathDesc.endScale = 150.f;
+	breathDesc.color = Vec4(0.47f, 0.0f, 0.0f, 1.0f);
+	breathDesc.material = GET_SINGLE(Resources)->Get<Material>(L"BreathEffect");
+
+	particleSystem->GetTransform()->SetLocalPosition(position);
+	particleSystem->Play(breathDesc);
+}
+
 void Boss::CreateComponents()
 {
 	// CharacterController 추가
@@ -224,14 +246,57 @@ void Boss::InitializeStateMachine()
 
 void Boss::InitializeBreathPositions()
 {
-	m_breathAttackPositions.push_back(Vec3(-5.0f, 130.0f, -3760.0f));
-	m_breathAttackPositions.push_back(Vec3(-5.0f, 130.0f, -3560.0f));
-	m_breathAttackPositions.push_back(Vec3(-5.0f, 130.0f, -3360.0f));
-	m_breathAttackPositions.push_back(Vec3(-5.0f, 130.0f, -3160.0f));
+	// 4개의 주요 영역 설정
+	vector<Vec3> mainPositions = {
+		Vec3(-5.0f, 130.0f, -3760.0f),
+		Vec3(-5.0f, 130.0f, -3560.0f),
+		Vec3(-5.0f, 130.0f, -3360.0f),
+		Vec3(-5.0f, 130.0f, -3160.0f)
+	};
+
+	m_breathAreas.clear();
+	for (const auto& center : mainPositions) {
+		BreathArea area;
+		area.center = center;
+
+		// 각 중심점에 대한 주변 위치 설정
+		area.positions = {
+			Vec3(center.x + 100.0f, center.y, center.z),
+			Vec3(center.x + 300.0f, center.y, center.z),
+			Vec3(center.x - 100.0f, center.y, center.z),
+			Vec3(center.x - 300.0f, center.y, center.z)
+		};
+
+		m_breathAreas.push_back(area);
+	}
 }
 
 bool Boss::ShouldStartBreathPattern() const
 {
 	return m_currentPhase == BOSS_PHASE::PHASE2 &&
 		m_patternCycleCount >= 2;  // 2회의 패턴 사이클 후
+}
+
+void Boss::InitializeParticleEffects()
+{
+	m_breathEffect.clear();
+
+	// 각 위치마다 파티클 시스템 생성
+	for (int i = 0; i < 16; ++i) {
+		auto particleObj = make_shared<GameObject>();
+		particleObj->SetName(L"BreathEffect_" + to_wstring(i));
+		particleObj->SetCheckFrustum(false);
+		particleObj->AddComponent(make_shared<Transform>());
+
+		auto particleSystem = make_shared<ParticleSystem>(1.f, 1.f);
+		particleObj->AddComponent(particleSystem);
+
+		if (auto scene = GET_SINGLE(SceneManager)->GetActiveScene()) {
+			scene->AddGameObject(particleObj);
+		}
+
+		m_breathEffect.push_back(particleSystem);
+	}
+
+	Logger::Instance().Info("보스 브레스 파티클 시스템 생성");
 }

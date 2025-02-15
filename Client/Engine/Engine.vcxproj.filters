@@ -103,6 +103,18 @@
     <Filter Include="Object\Monster\Ghost\StateMachine\GhostState\States">
       <UniqueIdentifier>{9ce7ea06-819f-4cd9-bdbe-4b83f26178f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Monster\Boss">
+      <UniqueIdentifier>{0a635396-741f-49ca-9e2f-d55623c0cf3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Boss\StateMachine">
+      <UniqueIdentifier>{5455b402-ecb9-456c-842e-9f418508c8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Boss\StateMachine\BossState">
+      <UniqueIdentifier>{d0ff9533-dac9-4470-900a-4662cfdab404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Monster\Boss\StateMachine\BossState\State">
+      <UniqueIdentifier>{7399750e-3f38-4ae9-a237-78a0b44a2f04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -411,22 +423,54 @@
     <ClCompile Include="GhostIdleState.cpp">
       <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
     </ClCompile>
-    <ClCompile Include="Boss.cpp" />
-    <ClCompile Include="BossStateMachine.cpp" />
-    <ClCompile Include="BossState.cpp" />
-    <ClCompile Include="BossSleepState.cpp" />
-    <ClCompile Include="BossAwakeState.cpp" />
-    <ClCompile Include="BossIdleState.cpp" />
-    <ClCompile Include="BossRoarReadyState.cpp" />
-    <ClCompile Include="BossRoarState.cpp" />
-    <ClCompile Include="BossRunState.cpp" />
-    <ClCompile Include="BossRightHandAttackState.cpp" />
-    <ClCompile Include="BossLeftHandAttackState.cpp" />
-    <ClCompile Include="BossChargeState.cpp" />
-    <ClCompile Include="BossDownSmashAttackState.cpp" />
-    <ClCompile Include="BossBreathReadyState.cpp" />
-    <ClCompile Include="BossBreathState.cpp" />
-    <ClCompile Include="BossDeadState.cpp" />
+    <ClCompile Include="Boss.cpp">
+      <Filter>Object\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="BossStateMachine.cpp">
+      <Filter>Object\Monster\Boss\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="BossState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState</Filter>
+    </ClCompile>
+    <ClCompile Include="BossAwakeState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossBreathReadyState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossBreathState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossChargeState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossDeadState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossDownSmashAttackState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossIdleState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossLeftHandAttackState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossRightHandAttackState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossRoarReadyState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossRoarState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossRunState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="BossSleepState.cpp">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -756,22 +800,54 @@
     <ClInclude Include="GhostHitState.h">
       <Filter>Object\Monster\Ghost\StateMachine\GhostState\States</Filter>
     </ClInclude>
-    <ClInclude Include="Boss.h" />
-    <ClInclude Include="BossStateMachine.h" />
-    <ClInclude Include="BossState.h" />
-    <ClInclude Include="BossSleepState.h" />
-    <ClInclude Include="BossAwakeState.h" />
-    <ClInclude Include="BossIdleState.h" />
-    <ClInclude Include="BossRoarReadyState.h" />
-    <ClInclude Include="BossRoarState.h" />
-    <ClInclude Include="BossRunState.h" />
-    <ClInclude Include="BossRightHandAttackState.h" />
-    <ClInclude Include="BossLeftHandAttackState.h" />
-    <ClInclude Include="BossChargeState.h" />
-    <ClInclude Include="BossDownSmashAttackState.h" />
-    <ClInclude Include="BossBreathReadyState.h" />
-    <ClInclude Include="BossBreathState.h" />
-    <ClInclude Include="BossDeadState.h" />
+    <ClInclude Include="Boss.h">
+      <Filter>Object\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="BossStateMachine.h">
+      <Filter>Object\Monster\Boss\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="BossState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState</Filter>
+    </ClInclude>
+    <ClInclude Include="BossSleepState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossAwakeState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossBreathReadyState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossBreathState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossChargeState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossDeadState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossDownSmashAttackState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossIdleState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossLeftHandAttackState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossRightHandAttackState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossRoarReadyState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossRoarState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="BossRunState.h">
+      <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -834,6 +910,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\fadeout.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\breath_effect.fx">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

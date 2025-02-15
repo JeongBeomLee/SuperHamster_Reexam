@@ -4,6 +4,11 @@
 #include "Player.h"
 #include "AttackInfo.h"
 
+struct BreathArea {
+    Vec3 center;
+    vector<Vec3> positions;  // 주변 이펙트 위치들
+};
+
 class Boss : public MonoBehaviour
 {
 public:
@@ -35,18 +40,18 @@ public:
 	float GetChargeSpeed() const { return CHARGE_SPEED; }
 	float GetRunSpeed() const { return RUN_SPEED; }
 	const Vec3& GetBreathPosition() const { return BREATH_POSITION; }
-	const std::vector<Vec3>& GetBreathAttackPositions() const { return m_breathAttackPositions; }
+	const vector<BreathArea>& GetBreathAreas() const { return m_breathAreas; }
 
     void OnHit(const Event::ProjectileHitEvent& event);
     bool IsAlive() const { return m_health > 0.0f; }
+    void PlayBreathEffect(const Vec3& position, int index);
 
 private:
     void CreateComponents();
     void InitializeStateMachine();
     void InitializeBreathPositions();
     bool ShouldStartBreathPattern() const;
-    void UpdatePhase();
-    void CheckPatternTransition();
+    void InitializeParticleEffects();
 
 private:
     BossStateMachine m_stateMachine;
@@ -68,6 +73,6 @@ private:
     static constexpr float CHARGE_SPEED = 1000.0f;
     static constexpr Vec3 BREATH_POSITION = Vec3(-5.0f, 335.0f, -4000.0f);
 
-    std::vector<Vec3> m_breathAttackPositions;  // 브레스 공격 위치들
-    int m_currentBreathIndex = 0;
+    vector<BreathArea> m_breathAreas;  // 브레스 공격 위치들
+	vector<shared_ptr<class ParticleSystem>> m_breathEffect;
 };

@@ -30,7 +30,8 @@ public:
 		DEFAULT,
 		MUZZLE_FLASH,
 		SHOCKWAVE,
-		COLLISION
+		COLLISION,
+		BREATH
 	};
 
 	// 이펙트 파라미터 구조체
@@ -55,6 +56,7 @@ public:
 
 public:
 	ParticleSystem();
+	ParticleSystem(float width, float height);
 	virtual ~ParticleSystem();
 
 public:
