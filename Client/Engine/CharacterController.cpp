@@ -54,7 +54,9 @@ void CharacterController::Update()
     float deltaTime = DELTA_TIME;
 
     // 중력 적용
-    ApplyGravity(deltaTime);
+    if (m_isGravityEnabled) {
+		ApplyGravity(deltaTime);
+    }
 
     // Transform 컴포넌트 업데이트
     UpdateTransform();

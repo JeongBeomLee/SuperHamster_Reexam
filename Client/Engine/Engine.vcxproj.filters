@@ -115,6 +115,9 @@
     <Filter Include="Object\Monster\Boss\StateMachine\BossState\State">
       <UniqueIdentifier>{7399750e-3f38-4ae9-a237-78a0b44a2f04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Monster\Stone">
+      <UniqueIdentifier>{0a6423f6-9022-4bbf-a14a-5a4da62c2a9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -470,6 +473,9 @@
     </ClCompile>
     <ClCompile Include="BossSleepState.cpp">
       <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Stone.cpp">
+      <Filter>Object\Monster\Stone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -847,6 +853,9 @@
     </ClInclude>
     <ClInclude Include="BossRunState.h">
       <Filter>Object\Monster\Boss\StateMachine\BossState\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Stone.h">
+      <Filter>Object\Monster\Stone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

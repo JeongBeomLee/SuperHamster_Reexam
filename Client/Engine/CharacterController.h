@@ -37,6 +37,7 @@ public:
     void SetContactOffset(float offset);
 	void SetRadius(float radius) { m_radius = radius; }
 	void SetHeight(float height) { m_height = height; }
+	void SetIsGravityEnabled(bool enabled) { m_isGravityEnabled = enabled; }
 
     // 충돌 그룹 설정
     CollisionGroup GetCollisionGroup() const { return m_group; }
@@ -52,6 +53,7 @@ private:
     PxVec3 m_velocity = PxVec3(0.0f);
     CollisionGroup m_group = CollisionGroup::Default;
     CollisionGroup m_mask = CollisionGroup::Default;
+	bool m_isGravityEnabled = true;
 
     static uint32_t s_controllerId;    // 정적 컨트롤러 ID
     uint32_t m_controllerId;           // 이 컨트롤러의 ID

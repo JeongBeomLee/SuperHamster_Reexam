@@ -289,6 +289,7 @@
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="Stone.h" />
     <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="TableDescriptorHeap.h" />
@@ -414,6 +415,7 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="Stone.cpp" />
     <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="TableDescriptorHeap.cpp" />

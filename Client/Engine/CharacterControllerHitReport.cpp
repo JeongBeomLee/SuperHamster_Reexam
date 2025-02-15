@@ -105,9 +105,9 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
     }
 #pragma endregion
 
-#pragma region chestMonster and projectile
+#pragma region BunnyRat and projectile
     {
-        // 투사체와 미믹의 충돌 검사
+        // 투사체와 토끼쥐의 충돌 검사
         auto projectile = shapeObject->GetMonoBehaviour<Projectile>();
         auto bunnyRat = controllerObject->GetMonoBehaviour<BunnyRat>();
 
@@ -140,7 +140,7 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
             );
 
             GET_SINGLE(EventManager)->Publish(event);
-            Logger::Instance().Debug("미믹과 투사체 충돌 발생. 위치: ({}, {}, {})",
+            Logger::Instance().Debug("토끼쥐와 투사체 충돌 발생. 위치: ({}, {}, {})",
                 hitPosition.x, hitPosition.y, hitPosition.z);
 
             // 투사체 제거
@@ -151,7 +151,7 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 #pragma region Boss and projectile
     {
-        // 투사체와 미믹의 충돌 검사
+        // 투사체와 보스의 충돌 검사
         auto projectile = shapeObject->GetMonoBehaviour<Projectile>();
         auto boss = controllerObject->GetMonoBehaviour<Boss>();
 
@@ -197,20 +197,17 @@ void CharacterControllerHitReport::onShapeHit(const PxControllerShapeHit& hit)
 void CharacterControllerHitReport::onControllerHit(const PxControllersHit& hit)
 {
     // 다른 캐릭터 컨트롤러와의 충돌
-    //Event::CollisionEvent event(
-    //    hit.controller->getActor(),
-    //    hit.other->getActor(),
-    //    PxVec3(static_cast<float>(hit.worldPos.x),
-    //        static_cast<float>(hit.worldPos.y),
-    //        static_cast<float>(hit.worldPos.z)),
-    //    PxVec3(0.0f),  // 컨트롤러 충돌에서는 normal이 제공되지 않음
-    //    0.0f           // 충격량도 제공되지 않음
-    //);
+    Event::CollisionEvent event(
+        hit.controller->getActor(),
+        hit.other->getActor(),
+        PxVec3(static_cast<float>(hit.worldPos.x),
+            static_cast<float>(hit.worldPos.y),
+            static_cast<float>(hit.worldPos.z)),
+        PxVec3(0.0f),  // 컨트롤러 충돌에서는 normal이 제공되지 않음
+        0.0f           // 충격량도 제공되지 않음
+    );
 
-    //EventManager::Instance().Publish(event);
-
-    Logger::Instance().Debug("캐릭터가 다른 캐릭터와 충돌. 충돌 위치: ({}, {}, {})",
-        hit.worldPos.x, hit.worldPos.y, hit.worldPos.z);
+    GET_SINGLE(EventManager)->Publish(event);
 }
 
 void CharacterControllerHitReport::onObstacleHit(const PxControllerObstacleHit& hit)

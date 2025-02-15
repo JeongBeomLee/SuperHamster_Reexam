@@ -28,6 +28,7 @@
 #include "BunnyRat.h"
 #include "Ghost.h"
 #include "Boss.h"
+#include "Stone.h"
 
 
 void SceneManager::Update()
@@ -654,10 +655,10 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 		// º¸½º
 		{
-			shared_ptr<MeshData> ghostMeshData = 
+			shared_ptr<MeshData> bossMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
-			shared_ptr<GameObject> bossObj = ghostMeshData->Instantiate()[0];
+			shared_ptr<GameObject> bossObj = bossMeshData->Instantiate()[0];
 
 			bossObj->SetName(L"Boss");
 			bossObj->SetCheckFrustum(true);
@@ -667,6 +668,24 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 			bossObj->AddComponent(make_shared<Boss>());
+			scene->AddGameObject(bossObj);
+		}
+
+		// Stone
+		{
+			shared_ptr<MeshData> stoneMeshData =
+				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\spike_cube_no_animated.fbx");
+
+			shared_ptr<GameObject> bossObj = stoneMeshData->Instantiate()[0];
+
+			bossObj->SetName(L"Stone");
+			bossObj->SetCheckFrustum(true);
+			bossObj->SetStatic(false);
+			bossObj->GetTransform()->SetLocalPosition(Vec3(-1600.0f, 260.0f, -1500.0f));
+			bossObj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			bossObj->GetTransform()->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+
+			bossObj->AddComponent(make_shared<Stone>());
 			scene->AddGameObject(bossObj);
 		}
 
