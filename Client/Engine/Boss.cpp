@@ -131,6 +131,40 @@ void Boss::TransitionToNextPhase()
 	m_patternTimer = 0.0f;
 }
 
+void Boss::PerformNormalAttack()
+{
+	Vec3 attackCenter = GetGameObject()->GetTransform()->GetWorldPosition();
+	// 전방으로 약간 offset을 주어 공격 위치 조정
+	Vec3 forward = GetGameObject()->GetTransform()->GetLook() * -1.f;
+	attackCenter += forward * 200.f;
+
+	AttackInfo attackInfo(attackCenter, ATTACK_RADIUS, ATTACK_DAMAGE, GetGameObject().get());
+	const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
+
+	for (const auto& [playerId, player] : players) {
+		if (!player || !player->GetGameObject())
+			continue;
+
+		Vec3 playerPos = player->GetGameObject()->GetTransform()->GetWorldPosition();
+		float distance = (playerPos - attackInfo.center).Length();
+
+		if (distance <= attackInfo.radius) {
+			// 플레이어가 공격 범위 안에 있음
+			Logger::Instance().Debug("보스의 공격이 플레이어 {}에게 적중", playerId);
+
+			// 이벤트 발생
+			Event::PlayerHitEvent event(
+				player.get(),          // 맞은 플레이어
+				attackInfo.attacker,   // 공격자
+				attackInfo.damage,     // 데미지
+				attackInfo.center      // 타격 위치
+			);
+
+			GET_SINGLE(EventManager)->Publish(event);
+		}
+	}
+}
+
 void Boss::IncrementNormalAttackCount()
 {
 	m_normalAttackCount++;

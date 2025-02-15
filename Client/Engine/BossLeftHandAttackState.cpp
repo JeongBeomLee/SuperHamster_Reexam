@@ -26,8 +26,6 @@ void BossLeftHandAttackState::Update(Boss* boss, float deltaTime)
 
     // 공격 판정
     if (!m_hasPerformedAttack && animator->GetCurrentAnimationProgress() >= ATTACK_TIMING) {
-        // TODO: 공격 판정 구현
-        //boss->PerformNormalAttack();
         m_hasPerformedAttack = true;
     }
 

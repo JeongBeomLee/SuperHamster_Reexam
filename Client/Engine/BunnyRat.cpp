@@ -143,7 +143,7 @@ void BunnyRat::CheckAttackCollision(const AttackInfo& attackInfo)
 
         if (distance <= attackInfo.radius) {
             // 플레이어가 공격 범위 안에 있음
-            Logger::Instance().Debug("미믹의 공격이 플레이어 {}에게 적중", playerId);
+            Logger::Instance().Debug("토끼쥐의 공격이 플레이어 {}에게 적중", playerId);
 
             // 이벤트 발생
             Event::PlayerHitEvent event(

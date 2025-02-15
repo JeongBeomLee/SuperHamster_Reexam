@@ -33,6 +33,7 @@ public:
     void TransitionToNextPhase();
 
     float GetAttackRange() const { return ATTACK_RANGE; }
+    void PerformNormalAttack();
     void IncrementNormalAttackCount();
     void IncrementPatternCycleCount();
 
@@ -71,6 +72,8 @@ private:
     float m_patternTimer = 0.0f;    // 패턴 타이머
 
     static constexpr float ATTACK_RANGE = 200.0f;
+    static constexpr float ATTACK_RADIUS = 200.0f;
+    static constexpr float ATTACK_DAMAGE = 10.0f;
     static constexpr float RUN_SPEED = 400.0f;
     static constexpr float CHARGE_SPEED = 1000.0f;
     static constexpr Vec3 BREATH_POSITION = Vec3(-5.0f, 335.0f, -4000.0f);
