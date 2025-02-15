@@ -431,6 +431,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shader\animation.fx" />
+    <FxCompile Include="..\Resources\Shader\smash_effect.fx" />
     <FxCompile Include="..\Resources\Shader\collision_effect.fx" />
     <FxCompile Include="..\Resources\Shader\compute.fx" />
     <FxCompile Include="..\Resources\Shader\debugVisualization.fx" />
@@ -447,6 +448,7 @@
     <FxCompile Include="..\Resources\Shader\shadow.fx" />
     <FxCompile Include="..\Resources\Shader\shockwave.fx" />
     <FxCompile Include="..\Resources\Shader\skybox.fx" />
+    <FxCompile Include="..\Resources\Shader\swing_effect.fx" />
     <FxCompile Include="..\Resources\Shader\terrain.fx" />
     <FxCompile Include="..\Resources\Shader\tessellation.fx" />
     <FxCompile Include="..\Resources\Shader\utils.fx" />

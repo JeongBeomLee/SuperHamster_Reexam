@@ -3,12 +3,19 @@
 #include "Boss.h"
 #include "Timer.h"
 #include "Animator.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossRoarState::Enter(Boss* boss)
 {
     boss->PlayAnimation(BOSS_STATE::ROAR);
     m_roarTimer = 0.0f;
     m_phaseTransitionProcessed = false;
+
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossRoar");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
+    }
 
     Logger::Instance().Debug("보스가 포효 상태로 진입");
 }

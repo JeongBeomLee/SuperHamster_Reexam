@@ -5,6 +5,8 @@
 #include "PlayerManager.h"
 #include "Animator.h"
 #include "EventManager.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossDownSmashAttackState::Enter(Boss* boss)
 {
@@ -22,6 +24,10 @@ void BossDownSmashAttackState::Update(Boss* boss, float deltaTime)
     // 공격 판정
     if (!m_hasPerformedAttack && animator->GetCurrentAnimationProgress() >= ATTACK_TIMING) {
         Vec3 attackCenter = boss->GetGameObject()->GetTransform()->GetWorldPosition();
+
+        auto pxFootPosition = boss->GetGameObject()->GetCharacterController()->GetController()->getFootPosition();
+		Vec3 footPosition = Vec3(pxFootPosition.x, pxFootPosition.y, pxFootPosition.z);
+        boss->PlaySmashEffect(footPosition);
 
         // 범위 내의 모든 플레이어 체크
         const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
@@ -45,6 +51,10 @@ void BossDownSmashAttackState::Update(Boss* boss, float deltaTime)
             }
         }
 
+        auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossSmash");
+        if (sound) {
+            GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
+        }
         m_hasPerformedAttack = true;
     }
 

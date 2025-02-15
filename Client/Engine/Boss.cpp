@@ -199,6 +199,23 @@ void Boss::PlayBreathEffect(const Vec3& position, int index)
 	particleSystem->Play(breathDesc);
 }
 
+void Boss::PlaySmashEffect(const Vec3& footPosition)
+{
+	ParticleSystem::EffectDesc smashDesc;
+	smashDesc.type = ParticleSystem::EffectType::BOSS_SMASH;
+	smashDesc.duration = 1.0f;
+	smashDesc.startScale = 200.f;
+	smashDesc.endScale = 2000.f;
+	smashDesc.color = Vec4(0.47f, 0.0f, 0.0f, 1.0f);
+	smashDesc.material = GET_SINGLE(Resources)->Get<Material>(L"SmashEffect");
+
+	Vec3 pos = footPosition;
+	pos.y += 50.f;
+	m_smashEffect->GetTransform()->SetLocalRotation(Vec3(XM_PIDIV2, 0.f, 0.f));
+	m_smashEffect->GetTransform()->SetLocalPosition(pos);
+	m_smashEffect->Play(smashDesc);
+}
+
 void Boss::CreateComponents()
 {
 	// CharacterController 추가
@@ -214,8 +231,8 @@ void Boss::CreateComponents()
 		CollisionGroup::Enemy |
 		CollisionGroup::Projectile
 	);
-	controller->SetRadius(70.f);
-	controller->SetHeight(190.f);
+	controller->SetRadius(100.f);
+	controller->SetHeight(200.f);
 	controller->Initialize();
 
 	// Movement 컴포넌트 추가
@@ -280,7 +297,7 @@ bool Boss::ShouldStartBreathPattern() const
 void Boss::InitializeParticleEffects()
 {
 	m_breathEffect.clear();
-
+	
 	// 각 위치마다 파티클 시스템 생성
 	for (int i = 0; i < 16; ++i) {
 		auto particleObj = make_shared<GameObject>();
@@ -294,9 +311,23 @@ void Boss::InitializeParticleEffects()
 		if (auto scene = GET_SINGLE(SceneManager)->GetActiveScene()) {
 			scene->AddGameObject(particleObj);
 		}
-
 		m_breathEffect.push_back(particleSystem);
 	}
-
 	Logger::Instance().Info("보스 브레스 파티클 시스템 생성");
+
+	// SmashEffect
+	{
+		auto smashEffectObj = make_shared<GameObject>();
+		smashEffectObj->SetName(L"SmashEffect");
+		smashEffectObj->SetCheckFrustum(false);
+		smashEffectObj->AddComponent(make_shared<Transform>());
+
+		m_smashEffect = make_shared<ParticleSystem>();
+		smashEffectObj->AddComponent(m_smashEffect);
+
+		if (auto scene = GET_SINGLE(SceneManager)->GetActiveScene()) {
+			scene->AddGameObject(smashEffectObj);
+		}
+	}
+	Logger::Instance().Info("보스 스매시 파티클 시스템 생성");
 }

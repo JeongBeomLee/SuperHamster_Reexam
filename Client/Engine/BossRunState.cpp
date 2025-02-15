@@ -10,6 +10,7 @@ void BossRunState::Enter(Boss* boss)
     if (movement) {
         movement->SetMoveSpeed(boss->GetRunSpeed());
     }
+
 	Logger::Instance().Debug("보스가 Run 상태로 진입");
 }
 

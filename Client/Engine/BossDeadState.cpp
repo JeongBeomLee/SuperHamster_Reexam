@@ -2,6 +2,8 @@
 #include "BossDeadState.h"
 #include "Boss.h"
 #include "CharacterMovement.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossDeadState::Enter(Boss* boss)
 {
@@ -12,6 +14,11 @@ void BossDeadState::Enter(Boss* boss)
     auto movement = boss->GetGameObject()->GetCharacterMovement();
     if (movement) {
         movement->StopMovement();
+    }
+
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossDead");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
     }
 }
 

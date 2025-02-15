@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "BossChargeState.h"
 #include "Boss.h"
-
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossChargeState::Enter(Boss* boss)
 {
@@ -27,6 +28,10 @@ void BossChargeState::Enter(Boss* boss)
         }
     }
 
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossCharge");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
+    }
     Logger::Instance().Debug("보스가 Charge 상태로 진입");
 }
 

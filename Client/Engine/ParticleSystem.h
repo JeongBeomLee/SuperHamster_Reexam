@@ -31,7 +31,9 @@ public:
 		MUZZLE_FLASH,
 		SHOCKWAVE,
 		COLLISION,
-		BREATH
+		BREATH,
+		BOSS_ATTACK,
+		BOSS_SMASH,
 	};
 
 	// 이펙트 파라미터 구조체

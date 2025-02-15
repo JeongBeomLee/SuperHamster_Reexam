@@ -2,12 +2,20 @@
 #include "BossLeftHandAttackState.h"
 #include "Boss.h"
 #include "Animator.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossLeftHandAttackState::Enter(Boss* boss)
 {
     boss->PlayAnimation(BOSS_STATE::LEFT_HAND_ATTACK);
     m_hasCheckedAnimation = false;
     m_hasPerformedAttack = false;
+
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossSwing");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
+    }
+
     Logger::Instance().Debug("보스가 오른손 공격 상태로 진입");
 }
 

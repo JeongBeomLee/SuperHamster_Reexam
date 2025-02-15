@@ -5,6 +5,7 @@
 #include "EventManager.h"
 #include "ParticleSystem.h"
 #include "Resources.h"
+#include "SoundSystem.h"
 
 void BossBreathState::Enter(Boss* boss) {
     boss->PlayAnimation(BOSS_STATE::BREATH);
@@ -12,6 +13,12 @@ void BossBreathState::Enter(Boss* boss) {
     m_attackTimer = 0.0f;
     m_currentAttackIndex = 0;
     m_hasFinalAttack = false;
+
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossBreath");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, boss->GetGameObject()->GetTransform()->GetLocalPosition());
+    }
+
     Logger::Instance().Debug("보스가 Breath 상태로 진입");
 }
 
@@ -73,6 +80,11 @@ void BossBreathState::PerformBreathAttack(Boss* boss, const Vec3& center, bool i
     float damage = isFinal ? 40.0f : 20.0f;  // 최종 공격은 더 강력
     float width = 800.0f;   // x축 범위
     float height = 200.0f;  // z축 범위
+
+    auto sound = GET_SINGLE(Resources)->Get<Sound>(L"BossExplosion");
+    if (sound) {
+        GET_SINGLE(SoundSystem)->Play3D(sound, center);
+    }
 
     const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
     for (const auto& [playerId, player] : players) {

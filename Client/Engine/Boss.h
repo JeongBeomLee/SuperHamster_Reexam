@@ -18,6 +18,7 @@ public:
     void Start() override;
     void Update() override;
 
+
     void SetState(BOSS_STATE newState);
     BOSS_STATE GetCurrentState() const;
     void PlayAnimation(BOSS_STATE state);
@@ -45,6 +46,7 @@ public:
     void OnHit(const Event::ProjectileHitEvent& event);
     bool IsAlive() const { return m_health > 0.0f; }
     void PlayBreathEffect(const Vec3& position, int index);
+    void PlaySmashEffect(const Vec3& footPosition);
 
 private:
     void CreateComponents();
@@ -75,4 +77,5 @@ private:
 
     vector<BreathArea> m_breathAreas;  // 브레스 공격 위치들
 	vector<shared_ptr<class ParticleSystem>> m_breathEffect;
+    shared_ptr<class ParticleSystem> m_smashEffect;
 };

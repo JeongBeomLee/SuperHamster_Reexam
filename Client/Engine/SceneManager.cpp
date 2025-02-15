@@ -50,6 +50,9 @@ void SceneManager::Render()
 void SceneManager::LoadScene(wstring sceneName)
 {
 	_activeScene = LoadTestScene();
+	if (_activeScene == nullptr) {
+		Logger::Instance().Error("Scene 로드 실패");
+	}
 	GET_SINGLE(ProjectileManager)->Initialize();
 	GET_SINGLE(TeleportSystem)->Initialize();
 
@@ -160,6 +163,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 
 	shared_ptr<Scene> scene = make_shared<Scene>();
+	scene->ReserveGameObjects(200); // 이거 안해주면 망함
 	
 #pragma region Camera
 	{
@@ -648,6 +652,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene->AddGameObject(ghostObj);
 		}
 
+		// 보스
 		{
 			shared_ptr<MeshData> ghostMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");

@@ -13,6 +13,10 @@ void Scene::Awake()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
+		/*if (gameObject == nullptr) {
+			Logger::Instance().Error("GameObject가 nullptr입니다.");
+			continue;
+		}*/
 		gameObject->Awake();
 	}
 }

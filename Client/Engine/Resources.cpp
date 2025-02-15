@@ -1083,6 +1083,19 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"BreathEffect", shader);
 	}
 
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\swing_effect.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"SwingEffect", shader);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\smash_effect.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"SmashEffect", shader);
+	}
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1300,6 +1313,26 @@ void Resources::CreateDefaultMaterial()
 
 		Add<Material>(L"BreathEffect", material);
 	}
+
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(
+			L"SwingEffectTex", L"..\\Resources\\Texture\\claw.png");
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"SwingEffect"));
+		material->SetTexture(0, texture);
+
+		Add<Material>(L"SwingEffect", material);
+	}
+
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(
+			L"SmashEffectTex", L"..\\Resources\\Texture\\boss_shockwave.png");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"SmashEffect"));
+		material->SetTexture(0, texture);
+		Add<Material>(L"SmashEffect", material);
+	}
 }
 
 void Resources::CreateDefaultSound()
@@ -1311,6 +1344,15 @@ void Resources::CreateDefaultSound()
 		sound->SetVolume(1.0f);
 		sound->SetLoop(true);
 		Add(L"MainStageBGM", sound);
+	}
+
+	// 보스 배경음악 로드
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossStageBGM", L"..\\Resources\\Sound\\Background\\boss_stage_bgm.wav");
+		sound->SetVolume(1.0f);
+		sound->SetLoop(true);
+		Add(L"BossStageBGM", sound);
 	}
 
 	// 레이저 샷
@@ -1334,5 +1376,69 @@ void Resources::CreateDefaultSound()
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"Footsteps", L"..\\Resources\\Sound\\FX\\footsteps.mp3");
 		Add(L"Footsteps", sound);
+	}
+
+	// PlayerHit
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"PlayerHit", L"..\\Resources\\Sound\\FX\\player_hit.mp3");
+		sound->SetVolume(50.f);
+		Add(L"PlayerHit", sound);
+	}
+
+	// BossSwing
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossSwing", L"..\\Resources\\Sound\\FX\\boss_swing.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossSwing", sound);
+	}
+
+	// BossSmash
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossSmash", L"..\\Resources\\Sound\\FX\\boss_smash.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossSmash", sound);
+	}
+
+	// BossExplosion
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossExplosion", L"..\\Resources\\Sound\\FX\\boss_explosion.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossExplosion", sound);
+	}
+
+	// BossRoar
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossRoar", L"..\\Resources\\Sound\\FX\\boss_roar.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossRoar", sound);
+	}
+
+	// BossBreath
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossBreath", L"..\\Resources\\Sound\\FX\\boss_breath.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossBreath", sound);
+	}
+
+	// BossDead
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossDead", L"..\\Resources\\Sound\\FX\\boss_dead.mp3");
+		sound->SetVolume(70.f);
+		Add(L"BossDead", sound);
+	}
+
+	// BossCharge
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"BossCharge", L"..\\Resources\\Sound\\FX\\boss_charge.mp3");
+		sound->SetVolume(50.f);
+		Add(L"BossCharge", sound);
 	}
 }
