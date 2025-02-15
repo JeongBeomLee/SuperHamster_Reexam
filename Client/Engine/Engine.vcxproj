@@ -241,6 +241,7 @@
     <ClInclude Include="EventTypes.h" />
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="FireState.h" />
+    <ClInclude Include="Flame.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GetUpState.h" />
@@ -256,6 +257,8 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="InstancingBuffer.h" />
     <ClInclude Include="InstancingManager.h" />
+    <ClInclude Include="KeyObject.h" />
+    <ClInclude Include="Lava.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Material.h" />
@@ -364,6 +367,7 @@
     <ClCompile Include="EnginePch.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="FireState.cpp" />
+    <ClCompile Include="Flame.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GetUpState.cpp" />
@@ -379,6 +383,8 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InstancingBuffer.cpp" />
     <ClCompile Include="InstancingManager.cpp" />
+    <ClCompile Include="KeyObject.cpp" />
+    <ClCompile Include="Lava.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -433,6 +439,8 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shader\animation.fx" />
+    <FxCompile Include="..\Resources\Shader\flame.fx" />
+    <FxCompile Include="..\Resources\Shader\lava.fx" />
     <FxCompile Include="..\Resources\Shader\smash_effect.fx" />
     <FxCompile Include="..\Resources\Shader\collision_effect.fx" />
     <FxCompile Include="..\Resources\Shader\compute.fx" />
@@ -450,6 +458,7 @@
     <FxCompile Include="..\Resources\Shader\shadow.fx" />
     <FxCompile Include="..\Resources\Shader\shockwave.fx" />
     <FxCompile Include="..\Resources\Shader\skybox.fx" />
+    <FxCompile Include="..\Resources\Shader\smoke.fx" />
     <FxCompile Include="..\Resources\Shader\swing_effect.fx" />
     <FxCompile Include="..\Resources\Shader\terrain.fx" />
     <FxCompile Include="..\Resources\Shader\tessellation.fx" />

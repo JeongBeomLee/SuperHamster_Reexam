@@ -158,7 +158,7 @@ void PlayerCameraScript::InitializeCameraAreas()
 	_cameraAreas.push_back({
 		L"Stage9",
 		Vec3(-8.31838f, 110.f, -3500.4863f),     // center
-		Vec3(1200.f, 0.f, 1200.f),               // bounds
+		Vec3(1500.f, 0.f, 1400.f),               // bounds
 		});
 }
 

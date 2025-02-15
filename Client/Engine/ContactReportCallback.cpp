@@ -93,26 +93,13 @@ void ContactReportCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
         if (pair.triggerActor == nullptr || pair.otherActor == nullptr)
             continue;
 
-        // 충돌 시작 이벤트만 처리
-        if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
-            // 트리거의 텔레포트 ID 확인
-            auto* teleportId = static_cast<TeleportZoneId*>(pair.triggerActor->userData);
-            if (!teleportId) {
-                Logger::Instance().Warning("트리거에 텔레포트 ID가 없음");
-                continue;
-            }
+        bool triggerEnter = (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND);
+        Event::TriggerEvent event(
+            pair.triggerActor,
+            pair.otherActor,
+            triggerEnter
+        );
 
-            // 충돌한 액터가 플레이어인지 확인
-            auto* gameObject = static_cast<GameObject*>(pair.otherActor->userData);
-            if (!gameObject) {
-                Logger::Instance().Warning("충돌 객체 정보를 찾을 수 없음");
-                continue;
-            }
-
-            // CharacterController 컴포넌트 확인
-            if (gameObject->GetCharacterController()) {
-                GET_SINGLE(TeleportSystem)->TriggerTeleport(gameObject, *teleportId);
-            }
-        }
+        GET_SINGLE(EventManager)->Publish(event);
     }
 }

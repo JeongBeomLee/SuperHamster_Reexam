@@ -33,6 +33,7 @@ public:
 
 		ProcessEvents<Event::ProjectileHitEvent>();
 		ProcessEvents<Event::PlayerHitEvent>();
+		ProcessEvents<Event::TriggerEvent>();
     }
 
 private:
@@ -68,13 +69,15 @@ private:
         Event::EventQueue<Event::CollisionEvent>,
         Event::EventQueue<Event::ProjectileHitEvent>,
         Event::EventQueue<Event::InputEvent>,
-        Event::EventQueue<Event::PlayerHitEvent>
+        Event::EventQueue<Event::PlayerHitEvent>,
+        Event::EventQueue<Event::TriggerEvent>
     > m_queues;
 
     std::tuple<
         Event::EventDispatcher<Event::CollisionEvent>,
         Event::EventDispatcher<Event::ProjectileHitEvent>,
         Event::EventDispatcher<Event::InputEvent>,
-		Event::EventDispatcher<Event::PlayerHitEvent>
+		Event::EventDispatcher<Event::PlayerHitEvent>,
+        Event::EventDispatcher<Event::TriggerEvent>
     > m_dispatchers;
 };

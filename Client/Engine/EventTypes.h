@@ -102,4 +102,19 @@ namespace Event
 		float damage;
 		Vec3 hitCenter;
     };
+
+    // 트리거 이벤트
+    struct TriggerEvent : public IEvent {
+		TriggerEvent() = default;
+        TriggerEvent(PxActor* triggerActor, PxActor* otherActor,
+            bool triggerEnter)
+            : triggerActor(triggerActor)
+            , otherActor(otherActor)
+            , triggerEnter(triggerEnter) {
+        }
+
+        PxActor* triggerActor;    // 트리거 Shape
+        PxActor* otherActor;      // 다른 Actor
+        bool triggerEnter;        // true면 진입, false면 이탈
+    };
 }

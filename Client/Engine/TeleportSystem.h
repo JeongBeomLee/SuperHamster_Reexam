@@ -65,5 +65,5 @@ private:
     const float TELEPORT_COOLDOWN = 1.0f;  // 1초의 쿨다운 시간
     std::unordered_map<TeleportZoneId, TeleportZone> m_teleportZones;
     std::unordered_map<GameObject*, float> m_cooldowns;  // 플레이어별 쿨다운 관리
-    //std::vector<std::shared_ptr<GameObject>> m_triggerObjects;
+    size_t m_triggerEventId;
 };

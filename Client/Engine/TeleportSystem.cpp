@@ -9,15 +9,42 @@
 #include "PhysicsBody.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "EventManager.h"
 
 TeleportSystem::~TeleportSystem()
 {
+	GET_SINGLE(EventManager)->Unsubscribe<Event::TriggerEvent>(m_triggerEventId);
 	m_teleportZones.clear();
 	m_cooldowns.clear();
 }
 
 void TeleportSystem::Initialize()
 {
+	m_triggerEventId = m_triggerEventId = GET_SINGLE(EventManager)->Subscribe<Event::TriggerEvent>(
+		Event::EventCallback<Event::TriggerEvent>(
+			[this](const Event::TriggerEvent& event) {
+				if (event.triggerEnter) {
+					// 트리거의 텔레포트 ID 확인
+					auto* teleportId = static_cast<TeleportZoneId*>(event.triggerActor->userData);
+					if (!teleportId) {
+						Logger::Instance().Warning("트리거에 텔레포트 ID가 없음");
+						return;
+					}
+
+					// 충돌한 액터가 플레이어인지 확인
+					auto* gameObject = static_cast<GameObject*>(event.otherActor->userData);
+					if (!gameObject) {
+						Logger::Instance().Warning("충돌 객체 정보를 찾을 수 없음");
+						return;
+					}
+
+					if (gameObject->GetCharacterController()) {
+						TriggerTeleport(gameObject, *teleportId);
+					}
+				}
+			})
+	);
+
     m_teleportZones[TeleportZoneId::STAGE1_TO_STAGE2] = TeleportZone(
         TeleportZoneId::STAGE1_TO_STAGE2,
         Vec3(-7.1202483f, 125.2015f, -550.79706f),     // 소스 위치
@@ -175,16 +202,6 @@ void TeleportSystem::CreateTeleportZones()
 			zone.triggerSize,
 			id
 		);
-
-		/*auto trigger = CreateTeleportTrigger(
-			zone.sourcePosition,
-			zone.triggerSize,
-			id
-		);*/
-		
-		/*if (trigger) {
-			m_triggerObjects.push_back(trigger);
-		}*/
 	}
 }
 
@@ -246,19 +263,11 @@ std::shared_ptr<GameObject> TeleportSystem::CreateTeleportTrigger(const Vec3& po
 {
 	auto triggerObject = make_shared<GameObject>();
 
-	//auto meshRenderer = make_shared<MeshRenderer>();
 	auto transform = make_shared<Transform>();
 	auto physicsBody = make_shared<PhysicsBody>();
 
-	//triggerObject->AddComponent(meshRenderer);
 	triggerObject->AddComponent(transform);
 	triggerObject->AddComponent(physicsBody);
-
-	//auto mesh = GET_SINGLE(Resources)->LoadCubeMesh(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f);
-	//auto material = GET_SINGLE(Resources)->Get<Material>(L"DebugVisualization")->Clone();
-	//material->SetVec4(0, Vec4(1.f, 0.f, 0.f, 1.f));
-	//meshRenderer->SetMesh(mesh);
-	//meshRenderer->SetMaterial(material);
 
 	auto newPosition = position;
 	newPosition.y += size.y;
@@ -278,7 +287,7 @@ std::shared_ptr<GameObject> TeleportSystem::CreateTeleportTrigger(const Vec3& po
 		params
 	);
 
-	physicsBody->GetPhysicsObject()->GetActor()->setName("triggerObject");
+	physicsBody->GetPhysicsObject()->GetActor()->setName("teleportTrigger");
 	physicsBody->GetPhysicsObject()->GetActor()->userData = new TeleportZoneId(id);
 
 	PxShape* shape;

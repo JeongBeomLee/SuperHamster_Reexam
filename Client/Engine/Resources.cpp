@@ -1096,6 +1096,27 @@ void Resources::CreateDefaultShader()
 			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS, BLEND_TYPE::ALPHA_BLEND });
 		Add<Shader>(L"SmashEffect", shader);
 	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\lava.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS, BLEND_TYPE::DEFAULT });
+		Add<Shader>(L"Lava", shader);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\flame.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"Flame", shader);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\smoke.fx",
+			{ SHADER_TYPE::FORWARD, RASTERIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE, BLEND_TYPE::ALPHA_BLEND });
+		Add<Shader>(L"Smoke", shader);
+	}
 }
 
 void Resources::CreateDefaultMaterial()
@@ -1333,6 +1354,24 @@ void Resources::CreateDefaultMaterial()
 		material->SetTexture(0, texture);
 		Add<Material>(L"SmashEffect", material);
 	}
+
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"Lava"));
+		Add<Material>(L"Lava", material);
+	}
+
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"Flame"));
+		Add<Material>(L"Flame", material);
+	}	
+
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"Smoke"));
+		Add<Material>(L"Smoke", material);
+	}
 }
 
 void Resources::CreateDefaultSound()
@@ -1440,5 +1479,22 @@ void Resources::CreateDefaultSound()
 			L"BossCharge", L"..\\Resources\\Sound\\FX\\boss_charge.mp3");
 		sound->SetVolume(50.f);
 		Add(L"BossCharge", sound);
+	}
+
+	// KeyObtain
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"KeyObtain", L"..\\Resources\\Sound\\FX\\key_obtain.mp3");
+		sound->SetVolume(10.f);
+		Add(L"KeyObtain", sound);
+	}
+
+	// Lava
+	{
+		shared_ptr<Sound> sound = Load<Sound>(
+			L"Lava", L"..\\Resources\\Sound\\FX\\lava-loop-3-28887.mp3");
+		sound->SetVolume(50.f);
+		sound->SetLoop(true);
+		Add(L"Lava", sound);
 	}
 }

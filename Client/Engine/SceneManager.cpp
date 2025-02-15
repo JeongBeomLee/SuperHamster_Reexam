@@ -29,6 +29,9 @@
 #include "Ghost.h"
 #include "Boss.h"
 #include "Stone.h"
+#include "KeyObject.h"
+#include "Lava.h"
+#include "Flame.h"
 
 
 void SceneManager::Update()
@@ -655,7 +658,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 		// 보스
 		{
-			shared_ptr<MeshData> bossMeshData = 
+			/*shared_ptr<MeshData> bossMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
 			shared_ptr<GameObject> bossObj = bossMeshData->Instantiate()[0];
@@ -668,7 +671,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 			bossObj->AddComponent(make_shared<Boss>());
-			scene->AddGameObject(bossObj);
+			scene->AddGameObject(bossObj);*/
 		}
 
 		// Stone
@@ -690,30 +693,70 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 
 		{
-			/*shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\chest_large.fbx");
+			for (const auto& position : KeyObject::KEY_POSITIONS) {
+				shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\key_gold.fbx");
+				shared_ptr<GameObject> gameObject = meshData->Instantiate()[0];
 
-			shared_ptr<GameObject> gameObject1 = meshData->Instantiate()[0];
-			shared_ptr<GameObject> gameObject2 = meshData->Instantiate()[1];
+				{
+					gameObject->SetCheckFrustum(true);
+					gameObject->SetStatic(false);
+					gameObject->GetTransform()->SetLocalPosition(Vec3(position));
+					gameObject->GetTransform()->SetLocalRotation(Vec3(XM_PIDIV2, XM_PIDIV2, 0.f));
+					gameObject->GetTransform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+					gameObject->AddComponent(make_shared<KeyObject>());
+					scene->AddGameObject(gameObject);
+				}
+			}
+		}
 
-			{
-				gameObject1->SetCheckFrustum(true);
-				gameObject1->SetStatic(false);
-				gameObject1->GetTransformAnimator()->SetStartPos(Vec3(0.f, 150.f, 0.f));
-				gameObject1->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
-				gameObject1->GetTransformAnimator()->SetStartScale(Vec3(0.5f, 0.5f, 0.5f));
-				gameObject1->GetTransformAnimator()->Stop();
-				scene->AddGameObject(gameObject1);
+		{
+			auto lavaObject = make_shared<GameObject>();
+			lavaObject->SetName(L"Lava");
+			lavaObject->AddComponent(make_shared<Transform>());
+			lavaObject->AddComponent(make_shared<Lava>());
+
+			// 위치와 크기 설정
+			auto transform = lavaObject->GetTransform();
+			transform->SetLocalPosition(Vec3(-1903.796f, -100.f, -50.02089f));
+			transform->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+			transform->SetLocalRotation(Vec3(XM_PIDIV2, 0.0f, 0.0f));
+
+			auto sound = GET_SINGLE(Resources)->Get<Sound>(L"Lava");
+			if (sound) {
+				GET_SINGLE(SoundSystem)->Play3D(sound, Vec3(-1903.796f, -100.f, -50.02089f));
 			}
 
-			{
-				gameObject2->SetCheckFrustum(true);
-				gameObject2->SetStatic(false);
-				gameObject2->GetTransformAnimator()->SetStartPos(Vec3(0.f, 145.f, -95.f));
-				gameObject2->GetTransformAnimator()->SetStartRot(Vec3(-XM_PIDIV2, XM_PI, 0.f));
-				gameObject2->GetTransformAnimator()->SetStartScale(Vec3(0.51f, 0.51f, 0.51f));
-				gameObject2->GetTransformAnimator()->Stop();
-				scene->AddGameObject(gameObject2);
-			}*/
+			scene->AddGameObject(lavaObject);
+		}
+
+		{
+			auto flameObject = make_shared<GameObject>();
+			flameObject->SetName(L"Flame1");
+			flameObject->AddComponent(make_shared<Transform>());
+			flameObject->AddComponent(make_shared<Flame>());
+
+			// 위치와 크기 설정
+			auto transform = flameObject->GetTransform();
+			transform->SetLocalPosition(Vec3(290.f, 250.f, -4000.f));
+			transform->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+			transform->SetLocalRotation(Vec3(0.f, 0.0f, 0.0f));
+
+			scene->AddGameObject(flameObject);
+		}
+
+		{
+			auto flameObject = make_shared<GameObject>();
+			flameObject->SetName(L"Flame2");
+			flameObject->AddComponent(make_shared<Transform>());
+			flameObject->AddComponent(make_shared<Flame>());
+
+			// 위치와 크기 설정
+			auto transform = flameObject->GetTransform();
+			transform->SetLocalPosition(Vec3(-310.f, 250.f, -4000.f));
+			transform->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+			transform->SetLocalRotation(Vec3(0.f, 0.0f, 0.0f));
+
+			scene->AddGameObject(flameObject);
 		}
 
 		{
