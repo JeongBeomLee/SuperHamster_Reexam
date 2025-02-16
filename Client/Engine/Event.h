@@ -51,7 +51,7 @@ namespace Event
     public:
         void Push(const EventType& event) {
             m_events.push(event);
-            Logger::Instance().Debug("이벤트가 큐에 추가됨: {}", typeid(EventType).name());
+            //Logger::Instance().Debug("이벤트가 큐에 추가됨: {}", typeid(EventType).name());
         }
 
         bool Pop(EventType& event) {

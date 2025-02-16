@@ -90,23 +90,18 @@ void NetworkManager::CheckInputStateChange()
     if (INPUT->GetButton(KEY_TYPE::A))     currentState |= InputFlags::A;
     if (INPUT->GetButton(KEY_TYPE::S))     currentState |= InputFlags::S;
 
-    // 입력 상태가 변경되었을 때만 전송
-    /*if (currentState != m_lastInputState) {
+    // 입력 상태가 변경된 경우에만 전송
+    if (currentState != m_lastInputState) {
+        // 상태가 변경된 시점에 바로 업데이트
+        m_lastInputState = currentState;
+
         NetworkInputData data;
         data.playerID = GEngine->GetMyPlayerId();
         data.inputFlags = currentState;
-        data.timestamp = DELTA_TIME;
+        data.timestamp = DELTA_TIME; // 필요시 더 정밀한 타임스탬프 사용
 
         SendInputData(data);
-        m_lastInputState = currentState;
-    }*/
-
-    NetworkInputData data;
-    data.playerID = GEngine->GetMyPlayerId();
-    data.inputFlags = currentState;
-    data.timestamp = DELTA_TIME;
-
-    SendInputData(data);
+    }
 }
 
 void NetworkManager::SendInputData(const NetworkInputData& data)
