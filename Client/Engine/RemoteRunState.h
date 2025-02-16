@@ -11,7 +11,9 @@ public:
 
     virtual void Update(Player* player, float deltaTime) override {
         // 현재 이동 방향으로 계속 이동
-        player->GetMovementComponent()->SetMoveDirection(moveDir);
+        /*if (moveDir != Vec3::Zero) {
+            player->GetMovementComponent()->SetMoveDirection(moveDir);
+        }*/
     }
 
     virtual void Exit(Player* player) override {
@@ -42,6 +44,7 @@ public:
 
         if (moveDir != Vec3::Zero) {
             moveDir.Normalize();
+            player->GetMovementComponent()->SetMoveDirection(moveDir);
         }
         else {
             // 이동 입력이 없으면 Idle 상태로
