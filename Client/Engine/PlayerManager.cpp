@@ -80,7 +80,7 @@ void PlayerManager::OnNetworkInput(const Event::NetworkInputEvent& event)
 
     // 위치 동기화
     auto controller = player->GetGameObject()->GetCharacterController();
-	controller->Teleport(event.inputData.position);
+	controller->Teleport(Vec3(event.inputData.position.x, event.inputData.position.y + 100.f, event.inputData.position.z));
     player->SetState(event.inputData.currentState);
 
     // 네트워크 입력 처리
