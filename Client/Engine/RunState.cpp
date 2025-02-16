@@ -28,12 +28,12 @@ void RunState::Enter(Player* player)
 
 void RunState::Update(Player* player, float deltaTime)
 {
-    if (!IsMovementInput(player)) {
+    if (!IsMovementInput()) {
         player->SetState(PLAYER_STATE::IDLE);
         return;
     }
 
-    Vec3 moveDir = GetTargetDirection(player);
+    Vec3 moveDir = GetTargetDirection();
     if (moveDir != Vec3::Zero) {
         moveDir.Normalize();
         UpdateMovement(player, moveDir, deltaTime);

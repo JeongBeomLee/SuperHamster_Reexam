@@ -23,16 +23,14 @@ void PlayerState::UpdateRotation(Player* player, const Vec3& targetDirection, fl
     }
 }
 
-bool PlayerState::IsMovementInput(Player* player) const
+bool PlayerState::IsMovementInput() const
 {
-	if (player->IsLocalPlayer() == false) return false;
     return INPUT->GetButton(KEY_TYPE::UP) || INPUT->GetButton(KEY_TYPE::DOWN) ||
         INPUT->GetButton(KEY_TYPE::LEFT) || INPUT->GetButton(KEY_TYPE::RIGHT);
 }
 
-Vec3 PlayerState::GetTargetDirection(Player* player) const
+Vec3 PlayerState::GetTargetDirection() const
 {
-	if (player->IsLocalPlayer() == false) return Vec3::Zero;
     // 카메라 기준 방향 계산
     auto camera = GET_SINGLE(SceneManager)->GetActiveScene()->GetMainCamera();
     Vec3 forward = camera->GetTransform()->GetLook();
