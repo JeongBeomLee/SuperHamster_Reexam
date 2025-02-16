@@ -36,7 +36,7 @@ private:
     void InitializeStateMachine();
 
 private:
-    static constexpr float ATTACK_RANGE = 700.0f;        // 공격 감지 거리
+    static constexpr float ATTACK_RANGE = 550.0f;        // 공격 감지 거리
     static constexpr float PULL_FORCE = 300.0f;          // 당기는 힘의 크기
     float m_health = 100.0f;
 

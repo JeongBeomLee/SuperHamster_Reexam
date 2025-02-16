@@ -12,6 +12,8 @@
 #include "RollState.h"
 #include "HitState.h"
 #include "EventManager.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 Player::Player(uint32_t playerId, std::shared_ptr<GameObject> gameObject) 
     : m_playerId(playerId)
@@ -81,6 +83,12 @@ void Player::OnHit(const Event::PlayerHitEvent& event)
 
         // 피격 상태로 전환
         SetState(PLAYER_STATE::HIT);
+
+		// 피격 사운드 재생
+		auto sound = GET_SINGLE(Resources)->Get<Sound>(L"PlayerHit");
+		if (sound) {
+			GET_SINGLE(SoundSystem)->Play3D(sound, m_gameObject->GetTransform()->GetLocalPosition());
+		}
 
         Logger::Instance().Debug("플레이어가 {}의 데미지를 받음. 남은 체력: {}",
             event.damage, m_health);

@@ -34,6 +34,8 @@ public:
 		ProcessEvents<Event::ProjectileHitEvent>();
 		ProcessEvents<Event::PlayerHitEvent>();
 		ProcessEvents<Event::TriggerEvent>();
+
+		ProcessEvents<Event::SceneChangeEvent>();
     }
 
 private:
@@ -70,7 +72,8 @@ private:
         Event::EventQueue<Event::ProjectileHitEvent>,
         Event::EventQueue<Event::InputEvent>,
         Event::EventQueue<Event::PlayerHitEvent>,
-        Event::EventQueue<Event::TriggerEvent>
+        Event::EventQueue<Event::TriggerEvent>,
+		Event::EventQueue<Event::SceneChangeEvent>
     > m_queues;
 
     std::tuple<
@@ -78,6 +81,7 @@ private:
         Event::EventDispatcher<Event::ProjectileHitEvent>,
         Event::EventDispatcher<Event::InputEvent>,
 		Event::EventDispatcher<Event::PlayerHitEvent>,
-        Event::EventDispatcher<Event::TriggerEvent>
+        Event::EventDispatcher<Event::TriggerEvent>,
+		Event::EventDispatcher<Event::SceneChangeEvent>
     > m_dispatchers;
 };

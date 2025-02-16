@@ -35,6 +35,7 @@ public:
 	const vector<shared_ptr<GameObject>>& GetGameObjects() { return _gameObjects; }
 	const shared_ptr<GameObject> GetGameObjectByName(const wstring& name) const;
 	void ReserveGameObjects(uint32_t count) { _gameObjects.reserve(count); }
+	void Clear();
 
 private:
 	vector<shared_ptr<GameObject>>		_gameObjects;

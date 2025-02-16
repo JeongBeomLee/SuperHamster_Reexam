@@ -19,7 +19,7 @@ void Game::Init(const WindowInfo& info)
 
 	GEngine->SetMyPlayerId(myGameID);
 	GEngine->Init(info);
-	GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
+	GET_SINGLE(SceneManager)->LoadScene(SceneManager::SceneType::MAIN_MENU);
 }
 
 void Game::Update()

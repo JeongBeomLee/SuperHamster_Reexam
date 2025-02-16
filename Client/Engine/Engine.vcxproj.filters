@@ -127,6 +127,9 @@
     <Filter Include="Object\Lava">
       <UniqueIdentifier>{b13bc1f2-fc13-4c51-b877-2c7cabd8404d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Component\UI">
+      <UniqueIdentifier>{66858a99-723e-4754-8c05-c0bb0a82e986}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -495,6 +498,7 @@
     <ClCompile Include="Lava.cpp">
       <Filter>Object\Lava</Filter>
     </ClCompile>
+    <ClCompile Include="UIButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -884,6 +888,7 @@
     <ClInclude Include="Lava.h">
       <Filter>Object\Lava</Filter>
     </ClInclude>
+    <ClInclude Include="UIButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

@@ -793,6 +793,30 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"Texture", shader);
 	}
 
+	// UI (Forward)
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::FORWARD,
+			RASTERIZER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
+			BLEND_TYPE::ALPHA_BLEND
+		};
+
+		ShaderArg arg =
+		{
+			"VS_Tex",
+			"",
+			"",
+			"",
+			"PS_Tex"
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CreateGraphicsShader(L"..\\Resources\\Shader\\forward.fx", info, arg);
+		Add<Shader>(L"UI", shader);
+	}
+
 	// DirLight
 	{
 		ShaderInfo info =
@@ -1372,6 +1396,12 @@ void Resources::CreateDefaultMaterial()
 		material->SetShader(Get<Shader>(L"Smoke"));
 		Add<Material>(L"Smoke", material);
 	}
+
+	{
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(Get<Shader>(L"UI"));
+		Add<Material>(L"UI", material);
+	}
 }
 
 void Resources::CreateDefaultSound()
@@ -1389,7 +1419,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossStageBGM", L"..\\Resources\\Sound\\Background\\boss_stage_bgm.wav");
-		sound->SetVolume(0.1f);
+		sound->SetVolume(0.2f);
 		sound->SetLoop(true);
 		Add(L"BossStageBGM", sound);
 	}
@@ -1421,7 +1451,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"PlayerHit", L"..\\Resources\\Sound\\FX\\player_hit.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(0.05f);
 		Add(L"PlayerHit", sound);
 	}
 
@@ -1429,7 +1459,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossSwing", L"..\\Resources\\Sound\\FX\\boss_swing.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(70.f);
 		Add(L"BossSwing", sound);
 	}
 
@@ -1437,7 +1467,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossSmash", L"..\\Resources\\Sound\\FX\\boss_smash.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(70.f);
 		Add(L"BossSmash", sound);
 	}
 
@@ -1453,7 +1483,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossRoar", L"..\\Resources\\Sound\\FX\\boss_roar.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(80.f);
 		Add(L"BossRoar", sound);
 	}
 
@@ -1461,7 +1491,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"BossBreath", L"..\\Resources\\Sound\\FX\\boss_breath.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(80.f);
 		Add(L"BossBreath", sound);
 	}
 
@@ -1493,7 +1523,7 @@ void Resources::CreateDefaultSound()
 	{
 		shared_ptr<Sound> sound = Load<Sound>(
 			L"Lava", L"..\\Resources\\Sound\\FX\\lava-loop-3-28887.mp3");
-		sound->SetVolume(50.f);
+		sound->SetVolume(70.f);
 		sound->SetLoop(true);
 		Add(L"Lava", sound);
 	}

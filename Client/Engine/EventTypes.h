@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "AttackInfo.h"
+#include "SceneManager.h"
 
 enum class PLAYER_STATE;
 class Player;
@@ -117,4 +118,13 @@ namespace Event
         PxActor* otherActor;      // 다른 Actor
         bool triggerEnter;        // true면 진입, false면 이탈
     };
+
+    // 씬 변경 이벤트
+	struct SceneChangeEvent : public IEvent {
+		SceneChangeEvent() = default;
+		SceneChangeEvent(SceneManager::SceneType newScene)
+			:  newScene(newScene) {
+		}
+		SceneManager::SceneType newScene;
+	};
 }

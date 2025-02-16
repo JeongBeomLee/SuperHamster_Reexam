@@ -304,6 +304,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformAnimator.h" />
+    <ClInclude Include="UIButton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AimState.cpp" />
@@ -433,6 +434,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformAnimator.cpp" />
+    <ClCompile Include="UIButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl" />

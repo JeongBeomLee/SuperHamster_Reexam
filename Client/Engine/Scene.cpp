@@ -13,10 +13,6 @@ void Scene::Awake()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
-		/*if (gameObject == nullptr) {
-			Logger::Instance().Error("GameObject가 nullptr입니다.");
-			continue;
-		}*/
 		gameObject->Awake();
 	}
 }
@@ -33,7 +29,7 @@ void Scene::Update()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
-		if(gameObject->IsActive())
+		if (gameObject && gameObject->IsActive())
 			gameObject->Update();
 	}
 }
@@ -42,7 +38,7 @@ void Scene::LateUpdate()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
-		if (gameObject->IsActive())
+		if (gameObject && gameObject->IsActive())
 			gameObject->LateUpdate();
 	}
 }
@@ -51,7 +47,7 @@ void Scene::FinalUpdate()
 {
 	for (const shared_ptr<GameObject>& gameObject : _gameObjects)
 	{
-		if (gameObject->IsActive())
+		if (gameObject && gameObject->IsActive())
 			gameObject->FinalUpdate();
 	}
 }
@@ -241,4 +237,22 @@ const shared_ptr<GameObject> Scene::GetGameObjectByName(const wstring& name) con
 	}
 
 	return nullptr;
+}
+
+void Scene::Clear()
+{
+	for (auto& gameObject : _gameObjects) {
+		gameObject.reset();
+	}
+	_gameObjects.clear();
+
+	for (auto& camera : _cameras) {
+		camera.reset();
+	}
+	_cameras.clear();
+
+	for (auto& light : _lights) {
+		light.reset();
+	}
+	_lights.clear();
 }

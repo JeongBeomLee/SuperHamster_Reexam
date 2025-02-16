@@ -9,12 +9,28 @@ enum
 
 class SceneManager
 {
-	DECLARE_SINGLE(SceneManager);
+private:
+	SceneManager();
+	~SceneManager();
 
 public:
+	static SceneManager* GetInstance()
+	{
+		static SceneManager instance;
+		return &instance;
+	}
+
+public:
+	enum class SceneType
+    {
+        MAIN_MENU,
+        GAME_PLAY,
+        GAME_CLEAR
+    };
+
 	void Update();
 	void Render();
-	void LoadScene(wstring sceneName);
+	void LoadScene(SceneType sceneType);
 
 	void SetLayerName(uint8 index, const wstring& name);
 	const wstring& IndexToLayerName(uint8 index) { return _layerNames[index]; }
@@ -26,7 +42,9 @@ public:
 	shared_ptr<Scene> GetActiveScene() { return _activeScene; }
 
 private:
-	shared_ptr<Scene> LoadTestScene();
+	shared_ptr<Scene> LoadMainScene();
+	shared_ptr<Scene> LoadGameScene();
+	shared_ptr<Scene> LoadClearScene();
 	void CreateFadeOutObjects(
 		const Vec3& position,
 		float width, float height, float y,
@@ -38,4 +56,6 @@ private:
 
 	array<wstring, MAX_LAYER> _layerNames;
 	map<wstring, uint8> _layerIndex;
+
+	int32 _sceneChangeEventId;
 };

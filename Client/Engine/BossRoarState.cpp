@@ -53,10 +53,8 @@ void BossRoarState::Update(Boss* boss, float deltaTime)
 void BossRoarState::Exit(Boss* boss)
 {
     if (boss->GetCurrentPhase() == BOSS_PHASE::PHASE1) {
-        auto mainBGM = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM");
         auto bossBGM = GET_SINGLE(Resources)->Get<Sound>(L"BossStageBGM");
-        if (mainBGM && bossBGM) {
-            GET_SINGLE(SoundSystem)->Stop(mainBGM);
+        if (bossBGM) {
             GET_SINGLE(SoundSystem)->Play(bossBGM);
         }
     }

@@ -2,10 +2,15 @@
 #include "BossAwakeState.h"
 #include "Boss.h"
 #include "Animator.h"
+#include "Resources.h"
+#include "SoundSystem.h"
 
 void BossAwakeState::Enter(Boss* boss) {
     boss->PlayAnimation(BOSS_STATE::AWAKE);
     m_hasCheckedAnimation = false;
+    if (auto mainBGM = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM")) {
+        GET_SINGLE(SoundSystem)->Stop(mainBGM);
+    }
     Logger::Instance().Debug("보스가 Awake 상태로 진입");
 }
 

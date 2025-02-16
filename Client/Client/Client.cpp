@@ -30,12 +30,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-	RedirectIOToConsole();
+    RedirectIOToConsole();
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
+
+    // GWindowInfo 값을 미리 설정합니다.
+    GWindowInfo.width = 1280;
+    GWindowInfo.height = 720;
+    GWindowInfo.windowed = true;
 
     // 애플리케이션 초기화를 수행합니다:
     if (!InitInstance (hInstance, nCmdShow))
@@ -46,10 +51,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
-
-    GWindowInfo.width = 1280;
-    GWindowInfo.height = 720;
-    GWindowInfo.windowed = true;
 
     unique_ptr<Game> game = make_unique<Game>();
     game->Init(GWindowInfo);
@@ -62,21 +63,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             if (msg.message == WM_QUIT)
                 break;
 
-			if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
 
-		// TODO
+        // TODO
         game->Update();
     }
 
     return (int) msg.wParam;
 }
-
-
 
 //
 //  함수: MyRegisterClass()
@@ -118,8 +117,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   // GWindowInfo.width와 GWindowInfo.height를 사용하여 창 크기를 지정합니다.
+   HWND hWnd = CreateWindowW(
+       szWindowClass, 
+       szTitle, 
+       WS_OVERLAPPEDWINDOW,
+       CW_USEDEFAULT, 
+       0, 
+       GWindowInfo.width, 
+       GWindowInfo.height, 
+       nullptr, 
+       nullptr, 
+       hInstance, 
+       nullptr
+   );
 
    if (!hWnd)
    {
@@ -142,7 +153,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND  - 애플리케이션 메뉴를 처리합니다.
 //  WM_PAINT    - 주 창을 그립니다.
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
-//
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -174,10 +184,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
-		{
-			PostQuitMessage(0);
-		}
+        if (wParam == VK_ESCAPE)
+        {
+            PostQuitMessage(0);
+        }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -211,8 +221,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 void RedirectIOToConsole()
 {
     AllocConsole();
-	FILE* stream;
-	freopen_s(&stream, "CONOUT$", "wt", stdout);
-	freopen_s(&stream, "CONOUT$", "wt", stderr);
-	freopen_s(&stream, "CONIN$", "rt", stdin);
+    FILE* stream;
+    freopen_s(&stream, "CONOUT$", "wt", stdout);
+    freopen_s(&stream, "CONOUT$", "wt", stderr);
+    freopen_s(&stream, "CONIN$", "rt", stdin);
 }

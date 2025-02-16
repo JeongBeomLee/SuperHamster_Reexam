@@ -22,6 +22,7 @@ void SoundSystem::Init()
 
 void SoundSystem::Update3DListenerPosition()
 {
+	if (_player == nullptr) return;
     auto transform = _player->GetGameObject()->GetTransform();
     // 사운드 시스템의 리스너 위치 설정 (TODO: 서버 추가하면 내 캐릭터의 위치로만 설정하도록 수정)
     Vec3 pos = transform->GetLocalPosition();

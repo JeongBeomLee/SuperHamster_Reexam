@@ -32,11 +32,28 @@
 #include "KeyObject.h"
 #include "Lava.h"
 #include "Flame.h"
+#include "UIButton.h"
+#include "EventManager.h"
+#include "EventTypes.h"
 
+SceneManager::SceneManager()
+{
+	_sceneChangeEventId = GET_SINGLE(EventManager)->Subscribe<Event::SceneChangeEvent>(
+		Event::EventCallback<Event::SceneChangeEvent>(
+			[this](const Event::SceneChangeEvent& event) {
+				LoadScene(event.newScene);
+			})
+	);
+}
+
+SceneManager::~SceneManager()
+{
+	GET_SINGLE(EventManager)->Unsubscribe<Event::SceneChangeEvent>(_sceneChangeEventId);
+}
 
 void SceneManager::Update()
 {
-	if (_activeScene == nullptr)
+	if (_activeScene == nullptr || _activeScene->GetGameObjects().empty())
 		return;
 
 	_activeScene->Update();
@@ -50,19 +67,36 @@ void SceneManager::Render()
 		_activeScene->Render();
 }
 
-void SceneManager::LoadScene(wstring sceneName)
+void SceneManager::LoadScene(SceneType sceneType)
 {
-	_activeScene = LoadTestScene();
-	if (_activeScene == nullptr) {
-		Logger::Instance().Error("Scene 로드 실패");
+	if (_activeScene) {
+		_activeScene->Clear();
+		_activeScene = nullptr;
 	}
-	GET_SINGLE(ProjectileManager)->Initialize();
-	GET_SINGLE(TeleportSystem)->Initialize();
 
-	// Main BGM 재생
-	auto sound = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM");
-	if (sound) {
-		GET_SINGLE(SoundSystem)->Play(sound);
+	switch (sceneType) {
+	case SceneManager::SceneType::MAIN_MENU: {
+		_activeScene = LoadMainScene();
+		break;
+	}
+	case SceneManager::SceneType::GAME_PLAY: {
+		_activeScene = LoadGameScene();
+
+		GET_SINGLE(ProjectileManager)->Initialize();
+		GET_SINGLE(TeleportSystem)->Initialize();
+
+		// Main BGM 재생
+		if (auto sound = GET_SINGLE(Resources)->Get<Sound>(L"MainStageBGM")) {
+			GET_SINGLE(SoundSystem)->Play(sound);
+		}
+		break;
+	}
+	case SceneManager::SceneType::GAME_CLEAR: {
+		_activeScene = LoadClearScene();
+		break;
+	}
+	default:
+		break;
 	}
 
 	_activeScene->Awake();
@@ -138,35 +172,128 @@ shared_ptr<GameObject> SceneManager::Pick(int32 screenX, int32 screenY)
 	return picked;
 }
 
-shared_ptr<Scene> SceneManager::LoadTestScene()
+shared_ptr<Scene> SceneManager::LoadMainScene()
 {
 #pragma region LayerMask
 	SetLayerName(0, L"Default");
 	SetLayerName(1, L"UI");
 #pragma endregion
 
-#pragma region ComputeShader
+	shared_ptr<Scene> scene = make_shared<Scene>();
+	//scene->ReserveGameObjects(50); // 이거 안해주면 망함
+
+#pragma region UI_Camera
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"ComputeShader");
-
-		// UAV 용 Texture 생성
-		shared_ptr<Texture> texture = GET_SINGLE(Resources)->CreateTexture(L"UAVTexture",
-			DXGI_FORMAT_R8G8B8A8_UNORM, 1024, 1024,
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
-			D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"ComputeShader");
-		material->SetShader(shader);
-		material->SetInt(0, 1);
-		GEngine->GetComputeDescHeap()->SetUAV(texture->GetUAVHandle(), UAV_REGISTER::u0);
-
-		// 쓰레드 그룹 (1 * 1024 * 1)
-		material->Dispatch(1, 1024, 1);
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		camera->SetName(L"Orthographic_Camera");
+		camera->AddComponent(make_shared<Transform>());
+		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, 800*600
+		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
+		camera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		camera->GetCamera()->SetCullingMaskAll(); // 다 끄고
+		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, false); // UI만 찍음
+		scene->AddGameObject(camera);
 	}
 #pragma endregion
 
+	// UI는 z값이 작은 UI가 먼저 그려진다. (z값이 0이하면 안그려짐)
+#pragma region Main Menu Background Image
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(1280.f, 720.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 1.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"MainBackground", L"..\\Resources\\Texture\\MainMenu.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
+	}
+#pragma endregion
+
+#pragma region Start Button
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(340.f, 100.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, -150.f, 2.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"StartButton", L"..\\Resources\\Texture\\StartButton.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		shared_ptr<UIButton> button = make_shared<UIButton>();
+		button->SetClickCallback([]() {
+			Event::SceneChangeEvent event;
+			event.newScene = SceneManager::SceneType::GAME_PLAY;
+			GET_SINGLE(EventManager)->Publish(event);
+			});
+
+		obj->AddComponent(button);
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
+	}
+#pragma endregion
+
+#pragma region Exit Button
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(340.f, 100.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, -250.f, 2.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"ExitButton", L"..\\Resources\\Texture\\ExitButton.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		shared_ptr<UIButton> button = make_shared<UIButton>();
+		button->SetClickCallback([]() {
+			::PostQuitMessage(0);
+		});
+
+		obj->AddComponent(button);
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
+	}
+#pragma endregion
+
+	return scene;
+}
+
+shared_ptr<Scene> SceneManager::LoadGameScene()
+{
+#pragma region LayerMask
+	SetLayerName(0, L"Default");
+	SetLayerName(1, L"UI");
+#pragma endregion
+
 	shared_ptr<Scene> scene = make_shared<Scene>();
-	scene->ReserveGameObjects(200); // 이거 안해주면 망함
+	scene->ReserveGameObjects(200); // 이거 안해주면 
+	shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 	
 #pragma region Camera
 	{
@@ -197,64 +324,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		camera->GetCamera()->SetCullingMaskAll(); // 다 끄고
 		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, false); // UI만 찍음
 		scene->AddGameObject(camera);
-	}
-#pragma endregion
-
-#pragma region SkyBox
-	{
-		shared_ptr<GameObject> skybox = make_shared<GameObject>();
-		skybox->AddComponent(make_shared<Transform>());
-		skybox->SetCheckFrustum(false);
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> sphereMesh = GET_SINGLE(Resources)->LoadSphereMesh();
-			meshRenderer->SetMesh(sphereMesh);
-		}
-		{
-			shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Skybox");
-			shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"Sky01", L"..\\Resources\\Texture\\Sky01.jpg");
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetTexture(0, texture);
-			meshRenderer->SetMaterial(material);
-		}
-		skybox->AddComponent(meshRenderer);
-		scene->AddGameObject(skybox);
-	}
-#pragma endregion
-
-#pragma region UI_Test
-	for (int32 i = 0; i < 6; i++)
-	{
-		shared_ptr<GameObject> obj = make_shared<GameObject>();
-		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI")); // UI
-		obj->SetCheckFrustum(false);
-		obj->AddComponent(make_shared<Transform>());
-		obj->GetTransform()->SetLocalScale(Vec3(150.f, 100.f, 100.f));
-		obj->GetTransform()->SetLocalPosition(Vec3(-600.f + (i * 155), 310.f, 500.f));
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
-			meshRenderer->SetMesh(mesh);
-		}
-		{
-			shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Texture");
-
-			shared_ptr<Texture> texture;
-			if (i < 3)
-				texture = GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->GetRTTexture(i);
-			else if (i < 5)
-				texture = GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::LIGHTING)->GetRTTexture(i - 3);
-			else
-				texture = GEngine->GetRTGroup(RENDER_TARGET_GROUP_TYPE::SHADOW)->GetRTTexture(0);
-
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetTexture(0, texture);
-			meshRenderer->SetMaterial(material);
-		}
-		obj->AddComponent(meshRenderer);
-		//scene->AddGameObject(obj);
 	}
 #pragma endregion
 
@@ -585,7 +654,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 		// 보스
 		{
-			shared_ptr<MeshData> bossMeshData = 
+			/*shared_ptr<MeshData> bossMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
 			shared_ptr<GameObject> bossObj = bossMeshData->Instantiate()[0];
@@ -598,7 +667,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 			bossObj->AddComponent(make_shared<Boss>());
-			scene->AddGameObject(bossObj);
+			scene->AddGameObject(bossObj);*/
 		}
 
 		// Stone
@@ -714,6 +783,87 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			scene);
 #pragma endregion
 
+	}
+#pragma endregion
+
+	return scene;
+}
+
+shared_ptr<Scene> SceneManager::LoadClearScene()
+{
+#pragma region LayerMask
+	SetLayerName(0, L"Default");
+	SetLayerName(1, L"UI");
+#pragma endregion
+
+	shared_ptr<Scene> scene = make_shared<Scene>();
+	//scene->ReserveGameObjects(50); // 이거 안해주면 망함
+
+#pragma region UI_Camera
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		camera->SetName(L"Orthographic_Camera");
+		camera->AddComponent(make_shared<Transform>());
+		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, 800*600
+		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
+		camera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		camera->GetCamera()->SetCullingMaskAll(); // 다 끄고
+		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, false); // UI만 찍음
+		scene->AddGameObject(camera);
+	}
+#pragma endregion
+
+	// UI는 z값이 작은 UI가 먼저 그려진다. (z값이 0이하면 안그려짐)
+#pragma region Clear Background Image
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(1280.f, 720.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 1.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"ClearBackground", L"..\\Resources\\Texture\\GameClear.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
+	}
+#pragma endregion
+
+#pragma region Exit Button
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(340.f, 100.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, -250.f, 2.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"ExitButton", L"..\\Resources\\Texture\\ExitButton.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		shared_ptr<UIButton> button = make_shared<UIButton>();
+		button->SetClickCallback([]() {
+			::PostQuitMessage(0);
+			});
+
+		obj->AddComponent(button);
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
 	}
 #pragma endregion
 

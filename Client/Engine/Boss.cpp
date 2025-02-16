@@ -136,7 +136,7 @@ void Boss::PerformNormalAttack()
 	Vec3 attackCenter = GetGameObject()->GetTransform()->GetWorldPosition();
 	// 전방으로 약간 offset을 주어 공격 위치 조정
 	Vec3 forward = GetGameObject()->GetTransform()->GetLook() * -1.f;
-	attackCenter += forward * 200.f;
+	attackCenter += forward * 300.f;
 
 	AttackInfo attackInfo(attackCenter, ATTACK_RADIUS, ATTACK_DAMAGE, GetGameObject().get());
 	const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
@@ -265,7 +265,7 @@ void Boss::CreateComponents()
 		CollisionGroup::Enemy |
 		CollisionGroup::Projectile
 	);
-	controller->SetRadius(100.f);
+	controller->SetRadius(150.f);
 	controller->SetHeight(200.f);
 	controller->Initialize();
 

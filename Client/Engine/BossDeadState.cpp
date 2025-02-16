@@ -4,6 +4,8 @@
 #include "CharacterMovement.h"
 #include "Resources.h"
 #include "SoundSystem.h"
+#include "EventTypes.h"
+#include "EventManager.h"
 
 void BossDeadState::Enter(Boss* boss)
 {
@@ -36,6 +38,14 @@ void BossDeadState::Update(Boss* boss, float deltaTime)
         if (auto controller = boss->GetGameObject()->GetCharacterController()) {
             controller->GetController()->setPosition(PxExtendedVec3(0.f, -9999.f, 0.f));
         }
+
+		// 사운드 중지
+        GET_SINGLE(SoundSystem)->StopAll();
+
+        // 씬 체인지 이벤트
+		Event::SceneChangeEvent event;
+        event.newScene = SceneManager::SceneType::GAME_CLEAR;
+		GET_SINGLE(EventManager)->Publish(event);
     }
 }
 
