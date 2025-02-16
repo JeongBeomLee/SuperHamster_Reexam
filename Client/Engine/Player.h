@@ -5,13 +5,13 @@
 #include "CharacterMovement.h"
 #include "Animator.h"
 #include "EventTypes.h"
+#include "Engine.h"
 
 class Player {
 public:
     Player(uint32_t playerId, std::shared_ptr<GameObject> gameObject);
     ~Player();
 
-    //void Initialize();
     void Update(float deltaTime);
 
     // 상태 관리
@@ -29,6 +29,9 @@ public:
     // 플레이어 정보
     uint32_t GetPlayerId() const { return m_playerId; }
     void PlayAnimation(PLAYER_STATE state);
+
+    void ProcessNetworkInput(const NetworkInputData& inputData);
+    bool IsLocalPlayer() const { return m_playerId == GEngine->GetMyPlayerId(); }
 
 private:
     void OnHit(const Event::PlayerHitEvent& event);

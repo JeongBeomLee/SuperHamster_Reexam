@@ -75,6 +75,47 @@ void Player::PlayAnimation(const PLAYER_STATE state)
     }
 }
 
+void Player::ProcessNetworkInput(const NetworkInputData& inputData)
+{
+    if (IsLocalPlayer()) {
+        return;  // 로컬 플레이어는 직접 입력을 처리
+    }
+
+    // 입력 플래그에 따라 상태 변경
+    if (inputData.inputFlags & InputFlags::A) {
+        if (GetCurrentState() != PLAYER_STATE::AIM) {
+            SetState(PLAYER_STATE::AIM);
+            return;
+        }
+    }
+
+    if (inputData.inputFlags & InputFlags::SPACE) {
+        SetState(PLAYER_STATE::ROLL);
+        return;
+    }
+
+    // 이동 방향 계산
+    Vec3 moveDir = Vec3::Zero;
+    if (inputData.inputFlags & InputFlags::UP)    moveDir += Vec3(0.f, 0.f, 1.f);
+    if (inputData.inputFlags & InputFlags::DOWN)  moveDir += Vec3(0.f, 0.f, -1.f);
+    if (inputData.inputFlags & InputFlags::LEFT)  moveDir += Vec3(-1.f, 0.f, 0.f);
+    if (inputData.inputFlags & InputFlags::RIGHT) moveDir += Vec3(1.f, 0.f, 0.f);
+
+    if (moveDir != Vec3::Zero) {
+        moveDir.Normalize();
+        if (GetCurrentState() != PLAYER_STATE::RUN) {
+            SetState(PLAYER_STATE::RUN);
+        }
+        GetMovementComponent()->SetMoveDirection(moveDir);
+    }
+    else {
+        if (GetCurrentState() != PLAYER_STATE::IDLE) {
+            SetState(PLAYER_STATE::IDLE);
+        }
+        GetMovementComponent()->StopMovement();
+    }
+}
+
 void Player::OnHit(const Event::PlayerHitEvent& event)
 {
     // 피격 시 무적 상태가 아니라면 데미지 처리

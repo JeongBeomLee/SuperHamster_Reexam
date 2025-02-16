@@ -12,7 +12,7 @@ void IdleState::Enter(Player* player)
 
 void IdleState::Update(Player* player, float deltaTime)
 {
-    if (IsMovementInput()) {
+    if (IsMovementInput(player)) {
         player->SetState(PLAYER_STATE::RUN);
         return;
     }

@@ -36,6 +36,7 @@
 #include "EventManager.h"
 #include "EventTypes.h"
 #include "BossHealthBar.h"
+#include "NetworkManager.h"
 
 SceneManager::SceneManager()
 {
@@ -198,7 +199,6 @@ shared_ptr<Scene> SceneManager::LoadMainScene()
 	}
 #pragma endregion
 
-	// UI는 z값이 작은 UI가 먼저 그려진다. (z값이 0이하면 안그려짐)
 #pragma region Main Menu Background Image
 	{
 		shared_ptr<GameObject> obj = make_shared<GameObject>();
@@ -229,7 +229,7 @@ shared_ptr<Scene> SceneManager::LoadMainScene()
 
 		obj->AddComponent(make_shared<Transform>());
 		obj->GetTransform()->SetLocalScale(Vec3(340.f, 100.f, 1.f));
-		obj->GetTransform()->SetLocalPosition(Vec3(0.f, -150.f, 2.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(-170.f, -150.f, 2.f));
 
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -242,6 +242,48 @@ shared_ptr<Scene> SceneManager::LoadMainScene()
 
 		shared_ptr<UIButton> button = make_shared<UIButton>();
 		button->SetClickCallback([]() {
+			auto networkManager = GET_SINGLE(NetworkManager);
+			networkManager->StartHost();
+			GEngine->SetMyPlayerId(0);
+
+			Event::SceneChangeEvent event;
+			event.newScene = SceneManager::SceneType::GAME_PLAY;
+			GET_SINGLE(EventManager)->Publish(event);
+			});
+
+		obj->AddComponent(button);
+		obj->AddComponent(meshRenderer);
+		scene->AddGameObject(obj);
+	}
+#pragma endregion
+
+#pragma region Join Button
+	{
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+
+		obj->AddComponent(make_shared<Transform>());
+		obj->GetTransform()->SetLocalScale(Vec3(340.f, 100.f, 1.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(170.f, -150.f, 2.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+
+		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"JoinButton", L"..\\Resources\\Texture\\JoinButton.png");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"UI")->Clone();
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+
+		shared_ptr<UIButton> button = make_shared<UIButton>();
+		button->SetClickCallback([]() {
+			auto networkManager = GET_SINGLE(NetworkManager);
+			string serverIP;
+			std::cout << "Input Server IP: ";
+			std::cin >> serverIP;
+			networkManager->JoinHost(serverIP);
+			GEngine->SetMyPlayerId(1);
+
 			Event::SceneChangeEvent event;
 			event.newScene = SceneManager::SceneType::GAME_PLAY;
 			GET_SINGLE(EventManager)->Publish(event);

@@ -4,7 +4,7 @@
 
 // boost
 #include "boost/asio.hpp"
-using boost::asio::ip::tcp;
+const uint16_t SERVER_PORT = 11111;
 
 // STD
 #include <tchar.h>
@@ -233,7 +233,7 @@ public:								\
 
 #define CONST_BUFFER(type)	GEngine->GetConstantBuffer(type)
 
-constexpr uint32 MAX_NUM_PX_THREADS = 2;
+constexpr uint32 MAX_NUM_PX_THREADS = 3;
 
 struct TransformParams
 {

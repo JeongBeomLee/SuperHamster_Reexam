@@ -507,6 +507,9 @@
     <ClCompile Include="PlayerHealthBar.cpp">
       <Filter>Object\Component\UI</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -904,6 +907,9 @@
     </ClInclude>
     <ClInclude Include="PlayerHealthBar.h">
       <Filter>Object\Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@ void FireState::Enter(Player* player)
 
     // 총 오브젝트 찾기
     auto scene = GET_SINGLE(SceneManager)->GetActiveScene();
-    auto gunObject = scene->GetGameObjectByName(L"defaultGun");
+	auto gunObject = scene->GetGameObjectByName(L"defaultGun" + player->GetPlayerId());
     if (!gunObject) return;
 
     // 총구 위치와 방향 계산

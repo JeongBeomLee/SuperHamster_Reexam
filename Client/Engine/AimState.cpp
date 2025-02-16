@@ -24,7 +24,7 @@ void AimState::Update(Player* player, float deltaTime)
     }
 
     // 입력에 따른 조준 방향 계산
-    Vec3 aimDir = GetTargetDirection();
+    Vec3 aimDir = GetTargetDirection(player);
     // 방향 입력이 있을 경우에만 회전
     if (aimDir != Vec3::Zero) {
         aimDir.Normalize();

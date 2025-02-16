@@ -430,7 +430,7 @@ bool PhysicsEngine::CreateScene()
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 
 	// CPU 디스패처 설정 (멀티스레딩)
-	m_dispatcher = PxDefaultCpuDispatcherCreate(2);  // 2개의 워커 스레드
+	m_dispatcher = PxDefaultCpuDispatcherCreate(MAX_NUM_PX_THREADS);  // 2개의 워커 스레드
 	if (!m_dispatcher) return false;
 	sceneDesc.cpuDispatcher = m_dispatcher;
 

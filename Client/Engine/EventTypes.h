@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "AttackInfo.h"
 #include "SceneManager.h"
+#include "NetworkManager.h"
 
 enum class PLAYER_STATE;
 class Player;
@@ -127,4 +128,11 @@ namespace Event
 		}
 		SceneManager::SceneType newScene;
 	};
+
+    // 네트워크 입력 이벤트
+    struct NetworkInputEvent : IEvent {
+		NetworkInputEvent() = default;
+        NetworkInputEvent(const NetworkInputData& data) : inputData(data) {}
+        NetworkInputData inputData;
+    };
 }

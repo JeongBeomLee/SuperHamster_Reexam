@@ -29,6 +29,7 @@ public:
     // 이벤트 처리 (메인 스레드에서만 호출)
     void Update() {
         ProcessEvents<Event::CollisionEvent>();
+		ProcessEvents<Event::NetworkInputEvent>();
         ProcessEvents<Event::InputEvent>();
 
 		ProcessEvents<Event::ProjectileHitEvent>();
@@ -73,7 +74,8 @@ private:
         Event::EventQueue<Event::InputEvent>,
         Event::EventQueue<Event::PlayerHitEvent>,
         Event::EventQueue<Event::TriggerEvent>,
-		Event::EventQueue<Event::SceneChangeEvent>
+		Event::EventQueue<Event::SceneChangeEvent>,
+		Event::EventQueue<Event::NetworkInputEvent>
     > m_queues;
 
     std::tuple<
@@ -82,6 +84,7 @@ private:
         Event::EventDispatcher<Event::InputEvent>,
 		Event::EventDispatcher<Event::PlayerHitEvent>,
         Event::EventDispatcher<Event::TriggerEvent>,
-		Event::EventDispatcher<Event::SceneChangeEvent>
+		Event::EventDispatcher<Event::SceneChangeEvent>,
+		Event::EventDispatcher<Event::NetworkInputEvent>
     > m_dispatchers;
 };

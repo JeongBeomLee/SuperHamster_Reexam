@@ -16,6 +16,7 @@
 #include "TeleportSystem.h"
 #include "SoundSystem.h"
 #include "EventManager.h"
+#include "NetworkManager.h"
 
 void Engine::Init(const WindowInfo& info)
 {
@@ -52,6 +53,7 @@ void Engine::Init(const WindowInfo& info)
 	GET_SINGLE(Input)->Init(info.hwnd);
 	GET_SINGLE(Timer)->Init();
 	GET_SINGLE(Resources)->Init();
+	GET_SINGLE(NetworkManager)->Init(SERVER_PORT);
 }
 
 void Engine::Update()
