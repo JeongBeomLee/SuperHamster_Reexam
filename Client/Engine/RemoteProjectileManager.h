@@ -1,9 +1,9 @@
 #pragma once
 #include "GameObject.h"
 
-class ProjectileManager
+class RemoteProjectileManager
 {
-    DECLARE_SINGLE(ProjectileManager);
+    DECLARE_SINGLE(RemoteProjectileManager);
 
 public:
     void Initialize(uint32_t poolSize = 50);
@@ -19,7 +19,7 @@ private:
     void PlayEffects(const Vec3& position, const Vec3& direction);
 
 public:
-	void PlayCollisionEffect(const Vec3& position);
+    void PlayCollisionEffect(const Vec3& position);
 
 public:
     static constexpr float PROJECTILE_DAMAGE = 20.0f;
@@ -30,7 +30,7 @@ private:
         shared_ptr<GameObject> collisionEffect;
     };
 
-	ParticleEffects m_particleEffects;
+    ParticleEffects m_particleEffects;
     queue<shared_ptr<GameObject>> m_projectilePool;
     vector<shared_ptr<GameObject>> m_activeProjectiles;
     uint32_t m_poolSize = 20;

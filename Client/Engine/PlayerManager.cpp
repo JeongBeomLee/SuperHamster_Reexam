@@ -56,7 +56,9 @@ Player* PlayerManager::CreatePlayer(uint32_t playerId, std::shared_ptr<GameObjec
         controller->Initialize();
     }
 
-	gameObject->AddComponent(std::make_shared<PlayerHealthBar>());
+    if (player->IsLocalPlayer()) {
+        gameObject->AddComponent(std::make_shared<PlayerHealthBar>());
+    }
 
 	auto result = player.get();
 	_players[playerId] = std::move(player);

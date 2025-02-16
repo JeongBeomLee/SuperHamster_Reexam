@@ -39,39 +39,6 @@ void IdleState::Update(Player* player, float deltaTime)
         auto characterController = player->GetCharacterController();
         characterController->Teleport(Vec3(-1.1135427f, 310.f, -7.5789433f));
     }
-
-	// Q를 누르면 +z방향으로 500만큼 이동
-    if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
-		auto transform = player->GetGameObject()->GetTransform();
-		auto teleportPosition = transform->GetWorldPosition() + Vec3(0, 100, 500);
-
-		auto characterController = player->GetCharacterController();
-		characterController->Teleport(teleportPosition);
-	}
-
-    if (INPUT->GetButtonDown(KEY_TYPE::E)) {
-        auto transform = player->GetGameObject()->GetTransform();
-        auto teleportPosition = transform->GetWorldPosition() + Vec3(0, 100, -500);
-
-        auto characterController = player->GetCharacterController();
-        characterController->Teleport(teleportPosition);
-    }
-
-    if (INPUT->GetButtonDown(KEY_TYPE::Z)) {
-        auto transform = player->GetGameObject()->GetTransform();
-        auto teleportPosition = transform->GetWorldPosition() + Vec3(500, 100, 0);
-
-        auto characterController = player->GetCharacterController();
-        characterController->Teleport(teleportPosition);
-    }
-
-    if (INPUT->GetButtonDown(KEY_TYPE::C)) {
-        auto transform = player->GetGameObject()->GetTransform();
-        auto teleportPosition = transform->GetWorldPosition() + Vec3(-500, 100, 0);
-
-        auto characterController = player->GetCharacterController();
-        characterController->Teleport(teleportPosition);
-    }
 }
 
 void IdleState::Exit(Player* player)

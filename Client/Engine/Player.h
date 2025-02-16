@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "CharacterController.h"
 #include "PlayerStateMachine.h"
+#include "RemotePlayerStateMachine.h"
 #include "CharacterMovement.h"
 #include "Animator.h"
 #include "EventTypes.h"
@@ -16,8 +17,10 @@ public:
 
     // 상태 관리
     PLAYER_STATE GetCurrentState() const;
+	REMOTE_PLAYER_STATE GetCurrentRemoteState() const;
 	bool GetInvincible() const { return m_isInvincible; }
     void SetState(PLAYER_STATE newState);
+	void SetState(REMOTE_PLAYER_STATE newState);
 	void SetInvincible(bool invincible) { m_isInvincible = invincible; }
 
     // 컴포넌트 접근
@@ -50,4 +53,5 @@ private:
 
     std::shared_ptr<GameObject> m_gameObject;
     PlayerStateMachine m_stateMachine;
+	RemotePlayerStateMachine m_remoteStateMachine;
 };

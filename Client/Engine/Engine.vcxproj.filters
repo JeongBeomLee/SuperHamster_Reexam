@@ -510,6 +510,18 @@
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="RemotePlayerStateMachine.cpp" />
+    <ClCompile Include="RemotePlayerState.cpp" />
+    <ClCompile Include="RemoteIdleState.cpp" />
+    <ClCompile Include="RemoteRunState.cpp" />
+    <ClCompile Include="RemoteRollState.cpp" />
+    <ClCompile Include="RemoteAimState.cpp" />
+    <ClCompile Include="RemoteFireState.cpp" />
+    <ClCompile Include="RemoteHitState.cpp" />
+    <ClCompile Include="RemoteGetUpState.cpp" />
+    <ClCompile Include="RemoteProjectileManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -909,6 +921,18 @@
       <Filter>Object\Component\UI</Filter>
     </ClInclude>
     <ClInclude Include="NetworkManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RemotePlayerStateMachine.h" />
+    <ClInclude Include="RemotePlayerState.h" />
+    <ClInclude Include="RemoteIdleState.h" />
+    <ClInclude Include="RemoteRunState.h" />
+    <ClInclude Include="RemoteRollState.h" />
+    <ClInclude Include="RemoteAimState.h" />
+    <ClInclude Include="RemoteFireState.h" />
+    <ClInclude Include="RemoteHitState.h" />
+    <ClInclude Include="RemoteGetUpState.h" />
+    <ClInclude Include="RemoteProjectileManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>

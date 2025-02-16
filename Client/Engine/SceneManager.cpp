@@ -37,6 +37,7 @@
 #include "EventTypes.h"
 #include "BossHealthBar.h"
 #include "NetworkManager.h"
+#include "RemoteProjectileManager.h"
 
 SceneManager::SceneManager()
 {
@@ -85,6 +86,7 @@ void SceneManager::LoadScene(SceneType sceneType)
 		_activeScene = LoadGameScene();
 
 		GET_SINGLE(ProjectileManager)->Initialize();
+		GET_SINGLE(RemoteProjectileManager)->Initialize();
 		GET_SINGLE(TeleportSystem)->Initialize();
 
 		// Main BGM 재생
@@ -445,27 +447,93 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 		
 		scene->AddGameObject(mapObject);
 
-		// 플레이어 생성
-		shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
-		shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
-		int playerID = GEngine->GetMyPlayerId();
-		Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(playerID, playerObj);
-		GET_SINGLE(SoundSystem)->SetPlayer(player);
-		scene->AddGameObject(playerObj);
+		// ID: 0 -> 호스트(Orange), ID: 1 -> 클라이언트(Blue)
+		int myPlayerID = GEngine->GetMyPlayerId();
+		int otherPlayerID = myPlayerID == 0 ? 1 : 0;
 
-		// 총 부착
-		{
-			shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
-			shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
-			shared_ptr<GameObject> player = playerObj;
-			defaultGunObject->SetName(L"defaultGun");
-			defaultGunObject->SetCheckFrustum(false);
-			defaultGunObject->SetStatic(false);
-			defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
-			defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-			defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
-			defaultGunObject->AttachToBone(player, L"mixamorig:RightHand");
-			scene->AddGameObject(defaultGunObject);
+		if (myPlayerID == 0) {
+			{
+				// 로컬 플레이어 생성
+				shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
+				shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
+				Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(myPlayerID, playerObj);
+				GET_SINGLE(SoundSystem)->SetPlayer(player);
+				scene->AddGameObject(playerObj);
+
+				// 총 부착
+				shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+				shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+				defaultGunObject->SetName(L"localPlayerGun");
+				defaultGunObject->SetCheckFrustum(false);
+				defaultGunObject->SetStatic(false);
+				defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+				defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+				defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+				defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
+				scene->AddGameObject(defaultGunObject);
+			}
+			
+			{
+				// 원격 플레이어 생성
+				shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
+				shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
+				Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(otherPlayerID, playerObj);
+				scene->AddGameObject(playerObj);
+
+				// 총 부착
+				shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+				shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+				defaultGunObject->SetName(L"RemotePlayerGun");
+				defaultGunObject->SetCheckFrustum(false);
+				defaultGunObject->SetStatic(false);
+				defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+				defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+				defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+				defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
+				scene->AddGameObject(defaultGunObject);
+			}
+		}
+		else {
+			{
+				// 로컬 플레이어 생성
+				shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
+				shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
+				Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(myPlayerID, playerObj);
+				GET_SINGLE(SoundSystem)->SetPlayer(player);
+				scene->AddGameObject(playerObj);
+
+				// 총 부착
+				shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+				shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+				defaultGunObject->SetName(L"localPlayerGun");
+				defaultGunObject->SetCheckFrustum(false);
+				defaultGunObject->SetStatic(false);
+				defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+				defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+				defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+				defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
+				scene->AddGameObject(defaultGunObject);
+			}
+
+			{
+				// 원격 플레이어 생성
+				shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Orange.fbx");
+				shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
+				Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(otherPlayerID, playerObj);
+				scene->AddGameObject(playerObj);
+
+				// 총 부착
+				shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+				shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+				defaultGunObject->SetName(L"RemotePlayerGun");
+				defaultGunObject->SetCheckFrustum(false);
+				defaultGunObject->SetStatic(false);
+				defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+				defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+				defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+				defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
+				scene->AddGameObject(defaultGunObject);
+			}
 		}
 
 		//// 선인장 1
