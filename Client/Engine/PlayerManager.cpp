@@ -74,9 +74,17 @@ Player* PlayerManager::GetPlayer(uint32_t playerId)
 void PlayerManager::OnNetworkInput(const Event::NetworkInputEvent& event)
 {
     auto player = GetPlayer(event.inputData.playerID);
-    if (player) {
-        player->ProcessNetworkInput(event.inputData);
+    if (!player || player->IsLocalPlayer()) {
+        return;
     }
+
+    // 위치 동기화
+    auto controller = player->GetGameObject()->GetCharacterController();
+	controller->Teleport(event.inputData.position);
+    player->SetState(event.inputData.currentState);
+
+    // 네트워크 입력 처리
+    player->ProcessNetworkInput(event.inputData);
 }
 
 void PlayerManager::Update()

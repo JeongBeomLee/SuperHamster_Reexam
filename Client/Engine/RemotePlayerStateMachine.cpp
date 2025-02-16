@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "NetworkManager.h"
+#include "PlayerStateMachine.h"
 #include "RemotePlayerStateMachine.h"
 #include "GameObject.h"
 #include "Player.h"

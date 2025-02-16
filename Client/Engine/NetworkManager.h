@@ -1,4 +1,6 @@
 #pragma once
+#include "RemotePlayerStateMachine.h"
+
 enum class NetworkRole {
     None,
     Host,
@@ -22,6 +24,8 @@ enum InputFlags : uint16_t {
 struct NetworkInputData {
     uint32_t playerID;     // 플레이어 식별자
     uint16_t inputFlags;   // 입력 상태 비트 플래그
+    REMOTE_PLAYER_STATE currentState;  // 현재 상태 추가
+    Vec3 position;                     // 위치 정보 추가
     double timestamp;      // 타임스탬프
 };
 #pragma pack(pop)
@@ -45,6 +49,9 @@ public:
 
     bool IsConnected() const { return m_connected; }
     NetworkRole GetRole() const { return m_role; }
+
+public:
+    REMOTE_PLAYER_STATE ConvertToRemoteState(enum class PLAYER_STATE localState);
 
 private:
     void StartNetwork();

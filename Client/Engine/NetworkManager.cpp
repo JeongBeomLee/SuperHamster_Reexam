@@ -4,6 +4,9 @@
 #include "Input.h"
 #include "EventManager.h"
 #include "Engine.h"
+#include "PlayerStateMachine.h"
+#include "RemotePlayerStateMachine.h"
+#include "PlayerManager.h"
 
 void NetworkManager::Init(uint16_t port)
 {
@@ -54,6 +57,20 @@ void NetworkManager::JoinHost(const std::string& hostIP)
     }
 }
 
+REMOTE_PLAYER_STATE NetworkManager::ConvertToRemoteState(PLAYER_STATE localState)
+{
+    switch (localState) {
+    case PLAYER_STATE::IDLE:    return REMOTE_PLAYER_STATE::IDLE;
+    case PLAYER_STATE::RUN:     return REMOTE_PLAYER_STATE::RUN;
+    case PLAYER_STATE::ROLL:    return REMOTE_PLAYER_STATE::ROLL;
+    case PLAYER_STATE::AIM:     return REMOTE_PLAYER_STATE::AIM;
+    case PLAYER_STATE::FIRE:    return REMOTE_PLAYER_STATE::FIRE;
+    case PLAYER_STATE::HIT:     return REMOTE_PLAYER_STATE::HIT;
+    case PLAYER_STATE::GETUP:   return REMOTE_PLAYER_STATE::GETUP;
+    default:                    return REMOTE_PLAYER_STATE::IDLE;
+    }
+}
+
 void NetworkManager::StartNetwork()
 {
     m_running = true;
@@ -90,17 +107,24 @@ void NetworkManager::CheckInputStateChange()
     if (INPUT->GetButton(KEY_TYPE::A))     currentState |= InputFlags::A;
     if (INPUT->GetButton(KEY_TYPE::S))     currentState |= InputFlags::S;
 
-    // 입력 상태가 변경된 경우에만 전송
+    // 입력 상태가 변경되었을 때만 전송
     if (currentState != m_lastInputState) {
-        // 상태가 변경된 시점에 바로 업데이트
-        m_lastInputState = currentState;
-
         NetworkInputData data;
         data.playerID = GEngine->GetMyPlayerId();
         data.inputFlags = currentState;
-        data.timestamp = DELTA_TIME; // 필요시 더 정밀한 타임스탬프 사용
+        data.timestamp = DELTA_TIME;
+
+        // 로컬 플레이어의 현재 상태와 위치 정보 추가
+        auto player = GET_SINGLE(PlayerManager)->GetPlayer(data.playerID);
+        if (player) {
+            auto transform = player->GetGameObject()->GetTransform();
+            data.position = transform->GetWorldPosition();
+            // 로컬 플레이어의 상태를 원격 플레이어 상태로 변환
+            data.currentState = ConvertToRemoteState(player->GetCurrentState());
+        }
 
         SendInputData(data);
+        m_lastInputState = currentState;
     }
 }
 

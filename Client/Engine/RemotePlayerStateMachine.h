@@ -1,5 +1,4 @@
 #pragma once
-#include "NetworkManager.h"
 
 enum class REMOTE_PLAYER_STATE {
     IDLE,
@@ -13,6 +12,7 @@ enum class REMOTE_PLAYER_STATE {
 };
 
 class RemotePlayerState;
+struct NetworkInputData;
 class RemotePlayerStateMachine {
 public:
     void Update(float deltaTime);

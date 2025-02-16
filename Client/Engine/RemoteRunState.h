@@ -64,6 +64,7 @@ public:
         }
     }
 
-private:
-    Vec3 moveDir = Vec3::Zero;
+public:
+    static Vec3 moveDir;
 };
+Vec3 RemoteRunState::moveDir = Vec3::Zero;
