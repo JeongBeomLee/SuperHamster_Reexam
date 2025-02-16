@@ -22,7 +22,7 @@
 void Engine::Init(const WindowInfo& info)
 {
 	// 로거 초기화
-	Logger::Instance().AddOutput(std::make_unique<DebugOutput>());
+	//Logger::Instance().AddOutput(std::make_unique<DebugOutput>());
 	Logger::Instance().Info("Engine 초기화 시작");
 
 	_window = info;	
