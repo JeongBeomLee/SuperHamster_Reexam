@@ -110,16 +110,33 @@ void NetworkManager::SendInputData(const NetworkInputData& data)
 
     try {
         boost::system::error_code error;
-        m_socket.send_to(
-            boost::asio::buffer(&data, sizeof(NetworkInputData)),
-            m_remoteEndpoint,
-            0,
-            error
-        );
-
-        if (error) {
-            Logger::Instance().Error("input data 전송 실패: {}", error.message());
-            return;
+        if (m_role == NetworkRole::Host) {
+            // 클라이언트 endpoint가 유효한지 확인 후 전송
+            if (m_clientEndpoint.port() != 0) { // 포트가 0이면 아직 초기화되지 않은 것으로 판단
+                m_socket.send_to(
+                    boost::asio::buffer(&data, sizeof(NetworkInputData)),
+                    m_clientEndpoint,
+                    0,
+                    error
+                );
+                if (error) {
+                    Logger::Instance().Error("input data 전송 실패: {}", error.message());
+                }
+            }
+            else {
+                Logger::Instance().Warning("클라이언트 endpoint가 아직 설정되지 않음");
+            }
+        }
+        else { // 클라이언트 모드
+            m_socket.send_to(
+                boost::asio::buffer(&data, sizeof(NetworkInputData)),
+                m_remoteEndpoint,
+                0,
+                error
+            );
+            if (error) {
+                Logger::Instance().Error("input data 전송 실패: {}", error.message());
+            }
         }
     }
     catch (const std::exception& e) {
@@ -137,16 +154,27 @@ void NetworkManager::StartReceive()
         boost::asio::buffer(m_receiveBuffer),
         m_remoteEndpoint,
         [this](const boost::system::error_code& error, size_t bytes) {
-            HandleReceive(error, bytes);
+            HandleReceive(error, bytes , m_remoteEndpoint);
         }
     );
 }
 
-void NetworkManager::HandleReceive(const boost::system::error_code& error, size_t bytes)
+void NetworkManager::HandleReceive(
+    const boost::system::error_code& error, 
+    size_t bytes, 
+    boost::asio::ip::udp::endpoint senderEndpoint)
 {
     if (error) {
         Logger::Instance().Error("Receive error: {}", error.message());
         return;
+    }
+
+    // 호스트 모드일 경우, 최초로 받은 클라이언트 endpoint를 저장합니다.
+    if (m_role == NetworkRole::Host && m_clientEndpoint.port() == 0) {
+        m_clientEndpoint = senderEndpoint;
+        Logger::Instance().Info("클라이언트 endpoint 설정됨: {}:{}",
+            m_clientEndpoint.address().to_string(),
+            m_clientEndpoint.port());
     }
 
     if (bytes == sizeof(NetworkInputData)) {

@@ -54,12 +54,16 @@ private:
     void CheckInputStateChange();
     void SendInputData(const NetworkInputData& data);
     void StartReceive();
-    void HandleReceive(const boost::system::error_code& error, size_t bytes);
+    void HandleReceive(
+        const boost::system::error_code& error, 
+        size_t bytes, 
+        boost::asio::ip::udp::endpoint senderEndpoint);
 
 private:
     boost::asio::io_context m_ioContext;
     boost::asio::ip::udp::socket m_socket;
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
+    boost::asio::ip::udp::endpoint m_clientEndpoint;
 
     std::thread m_networkThread;
     std::atomic<bool> m_running{ false };
