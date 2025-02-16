@@ -1,5 +1,8 @@
 #pragma once
 #include "RemotePlayerState.h"
+#include "Camera.h"
+#include "SceneManager.h"
+#include "Scene.h"
 class RemoteRunState : public RemotePlayerState {
 public:
     virtual void Enter(Player* player) override {
@@ -18,12 +21,26 @@ public:
     }
 
     virtual void ProcessNetworkInput(Player* player, const NetworkInputData& inputData) override {
-        // 이동 방향 계산
+        // 카메라 기준 방향 계산
+        auto camera = GET_SINGLE(SceneManager)->GetActiveScene()->GetMainCamera();
+        Vec3 forward = camera->GetTransform()->GetLook();
+        Vec3 right = camera->GetTransform()->GetRight();
+
+        // Y축 영향 제거
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+
         moveDir = Vec3::Zero;
-        if (inputData.inputFlags & InputFlags::UP)    moveDir += Vec3(0.f, 0.f, 1.f);
-        if (inputData.inputFlags & InputFlags::DOWN)  moveDir += Vec3(0.f, 0.f, -1.f);
-        if (inputData.inputFlags & InputFlags::LEFT)  moveDir += Vec3(-1.f, 0.f, 0.f);
-        if (inputData.inputFlags & InputFlags::RIGHT) moveDir += Vec3(1.f, 0.f, 0.f);
+        if (inputData.inputFlags & InputFlags::UP)    
+            moveDir += forward;
+        if (inputData.inputFlags & InputFlags::DOWN)  
+            moveDir -= forward;
+        if (inputData.inputFlags & InputFlags::LEFT)  
+            moveDir -= right;
+        if (inputData.inputFlags & InputFlags::RIGHT) 
+            moveDir += right;
 
         if (moveDir != Vec3::Zero) {
             moveDir.Normalize();
