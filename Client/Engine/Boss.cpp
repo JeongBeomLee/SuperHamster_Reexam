@@ -25,6 +25,7 @@
 #include "ProjectileManager.h"
 #include "ParticleSystem.h"
 #include "Resources.h"
+#include "BossHealthBar.h"
 
 Boss::Boss()
 {
@@ -136,7 +137,7 @@ void Boss::PerformNormalAttack()
 	Vec3 attackCenter = GetGameObject()->GetTransform()->GetWorldPosition();
 	// 전방으로 약간 offset을 주어 공격 위치 조정
 	Vec3 forward = GetGameObject()->GetTransform()->GetLook() * -1.f;
-	attackCenter += forward * 300.f;
+	attackCenter += forward * 100.f;
 
 	AttackInfo attackInfo(attackCenter, ATTACK_RADIUS, ATTACK_DAMAGE, GetGameObject().get());
 	const auto& players = GET_SINGLE(PlayerManager)->GetPlayers();
@@ -199,6 +200,7 @@ void Boss::OnHit(const Event::ProjectileHitEvent& event)
 {
 	// 데미지 처리
 	m_health -= ProjectileManager::PROJECTILE_DAMAGE;
+	GetGameObject()->GetMonoBehaviour<BossHealthBar>()->SetCurrentHealth(m_health);
 	Logger::Instance().Debug("보스가 공격받음. 남은 체력: {}/{}", m_health, m_maxHealth);
 
 	if (m_health <= 0) {

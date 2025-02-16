@@ -5,6 +5,7 @@
 #include "Animator.h"
 #include "Resources.h"
 #include "SoundSystem.h"
+#include "BossHealthBar.h"
 
 void BossRoarState::Enter(Boss* boss)
 {
@@ -58,4 +59,6 @@ void BossRoarState::Exit(Boss* boss)
             GET_SINGLE(SoundSystem)->Play(bossBGM);
         }
     }
+
+    boss->GetGameObject()->GetMonoBehaviour<BossHealthBar>()->Show();
 }

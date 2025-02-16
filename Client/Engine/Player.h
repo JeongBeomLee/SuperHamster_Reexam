@@ -42,7 +42,8 @@ private:
     uint32_t m_playerId;
     size_t m_hitEventId;
     bool m_isInvincible = false;
-	float m_health = 100.0f;
+	float m_maxHealth = 500.0f;
+	float m_currentHealth = 500.0f;
 
     std::shared_ptr<GameObject> m_gameObject;
     PlayerStateMachine m_stateMachine;

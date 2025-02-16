@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "PlayerHealthBar.h"
 
 Player* PlayerManager::CreatePlayer(uint32_t playerId, std::shared_ptr<GameObject> gameObject)
 {
@@ -30,6 +31,8 @@ Player* PlayerManager::CreatePlayer(uint32_t playerId, std::shared_ptr<GameObjec
 		controller->SetHeight(150.f);
         controller->Initialize();
     }
+
+	gameObject->AddComponent(std::make_shared<PlayerHealthBar>());
 
 	auto result = player.get();
 	_players[playerId] = std::move(player);

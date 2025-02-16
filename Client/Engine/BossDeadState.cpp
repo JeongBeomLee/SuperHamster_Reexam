@@ -6,10 +6,12 @@
 #include "SoundSystem.h"
 #include "EventTypes.h"
 #include "EventManager.h"
+#include "BossHealthBar.h"
 
 void BossDeadState::Enter(Boss* boss)
 {
     boss->PlayAnimation(BOSS_STATE::DEAD);
+	boss->GetGameObject()->GetMonoBehaviour<BossHealthBar>()->Hide();
     m_hasCheckedAnimation = false;
 
     // 죽을 때 이동 중지

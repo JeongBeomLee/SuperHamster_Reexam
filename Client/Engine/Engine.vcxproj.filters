@@ -498,7 +498,15 @@
     <ClCompile Include="Lava.cpp">
       <Filter>Object\Lava</Filter>
     </ClCompile>
-    <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIButton.cpp">
+      <Filter>Object\Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="BossHealthBar.cpp">
+      <Filter>Object\Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerHealthBar.cpp">
+      <Filter>Object\Component\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -888,7 +896,15 @@
     <ClInclude Include="Lava.h">
       <Filter>Object\Lava</Filter>
     </ClInclude>
-    <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIButton.h">
+      <Filter>Object\Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="BossHealthBar.h">
+      <Filter>Object\Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerHealthBar.h">
+      <Filter>Object\Component\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

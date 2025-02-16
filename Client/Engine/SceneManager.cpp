@@ -35,6 +35,7 @@
 #include "UIButton.h"
 #include "EventManager.h"
 #include "EventTypes.h"
+#include "BossHealthBar.h"
 
 SceneManager::SceneManager()
 {
@@ -318,6 +319,8 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 		camera->SetName(L"Orthographic_Camera");
 		camera->AddComponent(make_shared<Transform>());
 		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, 800*600
+		//camera->GetCamera()->SetFar(8000.f);
+		//camera->GetCamera()->SetNear(1.f);
 		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		camera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
@@ -654,7 +657,7 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 
 		// º¸½º
 		{
-			/*shared_ptr<MeshData> bossMeshData = 
+			shared_ptr<MeshData> bossMeshData = 
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DemonBoss.fbx");
 
 			shared_ptr<GameObject> bossObj = bossMeshData->Instantiate()[0];
@@ -667,7 +670,8 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 			bossObj->GetTransform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 			bossObj->AddComponent(make_shared<Boss>());
-			scene->AddGameObject(bossObj);*/
+			bossObj->AddComponent(make_shared<BossHealthBar>());
+			scene->AddGameObject(bossObj);
 		}
 
 		// Stone
@@ -675,17 +679,17 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 			shared_ptr<MeshData> stoneMeshData =
 				GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\spike_cube_no_animated.fbx");
 
-			shared_ptr<GameObject> bossObj = stoneMeshData->Instantiate()[0];
+			shared_ptr<GameObject> stoneObj = stoneMeshData->Instantiate()[0];
 
-			bossObj->SetName(L"Stone");
-			bossObj->SetCheckFrustum(true);
-			bossObj->SetStatic(false);
-			bossObj->GetTransform()->SetLocalPosition(Vec3(-1600.0f, 260.0f, -1500.0f));
-			bossObj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-			bossObj->GetTransform()->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+			stoneObj->SetName(L"Stone");
+			stoneObj->SetCheckFrustum(true);
+			stoneObj->SetStatic(false);
+			stoneObj->GetTransform()->SetLocalPosition(Vec3(-1600.0f, 260.0f, -1500.0f));
+			stoneObj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			stoneObj->GetTransform()->SetLocalScale(Vec3(1.0f, 1.0f, 1.0f));
 
-			bossObj->AddComponent(make_shared<Stone>());
-			scene->AddGameObject(bossObj);
+			stoneObj->AddComponent(make_shared<Stone>());
+			scene->AddGameObject(stoneObj);
 		}
 
 		{

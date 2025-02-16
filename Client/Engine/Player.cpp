@@ -14,6 +14,7 @@
 #include "EventManager.h"
 #include "Resources.h"
 #include "SoundSystem.h"
+#include "PlayerHealthBar.h"
 
 Player::Player(uint32_t playerId, std::shared_ptr<GameObject> gameObject) 
     : m_playerId(playerId)
@@ -79,7 +80,9 @@ void Player::OnHit(const Event::PlayerHitEvent& event)
     // 피격 시 무적 상태가 아니라면 데미지 처리
     if (!m_isInvincible) {
         // 데미지 처리
-        m_health -= event.damage;
+        m_currentHealth -= event.damage;
+
+		GetGameObject()->GetMonoBehaviour<PlayerHealthBar>()->SetCurrentHealth(m_currentHealth);
 
         // 피격 상태로 전환
         SetState(PLAYER_STATE::HIT);
@@ -91,7 +94,7 @@ void Player::OnHit(const Event::PlayerHitEvent& event)
 		}
 
         Logger::Instance().Debug("플레이어가 {}의 데미지를 받음. 남은 체력: {}",
-            event.damage, m_health);
+            event.damage, m_currentHealth);
     }
 }
 

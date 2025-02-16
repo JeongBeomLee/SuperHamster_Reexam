@@ -61,7 +61,7 @@ private:
     Player* m_target = nullptr;
     size_t m_handHitEventId;
 
-    float m_health = 510.0f;
+    float m_health = 1000.0f;
     float m_maxHealth = 1000.0f;
     BOSS_PHASE m_currentPhase = BOSS_PHASE::NONE;
 
