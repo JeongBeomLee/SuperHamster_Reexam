@@ -7,13 +7,16 @@ class RemoteRunState : public RemotePlayerState {
 public:
     virtual void Enter(Player* player) override {
         player->PlayAnimation(PLAYER_STATE::RUN);
+        if (moveDir != Vec3::Zero) {
+            player->GetMovementComponent()->SetMoveDirection(moveDir);
+        }
     }
 
     virtual void Update(Player* player, float deltaTime) override {
         // 현재 이동 방향으로 계속 이동
-        /*if (moveDir != Vec3::Zero) {
+        if (moveDir != Vec3::Zero) {
             player->GetMovementComponent()->SetMoveDirection(moveDir);
-        }*/
+        }
     }
 
     virtual void Exit(Player* player) override {

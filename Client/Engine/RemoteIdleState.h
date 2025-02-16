@@ -16,7 +16,8 @@ public:
 
     virtual void ProcessNetworkInput(Player* player, const NetworkInputData& inputData) override {
         // 이동 입력 확인
-        if (inputData.inputFlags & (InputFlags::UP | InputFlags::DOWN |
+        if (inputData.inputFlags & (
+            InputFlags::UP | InputFlags::DOWN |
             InputFlags::LEFT | InputFlags::RIGHT)) {
             player->SetState(REMOTE_PLAYER_STATE::RUN);
             return;
