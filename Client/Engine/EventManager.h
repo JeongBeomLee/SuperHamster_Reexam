@@ -12,7 +12,7 @@ public:
     template<typename EventType>
     void Publish(const EventType& event) {
         GetQueue<EventType>().Push(event);
-        Logger::Instance().Debug("이벤트 발행: {}", typeid(EventType).name());
+        //Logger::Instance().Debug("이벤트 발행: {}", typeid(EventType).name());
     }
 
     template<typename EventType>

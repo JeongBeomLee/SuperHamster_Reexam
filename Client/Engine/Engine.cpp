@@ -17,6 +17,7 @@
 #include "SoundSystem.h"
 #include "EventManager.h"
 #include "NetworkManager.h"
+#include "RemoteProjectileManager.h"
 
 void Engine::Init(const WindowInfo& info)
 {
@@ -77,6 +78,7 @@ void Engine::Update()
 	GET_SINGLE(TeleportSystem)->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(ProjectileManager)->Update();
+	GET_SINGLE(RemoteProjectileManager)->Update();
 	GET_SINGLE(InstancingManager)->ClearBuffer();
 
 	// 6. 이벤트 매니저 후처리

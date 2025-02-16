@@ -130,9 +130,6 @@ void NetworkManager::SendInputData(const NetworkInputData& data)
                     Logger::Instance().Error("input data 전송 실패: {}", error.message());
                 }
             }
-            else {
-                Logger::Instance().Warning("클라이언트 endpoint가 아직 설정되지 않음");
-            }
         }
         else { // 클라이언트 모드
             m_socket.send_to(

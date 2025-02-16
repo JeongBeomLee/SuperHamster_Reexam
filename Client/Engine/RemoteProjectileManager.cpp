@@ -18,7 +18,7 @@ void RemoteProjectileManager::Initialize(uint32_t poolSize)
     // 풀 초기화
     for (uint32_t i = 0; i < m_poolSize; ++i) {
         auto projectile = CreateProjectileObject(Vec3::Zero, Vec3::Forward);
-        projectile->SetName(L"Projectile" + to_wstring(i + 1));
+        projectile->SetName(L"RemoteProjectile" + to_wstring(i + 1));
         projectile->SetActive(false);
         m_projectilePool.push(projectile);
     }
