@@ -26,6 +26,7 @@
 #include "ParticleSystem.h"
 #include "Resources.h"
 #include "BossHealthBar.h"
+#include "Input.h"	
 
 Boss::Boss()
 {
@@ -62,6 +63,16 @@ void Boss::Update()
 	float deltaTime = DELTA_TIME;
 	if (m_currentPhase != BOSS_PHASE::NONE) {
 		m_patternTimer += deltaTime;
+	}
+	
+	if (INPUT->GetButton(KEY_TYPE::KEY_3)) {
+		m_health = 400;
+		GetGameObject()->GetMonoBehaviour<BossHealthBar>()->SetCurrentHealth(m_health);
+	}
+	if (INPUT->GetButton(KEY_TYPE::KEY_4)) {
+		m_health = 0;
+		GetGameObject()->GetMonoBehaviour<BossHealthBar>()->SetCurrentHealth(m_health);
+		SetState(BOSS_STATE::DEAD);
 	}
 
 	m_stateMachine.Update(deltaTime);
