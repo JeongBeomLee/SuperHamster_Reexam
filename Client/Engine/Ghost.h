@@ -37,7 +37,7 @@ private:
 
 private:
     static constexpr float ATTACK_RANGE = 550.0f;        // 공격 감지 거리
-    static constexpr float PULL_FORCE = 300.0f;          // 당기는 힘의 크기
+    static constexpr float PULL_FORCE = 200.0f;          // 당기는 힘의 크기
     float m_health = 100.0f;
 
     GhostStateMachine m_stateMachine;

@@ -22,7 +22,7 @@ public:
 	void PlayCollisionEffect(const Vec3& position);
 
 public:
-    static constexpr float PROJECTILE_DAMAGE = 20.0f;
+    static constexpr float PROJECTILE_DAMAGE = 100.0f;
 private:
     struct ParticleEffects {
         shared_ptr<GameObject> muzzleFlash;
