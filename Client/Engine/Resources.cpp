@@ -1213,18 +1213,6 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>(L"ComputeParticle", material);
 	}
 
-	// GameObject
-	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Deferred");
-		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"Leather", L"..\\Resources\\Texture\\Leather.jpg");
-		shared_ptr<Texture> texture2 = GET_SINGLE(Resources)->Load<Texture>(L"Leather_Normal", L"..\\Resources\\Texture\\Leather_Normal.jpg");
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetTexture(0, texture);
-		material->SetTexture(1, texture2);
-		Add<Material>(L"GameObject", material);
-	}
-
 	// Shadow
 	{
 		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Shadow");
@@ -1239,16 +1227,6 @@ void Resources::CreateDefaultMaterial()
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
 		Add<Material>(L"Tessellation", material);
-	}
-
-	// Terrain
-	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Terrain");
-		shared_ptr<Texture> texture = GET_SINGLE(Resources)->Load<Texture>(L"Terrain", L"..\\Resources\\Texture\\Terrain\\terrain.png");
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(shader);
-		material->SetTexture(0, texture);
-		Add<Material>(L"Terrain", material);
 	}
 
 	// ComputeAnimation

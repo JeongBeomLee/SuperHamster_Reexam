@@ -474,23 +474,23 @@ shared_ptr<Scene> SceneManager::LoadGameScene()
 			}
 			
 			{
-				// 원격 플레이어 생성
-				shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
-				shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
-				Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(otherPlayerID, playerObj);
-				scene->AddGameObject(playerObj);
+				//// 원격 플레이어 생성
+				//shared_ptr<MeshData> playerMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Blue.fbx");
+				//shared_ptr<GameObject> playerObj = playerMeshData->Instantiate()[0];
+				//Player* player = GET_SINGLE(PlayerManager)->CreatePlayer(otherPlayerID, playerObj);
+				//scene->AddGameObject(playerObj);
 
-				// 총 부착
-				shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
-				shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
-				defaultGunObject->SetName(L"RemotePlayerGun");
-				defaultGunObject->SetCheckFrustum(false);
-				defaultGunObject->SetStatic(false);
-				defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
-				defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
-				defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
-				defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
-				scene->AddGameObject(defaultGunObject);
+				//// 총 부착
+				//shared_ptr<MeshData> defaultGunMeshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\DefaultGun.fbx");
+				//shared_ptr<GameObject> defaultGunObject = defaultGunMeshData->Instantiate()[0];
+				//defaultGunObject->SetName(L"RemotePlayerGun");
+				//defaultGunObject->SetCheckFrustum(false);
+				//defaultGunObject->SetStatic(false);
+				//defaultGunObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 40.f));
+				//defaultGunObject->GetTransform()->SetLocalRotation(Vec3(XMConvertToRadians(-45.f), XMConvertToRadians(-90.f), XMConvertToRadians(-30.f)));
+				//defaultGunObject->GetTransform()->SetLocalScale(Vec3(65.0f, 65.0f, 65.0f));
+				//defaultGunObject->AttachToBone(playerObj, L"mixamorig:RightHand");
+				//scene->AddGameObject(defaultGunObject);
 			}
 		}
 		else {
