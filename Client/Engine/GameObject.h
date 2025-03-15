@@ -49,6 +49,7 @@ public:
 	template<typename T>
 	shared_ptr<T> GetMonoBehaviour() {
 		static_assert(std::is_base_of<MonoBehaviour, T>::value, "T must inherit from MonoBehaviour");
+		Logger::Instance().Error("GameObject::GetMonoBehaviour(): MonoBehaviour를 상속받지 않은 타입은 사용할 수 없습니다.");
 		for (const auto& script : _scripts) {
 			if (auto castedScript = dynamic_pointer_cast<T>(script)) {
 				return castedScript;

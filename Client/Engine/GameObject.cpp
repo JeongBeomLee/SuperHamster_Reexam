@@ -173,12 +173,10 @@ void GameObject::AddComponent(shared_ptr<Component> component)
 	component->SetGameObject(shared_from_this());
 
 	uint8 index = static_cast<uint8>(component->GetType());
-	if (index < FIXED_COMPONENT_COUNT)
-	{
+	if (index < FIXED_COMPONENT_COUNT) {
 		_components[index] = component;
 	}
-	else
-	{
+	else {
 		_scripts.push_back(dynamic_pointer_cast<MonoBehaviour>(component));
 	}
 }
@@ -186,15 +184,12 @@ void GameObject::AddComponent(shared_ptr<Component> component)
 void GameObject::RemoveComponent(shared_ptr<Component> component)
 {
 	uint8 index = static_cast<uint8>(component->GetType());
-	if (index < FIXED_COMPONENT_COUNT)
-	{
+	if (index < FIXED_COMPONENT_COUNT) {
 		_components[index] = nullptr;
 	}
-	else
-	{
+	else {
 		auto findIt = std::find(_scripts.begin(), _scripts.end(), component);
-		if (findIt != _scripts.end())
-		{
+		if (findIt != _scripts.end()) {
 			_scripts.erase(findIt);
 		}
 	}
